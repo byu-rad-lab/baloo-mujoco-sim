@@ -1,0 +1,101 @@
+<mujoco model="bellows_arm">
+  <compiler angle="degree" />
+  <option timestep="0.001" cone="elliptic" jacobian="sparse" solver="Newton" iterations="50"
+    tolerance="1e-10">
+    <flag gravity="enable" />
+  </option>
+  <size njmax="5000" nconmax="5000" nstack="5000000" />
+
+  <visual>
+    <quality shadowsize="2048" />
+    <!-- <map stiffness="7015" fogstart="10" fogend="15" zfar="40" shadowscale="0.5"/> -->
+    <!-- <rgba haze="0.14999999999999999 0.25 0.34999999999999998 1" /> -->
+  </visual>
+
+  <default>
+    <default class="/">
+      <default class="8bellows">
+        <joint group="3" type="hinge" pos="0 0 0.010526315789473684" limited="true" stiffness="1360"
+          range="-0.087266462599716474 0.087266462599716474" damping="75" />
+        <geom type="cylinder" size="0.125 0.005263157894736842"
+          rgba="0.80000000000000004 0.20000000000000001 0.10000000000000001 1" />
+      </default>
+      <default class="4bellows">
+        <joint group="3" type="hinge" pos="0 0 0.010526315789473684" limited="true" stiffness="270"
+          range="-0.15707963267948966 0.15707963267948966" damping="20" />
+        <geom type="cylinder" size="0.080000000000000002 0.005263157894736842"
+          rgba="0.80000000000000004 0.20000000000000001 0.10000000000000001 1" />
+      </default>
+    </default>
+  </default>
+
+  <asset>
+    <texture name="ground" type="2d" builtin="checker" markrgb="1 0 0" width="512" height="512" />
+
+    <material name="matplane" class="/" texture="ground" />
+
+    <!-- add all meshes from meshes folder as assets -->
+    <mesh name="base_frame" class="/" file="meshes/BaseFrameMesh.stl" />
+    <mesh name="base_left" class="/" file="meshes/LeftBaseMesh.stl" />
+    <mesh name="base_right" class="/" file="meshes/RightBaseMesh.stl" />
+    <mesh name="linear_actuator" class="/" file="meshes/LinearActuatorMesh.stl" />
+    <mesh name="control_box" class="/" file="meshes/ControlBoxMesh.stl" />
+    <mesh name="stepper_motor" class="/" file="meshes/StepperMesh.stl" />
+    <mesh name="front_left_wheel" class="/" file="meshes/LeftFrontWheelMesh.stl" />
+    <mesh name="front_right_wheel" class="/" file="meshes/RightFrontWheelMesh.stl" />
+    <mesh name="back_left_wheel" class="/" file="meshes/LeftBackWheelMesh.stl" />
+    <mesh name="back_right_wheel" class="/" file="meshes/RightBackWheelMesh.stl" />
+    <mesh name="estop" class="/" file="meshes/EstopPlugMesh.stl" />
+    <mesh name="ethernet_jack" class="/" file="meshes/EthernetJackMesh.stl" />
+    <mesh name="lcd_screen" class="/" file="meshes/LCDScreenMesh.stl" />
+    <mesh name="back_left_wheel_foot" class="/" file="meshes/LeftBackWheelFootMesh.stl" />
+    <mesh name="back_right_wheel_foot" class="/" file="meshes/RightBackWheelFootMesh.stl" />
+    <mesh name="front_left_wheel_foot" class="/" file="meshes/LeftFrontWheelFootMesh.stl" />
+    <mesh name="front_right_wheel_foot" class="/" file="meshes/RightFrontWheelFootMesh.stl" />
+    <mesh name="pnuematic_inlet" class="/" file="meshes/PneumaticInletMesh.stl" />
+    <mesh name="power_button" class="/" file="meshes/PowerButtonMesh.stl" />
+
+
+    <material name="vention_blue" rgba="0.2 0.3 0.4 1" reflectance="1" />
+    <material name="matte_black" rgba="0 0 0 1" reflectance="0.2" />
+    <material name="cream" rgba="0.9 0.9 0.9 1" reflectance="0.2" />
+    <material name="silver" rgba="0.9 0.9 0.9 1" reflectance="0.8" />
+    <material name="red" rgba="0.9 0.1 0.1 1" reflectance="0.8" />
+    <material name="lcd_blue" rgba="0.1 0.1 0.9 1" reflectance="0.8" />
+    <material name="green" rgba="0.1 0.9 0.1 1" reflectance="0.8" />
+
+
+  </asset>
+
+  <worldbody>
+    <geom name="world" class="/" type="plane" condim="1" size="0 0 1" material="matplane" />
+    <light name="//unnamed_light_0" class="/" directional="true" pos="0 0 4" dir="0 0 -1"
+      diffuse="0.59999999999999998 0.59999999999999998 0.59999999999999998"
+      specular="0.20000000000000001 0.20000000000000001 0.20000000000000001" />
+
+    <body name="test_mesh_body" pos="0 0 0">
+      <geom type="mesh" mesh="linear_actuator" material="vention_blue" />
+      <geom type="mesh" mesh="base_frame" material="vention_blue" />
+      <geom type="mesh" mesh="base_left" material="vention_blue" />
+      <geom type="mesh" mesh="base_right" material="vention_blue" />
+      <geom type="mesh" mesh="stepper_motor" material="matte_black" />
+      <!-- need to work on these some more as well -->
+      <geom type="mesh" mesh="control_box" material="matte_black" />
+      <geom type="mesh" mesh="estop" material="green" />
+      <geom type="mesh" mesh="ethernet_jack" material="silver" />
+      <geom type="mesh" mesh="lcd_screen" material="lcd_blue" />
+      <geom type="mesh" mesh="back_left_wheel_foot" material="matte_black" />
+      <geom type="mesh" mesh="back_right_wheel_foot" material="matte_black" />
+      <geom type="mesh" mesh="front_left_wheel_foot" material="matte_black" />
+      <geom type="mesh" mesh="front_right_wheel_foot" material="matte_black" />
+      <geom type="mesh" mesh="pnuematic_inlet" material="silver" />
+      <geom type="mesh" mesh="power_button" material="red" />
+      <geom type="mesh" mesh="front_left_wheel" material="cream" />
+      <geom type="mesh" mesh="front_right_wheel" material="cream" />
+      <geom type="mesh" mesh="back_left_wheel" material="cream" />
+      <geom type="mesh" mesh="back_right_wheel" material="cream" />
+
+    </body>
+  </worldbody>
+
+</mujoco>

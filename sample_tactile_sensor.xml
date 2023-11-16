@@ -1,0 +1,72 @@
+<mujoco model="sample_tactile_sensor">
+  <compiler autolimits="true" />
+
+  <extension>
+    <plugin plugin="MujocoTactileSensorPlugin" />
+  </extension>
+
+  <asset>
+    <texture name="floor" type="2d" builtin="checker" rgb1="0.1 0.2 0.3" rgb2="0.2 0.3 0.4"
+      width="300" height="300" mark="edge" markrgb="0.2 0.3 0.4" />
+    <material name="floor" texture="floor" texrepeat="10 10" texuniform="true" />
+    <hfield name="sample_hfield" file="sample_hfield.png" size="0.4 0.2 0.02 0.01" />
+    <mesh name="mesh_cube"
+      file="/home/curtis/curtis_ws/src/curtis_sandbox/src/mujoco/models/baloo/meshes/meshed_cube.stl" />
+  </asset>
+
+  <visual>
+    <headlight ambient="0.7 0.7 0.7" diffuse="0.2 0.2 0.2" specular="0.1 0.1 0.1" />
+    <map znear="0.01" />
+    <scale contactwidth="0.02" contactheight="0.5" />
+  </visual>
+
+  <default>
+    <geom friction="0.4" solimp="0.1 0.95 0.01" />
+  </default>
+
+  <statistic center="0 0 1" extent="1" meansize="0.1" />
+
+  <worldbody>
+    <light pos="1 0 0.3" dir="-1 0 -0.3" />
+    <light pos="-1 0 0.3" dir="1 0 -0.3" />
+
+    <geom name="floor" type="plane" material="floor" size="1 1 0.01" pos="0 0 -0.01" />
+    <!-- <geom name="sample_hfield" type="hfield" hfield="sample_hfield" rgba="0.5 0.5 0.1 1" /> -->
+
+    <geom name="thingy" type="mesh" mesh="mesh_cube" />
+    <!-- <geom name="thingy" type="box" size="0.2 0.2 0.2" pos="0 0 0.1" rgba="0.8 0.1 0.1 1" /> -->
+
+    <body name="object" pos="0 0 1">
+      <joint name="x" type="slide" axis="1 0 0" damping="1" />
+      <joint name="y" type="slide" axis="0 1 0" damping="1" />
+      <joint name="z" type="slide" axis="0 0 1" />
+      <joint name="rx" axis="1 0 0" springdamper="0.02 1" />
+      <joint name="ry" axis="0 1 0" springdamper="0.02 1" />
+
+      <!-- <geom type="box" size="0.2 0.2 0.05" mass="0.1" rgba="0.5 0.5 0.5 0.3" /> -->
+      <!-- <site name="tactile_sensor_frame" pos="0 0 -0.05"/> -->
+
+      <geom type="cylinder" size="0.5" fromto="0 -0.2 0.5 0 0.2 0.5" mass="1.0"
+        rgba="0.5 0.5 0.5 1" />
+      <site name="tactile_sensor_frame" pos="0 0 0" euler="0 0 90.0" />
+
+      <!-- <geom type="cylinder" size="0.5" fromto="-0.2 0 0.5 0.2 0 0.5" mass="0.1" rgba="0.5 0.5
+      0.5 0.3"/> -->
+      <!-- <site name="tactile_sensor_frame" pos="0 0 0" euler="0 0 0"/> -->
+    </body>
+  </worldbody>
+
+  <sensor>
+    <!-- todo: do I care about size of taxel?  -->
+    <!-- This constrains everything to be square, and then actual dimensions are scaled up by
+    interval, with squares touching. -->
+    <plugin name="tactile_sensor" plugin="MujocoTactileSensorPlugin" objtype="site"
+      objname="tactile_sensor_frame">
+      <config key="sensor_nums" value="16 64" />
+      <config key="sensor_interval" value=".0491" />
+      <!-- <config key="surface_radius" value="0.0"/> -->
+      <config key="surface_radius" value="0.5" />
+      <config key="is_hex_grid" value="false" />
+    </plugin>
+  </sensor>
+</mujoco>
