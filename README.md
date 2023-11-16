@@ -17,5 +17,6 @@ The simulation includes a world plane and a fixed camera view. There is also a b
 
 To run the simulation, you will need Python and the `dm_control` and `mujoco` libraries. You can install these libraries using pip:
 
-```bash
+``` bash
 pip install dm_control mujoco==3.0.1
+```
