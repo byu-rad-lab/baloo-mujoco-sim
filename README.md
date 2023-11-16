@@ -1,29 +1,21 @@
-# README #
+# Baloo Simulation
 
-This README would normally document whatever steps are necessary to get your application up and running.
+This repository contains the code for a simulation of a robot named Baloo. The simulation is written in Python and uses the `dm_control` and `mujoco` libraries.
 
-### What is this repository for? ###
+<!-- add  scresnshot.png-->
+![Sim](screenshot.png)
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+## Overview
 
-### How do I get set up? ###
+The main class in the code is `Baloo`, which represents the robot. The `Baloo` class has methods for setting up the simulation, including setting compiler options, visual settings, and contact settings. It also has methods for creating the robot's body parts and actuators.
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+The robot is composed of a number of disks, which can be specified when creating a `Baloo` instance. The robot also has a number of joints, and the height of these joints can be adjusted.
 
-### Contribution guidelines ###
+The simulation includes a world plane and a fixed camera view. There is also a box object in the simulation that the robot can interact with.
 
-* Writing tests
-* Code review
-* Other guidelines
+## Installation
 
-### Who do I talk to? ###
+To run the simulation, you will need Python and the `dm_control` and `mujoco` libraries. You can install these libraries using pip:
 
-* Repo owner or admin
-* Other community or team contact
+```bash
+pip install dm_control mujoco==3.0.1
