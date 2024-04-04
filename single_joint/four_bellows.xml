@@ -1,0 +1,105 @@
+<mujoco model="j0">
+  <default>
+    <default class="/">
+      <default class="small_joint">
+        <joint group="3" type="hinge" pos="0 0 0.022222222222222223" limited="true" stiffness="135" range="-22 22" damping="10"/>
+        <geom type="cylinder" size="0.080000000000000002 0.0088888888888888889" rgba="0.47058823529411764 0.47058823529411764 0.47058823529411764 0.69999999999999996"/>
+      </default>
+    </default>
+  </default>
+  <asset>
+    <texture name="texplane" type="2d" builtin="checker" mark="cross" width="512" height="512"/>
+    <material name="matplane" class="/" texture="texplane" texuniform="true"/>
+  </asset>
+  <worldbody>
+    <geom name="world" class="/" type="plane" condim="1" size="0 0 1" material="matplane"/>
+    <body name="j0_body0" childclass="small_joint" pos="0 0 0.011111111111111112" euler="0 0 0">
+      <geom name="j0_geom0" group="1" rgba="0.29999999999999999 0.29999999999999999 0.29999999999999999 1"/>
+      <inertial pos="0 0 0" mass="0.20000000000000001" diaginertia="0.00032823045267489718 0.00032823045267489718 0.00064000000000000005"/>
+      <site name="j0_site0_chamber2" group="2" rgba="0 1 0 1" pos="0.044444444444444446 0 0"/>
+      <site name="j0_site0_chamber3" group="3" rgba="0 1 0 1" pos="-0.044444444444444446 0 0"/>
+      <site name="j0_site0_chamber0" group="0" rgba="0 1 0 1" pos="0 0.044444444444444446 0"/>
+      <site name="j0_site0_chamber1" group="1" rgba="0 1 0 1" pos="0 -0.044444444444444446 0"/>
+      <body name="j0_body1" pos="0 0 0.044444444444444446">
+        <geom name="j0_geom1" group="1" rgba="0.29999999999999999 0.29999999999999999 0.29999999999999999 1"/>
+        <inertial pos="0 0 0" mass="0.20000000000000001" diaginertia="0.00032823045267489718 0.00032823045267489718 0.00064000000000000005"/>
+        <site name="j0_site1_chamber2" group="2" rgba="0 1 0 1" pos="0.044444444444444446 0 0"/>
+        <site name="j0_site1_chamber3" group="3" rgba="0 1 0 1" pos="-0.044444444444444446 0 0"/>
+        <site name="j0_site1_chamber0" group="0" rgba="0 1 0 1" pos="0 0.044444444444444446 0"/>
+        <site name="j0_site1_chamber1" group="1" rgba="0 1 0 1" pos="0 -0.044444444444444446 0"/>
+        <joint name="j0_jointX0" pos="0 0 -0.022222222222222223" axis="1 0 0"/>
+        <joint name="j0_jointY0" pos="0 0 -0.022222222222222223" axis="0 1 0"/>
+        <site name="j0_site1_rot" group="4" rgba="1 0 0 1" pos="0 0 -0.022222222222222223"/>
+        <body name="j0_body2" pos="0 0 0.044444444444444446">
+          <geom name="j0_geom2" group="1" rgba="0.29999999999999999 0.29999999999999999 0.29999999999999999 1"/>
+          <inertial pos="0 0 0" mass="0.20000000000000001" diaginertia="0.00032823045267489718 0.00032823045267489718 0.00064000000000000005"/>
+          <site name="j0_site2_chamber2" group="2" rgba="0 1 0 1" pos="0.044444444444444446 0 0"/>
+          <site name="j0_site2_chamber3" group="3" rgba="0 1 0 1" pos="-0.044444444444444446 0 0"/>
+          <site name="j0_site2_chamber0" group="0" rgba="0 1 0 1" pos="0 0.044444444444444446 0"/>
+          <site name="j0_site2_chamber1" group="1" rgba="0 1 0 1" pos="0 -0.044444444444444446 0"/>
+          <joint name="j0_jointX1" pos="0 0 -0.022222222222222223" axis="1 0 0"/>
+          <joint name="j0_jointY1" pos="0 0 -0.022222222222222223" axis="0 1 0"/>
+          <site name="j0_site2_rot" group="4" rgba="1 0 0 1" pos="0 0 -0.022222222222222223"/>
+          <body name="j0_body3" pos="0 0 0.044444444444444446">
+            <geom name="j0_geom3" group="1" rgba="0.29999999999999999 0.29999999999999999 0.29999999999999999 1"/>
+            <inertial pos="0 0 0" mass="0.20000000000000001" diaginertia="0.00032823045267489718 0.00032823045267489718 0.00064000000000000005"/>
+            <site name="j0_site3_chamber2" group="2" rgba="0 1 0 1" pos="0.044444444444444446 0 0"/>
+            <site name="j0_site3_chamber3" group="3" rgba="0 1 0 1" pos="-0.044444444444444446 0 0"/>
+            <site name="j0_site3_chamber0" group="0" rgba="0 1 0 1" pos="0 0.044444444444444446 0"/>
+            <site name="j0_site3_chamber1" group="1" rgba="0 1 0 1" pos="0 -0.044444444444444446 0"/>
+            <joint name="j0_jointX2" pos="0 0 -0.022222222222222223" axis="1 0 0"/>
+            <joint name="j0_jointY2" pos="0 0 -0.022222222222222223" axis="0 1 0"/>
+            <site name="j0_site3_rot" group="4" rgba="1 0 0 1" pos="0 0 -0.022222222222222223"/>
+            <body name="j0_body4" pos="0 0 0.044444444444444446">
+              <geom name="j0_geom4" group="1" rgba="0.29999999999999999 0.29999999999999999 0.29999999999999999 1"/>
+              <inertial pos="0 0 0" mass="0.20000000000000001" diaginertia="0.00032823045267489718 0.00032823045267489718 0.00064000000000000005"/>
+              <site name="j0_site4_chamber2" group="2" rgba="0 1 0 1" pos="0.044444444444444446 0 0"/>
+              <site name="j0_site4_chamber3" group="3" rgba="0 1 0 1" pos="-0.044444444444444446 0 0"/>
+              <site name="j0_site4_chamber0" group="0" rgba="0 1 0 1" pos="0 0.044444444444444446 0"/>
+              <site name="j0_site4_chamber1" group="1" rgba="0 1 0 1" pos="0 -0.044444444444444446 0"/>
+              <joint name="j0_jointX3" pos="0 0 -0.022222222222222223" axis="1 0 0"/>
+              <joint name="j0_jointY3" pos="0 0 -0.022222222222222223" axis="0 1 0"/>
+              <site name="j0_site4_rot" group="4" rgba="1 0 0 1" pos="0 0 -0.022222222222222223"/>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+  <tendon>
+    <spatial name="j0_tendon0" class="/" width="0.029999999999999999" rgba="0.59999999999999998 0.59999999999999998 0.59999999999999998 1">
+      <site site="j0_site0_chamber0"/>
+      <site site="j0_site1_chamber0"/>
+      <site site="j0_site2_chamber0"/>
+      <site site="j0_site3_chamber0"/>
+      <site site="j0_site4_chamber0"/>
+    </spatial>
+    <spatial name="j0_tendon1" class="/" width="0.029999999999999999" rgba="0.59999999999999998 0.59999999999999998 0.59999999999999998 1">
+      <site site="j0_site0_chamber1"/>
+      <site site="j0_site1_chamber1"/>
+      <site site="j0_site2_chamber1"/>
+      <site site="j0_site3_chamber1"/>
+      <site site="j0_site4_chamber1"/>
+    </spatial>
+    <spatial name="j0_tendon2" class="/" width="0.029999999999999999" rgba="0.59999999999999998 0.59999999999999998 0.59999999999999998 1">
+      <site site="j0_site0_chamber2"/>
+      <site site="j0_site1_chamber2"/>
+      <site site="j0_site2_chamber2"/>
+      <site site="j0_site3_chamber2"/>
+      <site site="j0_site4_chamber2"/>
+    </spatial>
+    <spatial name="j0_tendon3" class="/" width="0.029999999999999999" rgba="0.59999999999999998 0.59999999999999998 0.59999999999999998 1">
+      <site site="j0_site0_chamber3"/>
+      <site site="j0_site1_chamber3"/>
+      <site site="j0_site2_chamber3"/>
+      <site site="j0_site3_chamber3"/>
+      <site site="j0_site4_chamber3"/>
+    </spatial>
+  </tendon>
+  <actuator>
+    <cylinder name="j0_p0" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="j0_tendon0" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="j0_p1" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="j0_tendon1" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="j0_p2" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="j0_tendon2" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="j0_p3" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="j0_tendon3" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+  </actuator>
+</mujoco>

@@ -7,14 +7,15 @@ import numpy as np
 import mujoco
 import mujoco.viewer as viewer
 from regex import F
-from dm_control.mjcf.export_with_assets import export_with_assets
-from baloo_mj_api import set_joint_angles, get_joint_angles
+from warnings import warn
+# from dm_control.mjcf.export_with_assets import export_with_assets
+# from baloo_mj_api import set_joint_angles, get_joint_angles
 
 
 class Baloo:
     def __init__(self, name, num_disks, arm_angles=[]) -> None:
 
-        print(
+        warn(
             "Remember to build all plugins with current version of mujoco before running this script."
         )
         # set default options and visual things.
@@ -35,11 +36,11 @@ class Baloo:
         self.setSimSize()
         self.setVisual()
         self.addAssets()
-        self.setContacts()
+        # self.setContacts()
 
         # some joint measurements common (hopefully) among all joints
         self.joint_height = 0.2  # length between endplates (m)
-        self.num_joints = 3
+        self.num_joints = 1
         self.num_disks = num_disks
         num_spaces = self.num_disks - 1
         self.disk_height = self.joint_height / (self.num_disks + num_spaces)
@@ -74,58 +75,138 @@ class Baloo:
             xyaxes=[-0.882, -0.472, 0.000, 0.238, -0.446, 0.863],
         )
 
-        # TODO: add createObject to be manipulated here.
-        # pos = (-.5, .5)m, box of .5 m side,
-        mass = 5
-        width = 0.5 / 2
-        depth = 0.5 / 2
-        height = 1.5 / 2
-        box = self.mjcf_model.worldbody.add("body",
-                                            name="box",
-                                            pos=[0, 0.5, height / 2],
-                                            euler=[0, 0, 0])
+        # # TODO: add createObject to be manipulated here.
+        # # pos = (-.5, .5)m, box of .5 m side,
+        # mass = 5
+        # width = 0.5 / 2
+        # depth = 0.5 / 2
+        # height = 1.5 / 2
+        # box = self.mjcf_model.worldbody.add("body",
+        #                                     name="box",
+        #                                     pos=[0, 0.5, height / 2],
+        #                                     euler=[0, 0, 0])
 
-        box.add(
-            "geom",
-            name="box",
-            pos=[0, 0, 0],
-            type="box",
-            size=[width / 2, depth / 2, height / 2],
-            rgba=self.ORANGE,
-        )
+        # box.add(
+        #     "geom",
+        #     name="box",
+        #     pos=[0, 0, 0],
+        #     type="box",
+        #     size=[width / 2, depth / 2, height / 2],
+        #     rgba=self.ORANGE,
+        # )
 
-        box.add(
-            "inertial",
-            pos=[0, 0, 0],
-            diaginertia=[
-                mass * (width**2 + depth**2) / 12,
-                mass * (depth**2 + height**2) / 12,
-                mass * (width**2 + height**2) / 12,
-            ],
-            mass=mass,
-        )
+        # box.add(
+        #     "inertial",
+        #     pos=[0, 0, 0],
+        #     diaginertia=[
+        #         mass * (width**2 + depth**2) / 12,
+        #         mass * (depth**2 + height**2) / 12,
+        #         mass * (width**2 + height**2) / 12,
+        #     ],
+        #     mass=mass,
+        # )
 
-        box.add("freejoint")
+        # box.add("freejoint")
 
-        linear_actuator = self.createBase(self.mjcf_model.worldbody)
-        chest = self.createChest(linear_actuator)
-        right_shoulder, left_shoulder = self.createShoulders(chest)
+        # linear_actuator = self.createBase(self.mjcf_model.worldbody)
+        # chest = self.createChest(linear_actuator)
+        # right_shoulder, left_shoulder = self.createShoulders(chest)
 
-        right_last_disk = self.createLargeJoint(right_shoulder, "right")
-        right_link0 = self.addLink0(right_last_disk, "right")
-        last_disk = self.createMediumJoint(right_link0, "right")
-        right_link1 = self.addLink1(last_disk, "right")
-        last_disk = self.createSmallJoint(right_link1, "right")
-        self.createActuators("right")
+        # right_last_disk = self.createLargeJoint(right_shoulder, "right")
+        # right_link0 = self.addLink0(right_last_disk, "right")
+        # last_disk = self.createMediumJoint(right_link0, "right")
+        # right_link1 = self.addLink1(last_disk, "right")
+        last_disk = self.createSmallJoint(self.mjcf_model.worldbody)
 
-        left_last_disk = self.createLargeJoint(left_shoulder, "left")
-        left_link0 = self.addLink0(left_last_disk, "left")
-        last_disk = self.createMediumJoint(left_link0, "left")
-        left_link1 = self.addLink1(last_disk, "left")
-        last_disk = self.createSmallJoint(left_link1, "left")
-        self.createActuators("left")
+        #create spatial tendon
+        side_tendon = self.mjcf_model.tendon.add("spatial",
+                                                 name=f"xtest",
+                                                 width=0.03)
+        side_tendon.add("site", site="xsite0")
+        side_tendon.add("site", site="xsite1")
+        side_tendon.add("site", site="xsite2")
+        side_tendon.add("site", site="xsite3")
+        side_tendon.add("site", site="xsite4")
 
-        self.createSensors()
+        side_tendon = self.mjcf_model.tendon.add("spatial",
+                                                 name=f"-xtest",
+                                                 width=0.03)
+        side_tendon.add("site", site="-xsite0")
+        side_tendon.add("site", site="-xsite1")
+        side_tendon.add("site", site="-xsite2")
+        side_tendon.add("site", site="-xsite3")
+        side_tendon.add("site", site="-xsite4")
+
+        side_tendon = self.mjcf_model.tendon.add("spatial",
+                                                 name=f"ytest",
+                                                 width=0.03)
+        side_tendon.add("site", site="ysite0")
+        side_tendon.add("site", site="ysite1")
+        side_tendon.add("site", site="ysite2")
+        side_tendon.add("site", site="ysite3")
+        side_tendon.add("site", site="ysite4")
+
+        side_tendon = self.mjcf_model.tendon.add("spatial",
+                                                 name=f"-ytest",
+                                                 width=0.03)
+        side_tendon.add("site", site="-ysite0")
+        side_tendon.add("site", site="-ysite1")
+        side_tendon.add("site", site="-ysite2")
+        side_tendon.add("site", site="-ysite3")
+        side_tendon.add("site", site="-ysite4")
+
+        #add actuator to side_tendon
+        self.mjcf_model.actuator.add("cylinder",
+                                     name="p0",
+                                     tendon="xtest",
+                                     diameter=0.05,
+                                     ctrllimited=True,
+                                     ctrlrange=[0, 1000],
+                                     gear=[0.5 * 1000],
+                                     timeconst=0.2)
+
+        #add actuator to side_tendon
+        self.mjcf_model.actuator.add("cylinder",
+                                     name="p1",
+                                     tendon="-xtest",
+                                     diameter=0.05,
+                                     ctrllimited=True,
+                                     ctrlrange=[0, 1000],
+                                     gear=[0.5 * 1000],
+                                     timeconst=0.2)
+
+        self.mjcf_model.actuator.add("cylinder",
+                                     name="p2",
+                                     tendon="ytest",
+                                     diameter=0.05,
+                                     ctrllimited=True,
+                                     ctrlrange=[0, 1000],
+                                     gear=[0.5 * 1000],
+                                     timeconst=0.2)
+
+        self.mjcf_model.actuator.add("cylinder",
+                                     name="p3",
+                                     tendon="-ytest",
+                                     diameter=0.05,
+                                     ctrllimited=True,
+                                     ctrlrange=[0, 1000],
+                                     gear=[0.5 * 1000],
+                                     timeconst=0.2)
+
+        #NOTE: doesn't look like you can put one actuator on multiple tendons. So for the 8 bellows, I'll need to create 4 big actuators, but only display the 8 for show.
+
+        # side_tendon.add("site", site="site5")
+
+        # self.createActuators("right")
+
+        # left_last_disk = self.createLargeJoint(left_shoulder, "left")
+        # left_link0 = self.addLink0(left_last_disk, "left")
+        # last_disk = self.createMediumJoint(left_link0, "left")
+        # left_link1 = self.addLink1(last_disk, "left")
+        # last_disk = self.createSmallJoint(left_link1, "left")
+        # self.createActuators("left")
+
+        # self.createSensors()
 
     def setCustomData(self):
         self.mjcf_model.custom.add(
@@ -166,12 +247,12 @@ class Baloo:
         # I use fixed tendons to be able to actuate all the little disk joints together.
         time_consts = [0.2, 0.5, 0.8]  # based on size of valve mostly
         gears = [
-            0.1 * 1000,
+            0.05 * 1000,
             0.05 * 1000,
             0.05 * 1000,
         ]  # distance from center of joint to center of bellows, moment arms
         diameters = [
-            0.05 * np.sqrt(2),
+            0.05,
             0.05,
             0.05,
         ]  # sqrt(2) doubles area for big joint
@@ -181,16 +262,16 @@ class Baloo:
 
         for j in range(self.num_joints):
             # create both x and y tendons
-            xtendon = self.mjcf_model.tendon.add("fixed", name=f"{side}_x{j}")
-            ytendon = self.mjcf_model.tendon.add("fixed", name=f"{side}_y{j}")
+            xtendon = self.mjcf_model.tendon.add("fixed", name=f"x{j}")
+            ytendon = self.mjcf_model.tendon.add("fixed", name=f"y{j}")
 
             # add actuators along tendons
             # ====== X AXIS =========
             # bellows that creates positive rotation
             self.mjcf_model.actuator.add(
                 "cylinder",
-                name=f"{side}_j{j}_p0",
-                tendon=f"{side}_x{j}",
+                name=f"j{j}_p0",
+                tendon=f"x{j}",
                 diameter=diameters[j],  # m, bellows are 50 mm diameter
                 ctrllimited=True,
                 ctrlrange=[0, maxP],  # pascals
@@ -200,8 +281,8 @@ class Baloo:
             # bellows that creates negative rotation, switched using gear
             self.mjcf_model.actuator.add(
                 "cylinder",
-                name=f"{side}_j{j}_p1",
-                tendon=f"{side}_x{j}",
+                name=f"j{j}_p1",
+                tendon=f"x{j}",
                 diameter=diameters[j],  # m, bellows are 50 mm diameter
                 ctrllimited=True,
                 ctrlrange=[0, maxP],  # pascals
@@ -212,8 +293,8 @@ class Baloo:
             # ========= Y AXIS ===========
             self.mjcf_model.actuator.add(
                 "cylinder",
-                name=f"{side}_j{j}_p2",
-                tendon=f"{side}_y{j}",
+                name=f"j{j}_p2",
+                tendon=f"y{j}",
                 diameter=diameters[j],  # m, bellows are 50 mm diameter
                 ctrllimited=True,
                 ctrlrange=[0, maxP],  # pascals
@@ -223,8 +304,8 @@ class Baloo:
             # bellows that creates negative rotation, switched using gear
             self.mjcf_model.actuator.add(
                 "cylinder",
-                name=f"{side}_j{j}_p3",
-                tendon=f"{side}_y{j}",
+                name=f"j{j}_p3",
+                tendon=f"y{j}",
                 diameter=diameters[j],  # m, bellows are 50 mm diameter
                 ctrllimited=True,
                 ctrlrange=[0, maxP],  # pascals
@@ -235,8 +316,8 @@ class Baloo:
             # tendon length is the sum of joint angles between each disk. (i.e. q_lumped)
             # num_disks - 1 b.c. there are num_disks - 1 spaces between disks
             for n in range(0, self.num_disks - 1):
-                xtendon.add("joint", joint=f"{side}_{j}_Jx_{n}", coef=1)
-                ytendon.add("joint", joint=f"{side}_{j}_Jy_{n}", coef=1)
+                xtendon.add("joint", joint=f"{j}_Jx_{n}", coef=1)
+                ytendon.add("joint", joint=f"{j}_Jy_{n}", coef=1)
 
     def createSensors(self):
         # the values for these sensors are in mjData/sensordata, which is stored as an array of nsensordata x 1
@@ -533,7 +614,7 @@ class Baloo:
 
         return body
 
-    def createSmallJoint(self, body, side):
+    def createSmallJoint(self, body):
         # break joint specs in to disk specs
         # total joint -> [disk,space,disk,....,space,disk]
         joint_mass = 1.326
@@ -547,42 +628,110 @@ class Baloo:
         Iz = (disk_mass * joint_radius**2) / 2
 
         # create first body, whose frame is offset
-        joint_num = 2
+        joint_num = 0
         first_disk = body.add(
             "body",
-            name=f"{side}_{joint_num}_B0",
+            name=f"{joint_num}_B0",
             childclass="small_joint",
-            pos=[0, 0, -(0.08 + disk_half_height)],  # from pneubotics
-            euler=[0, 0, 45],
+            pos=[0, 0, (disk_half_height)],  # from pneubotics
+            euler=[0, 0, 0],
         )
         first_disk.add(
             "geom",
-            name=f"{side}_{joint_num}_G0",
+            name=f"{joint_num}_G0",
         )
         first_disk.add("inertial",
                        mass=disk_mass,
                        diaginertia=[Ixy, Ixy, Iz],
                        pos=[0, 0, 0])
 
+        first_disk.add(
+            "site",
+            name=f"xsite{0}",
+            pos=[joint_radius / 2, 0, 0],
+            rgba=[0, 1, 0, 1],
+        )
+
+        first_disk.add(
+            "site",
+            name=f"-xsite{0}",
+            pos=[-joint_radius / 2, 0, 0],
+            rgba=[0, 1, 0, 1],
+        )
+
+        first_disk.add(
+            "site",
+            name=f"ysite{0}",
+            pos=[0, joint_radius / 2, 0],
+            rgba=[0, 1, 0, 1],
+        )
+
+        first_disk.add(
+            "site",
+            name=f"-ysite{0}",
+            pos=[0, -joint_radius / 2, 0],
+            rgba=[0, 1, 0, 1],
+        )
+
         # for self.num_disks (+1 bc I already made first disk above): create body, add inertial, add geom
         prev_body = first_disk
         for i in range(1, self.num_disks):
             body = prev_body.add(
                 "body",
-                name=f"{side}_{joint_num}_B{i}",
-                pos=[0, 0, -(2 * disk_height)],
+                name=f"{joint_num}_B{i}",
+                pos=[0, 0, (2 * disk_height)],
             )
             body.add(
                 "geom",
-                name=f"{side}_{joint_num}_G{i}",
+                name=f"{joint_num}_G{i}",
             )
             body.add("inertial",
                      mass=disk_mass,
                      diaginertia=[Ixy, Ixy, Iz],
                      pos=[0, 0, 0])
-            body.add("joint", name=f"{side}_{joint_num}_Jx_{i-1}", axis=self.X)
-            body.add("joint", name=f"{side}_{joint_num}_Jy_{i-1}", axis=self.Y)
+            body.add("joint",
+                     name=f"{joint_num}_Jx_{i-1}",
+                     axis=self.X,
+                     pos=[0, 0, -disk_height])
+            body.add("joint",
+                     name=f"{joint_num}_Jy_{i-1}",
+                     axis=self.Y,
+                     pos=[0, 0, -disk_height])
             prev_body = body
+
+            body.add(
+                "site",
+                name=f"rotation_center{i}",
+                pos=[0, 0, -disk_height],
+                rgba=[1, 0, 0, 1],
+            )
+
+            body.add(
+                "site",
+                name=f"xsite{i}",
+                pos=[joint_radius / 2, 0, 0],
+                rgba=[0, 1, 0, 1],
+            )
+
+            body.add(
+                "site",
+                name=f"-xsite{i}",
+                pos=[-joint_radius / 2, 0, 0],
+                rgba=[0, 1, 0, 1],
+            )
+            body.add(
+                "site",
+                name=f"ysite{i}",
+                pos=[0, joint_radius / 2, 0],
+                rgba=[0, 1, 0, 1],
+            )
+
+            body.add(
+                "site",
+                name=f"-ysite{i}",
+                pos=[0, -joint_radius / 2, 0],
+                rgba=[0, 1, 0, 1],
+            )
 
         return body
 
@@ -590,126 +739,126 @@ class Baloo:
         # create linear actuator and torso from which to hang arms
         base = body.add("body", name="base", pos=[0, 0, 0], euler=[0, 0, 0])
 
-        base.add(
-            "geom",
-            type="mesh",
-            mesh="LeftBaseMesh",
-            material="vention_blue",
-        )
+        # base.add(
+        #     "geom",
+        #     type="mesh",
+        #     mesh="LeftBaseMesh",
+        #     material="vention_blue",
+        # )
 
-        base.add(
-            "geom",
-            type="mesh",
-            mesh="RightBaseMesh",
-            material="vention_blue",
-        )
+        # base.add(
+        #     "geom",
+        #     type="mesh",
+        #     mesh="RightBaseMesh",
+        #     material="vention_blue",
+        # )
 
-        base.add(
-            "geom",
-            type="mesh",
-            mesh="BaseFrameMesh",
-            material="vention_blue",
-        )
+        # base.add(
+        #     "geom",
+        #     type="mesh",
+        #     mesh="BaseFrameMesh",
+        #     material="vention_blue",
+        # )
 
-        base.add(
-            "geom",
-            type="mesh",
-            mesh="LinearActuatorMesh",
-            material="vention_blue",
-        )
+        # base.add(
+        #     "geom",
+        #     type="mesh",
+        #     mesh="LinearActuatorMesh",
+        #     material="vention_blue",
+        # )
 
-        base.add(
-            "geom",
-            type="mesh",
-            mesh="PneumaticInletMesh",
-            material="silver",
-        )
+        # base.add(
+        #     "geom",
+        #     type="mesh",
+        #     mesh="PneumaticInletMesh",
+        #     material="silver",
+        # )
 
-        base.add(
-            "geom",
-            type="mesh",
-            mesh="PowerButtonMesh",
-            material="red",
-        )
+        # base.add(
+        #     "geom",
+        #     type="mesh",
+        #     mesh="PowerButtonMesh",
+        #     material="red",
+        # )
 
-        base.add(
-            "geom",
-            type="mesh",
-            mesh="ControlBoxMesh",
-            material="matte_black",
-        )
-        base.add(
-            "geom",
-            type="mesh",
-            mesh="EstopPlugMesh",
-            material="green",
-        )
-        base.add(
-            "geom",
-            type="mesh",
-            mesh="EthernetJackMesh",
-            material="silver",
-        )
-        base.add(
-            "geom",
-            type="mesh",
-            mesh="LCDScreenMesh",
-            material="lcd_blue",
-        )
-        base.add(
-            "geom",
-            type="mesh",
-            mesh="LeftBackWheelFootMesh",
-            material="matte_black",
-        )
-        base.add(
-            "geom",
-            type="mesh",
-            mesh="LeftFrontWheelFootMesh",
-            material="matte_black",
-        )
-        base.add(
-            "geom",
-            type="mesh",
-            mesh="RightBackWheelFootMesh",
-            material="matte_black",
-        )
-        base.add(
-            "geom",
-            type="mesh",
-            mesh="RightFrontWheelFootMesh",
-            material="matte_black",
-        )
-        base.add(
-            "geom",
-            type="mesh",
-            mesh="LeftBackWheelMesh",
-            material="cream",
-        )
-        base.add(
-            "geom",
-            type="mesh",
-            mesh="LeftFrontWheelMesh",
-            material="cream",
-        )
-        base.add(
-            "geom",
-            type="mesh",
-            mesh="RightBackWheelMesh",
-            material="cream",
-        )
-        base.add(
-            "geom",
-            type="mesh",
-            mesh="RightFrontWheelMesh",
-            material="cream",
-        )
-        base.add(
-            "geom",
-            type="mesh",
-            mesh="StepperMesh",
-            material="matte_black",
-        )
+        # base.add(
+        #     "geom",
+        #     type="mesh",
+        #     mesh="ControlBoxMesh",
+        #     material="matte_black",
+        # )
+        # base.add(
+        #     "geom",
+        #     type="mesh",
+        #     mesh="EstopPlugMesh",
+        #     material="green",
+        # )
+        # base.add(
+        #     "geom",
+        #     type="mesh",
+        #     mesh="EthernetJackMesh",
+        #     material="silver",
+        # )
+        # base.add(
+        #     "geom",
+        #     type="mesh",
+        #     mesh="LCDScreenMesh",
+        #     material="lcd_blue",
+        # )
+        # base.add(
+        #     "geom",
+        #     type="mesh",
+        #     mesh="LeftBackWheelFootMesh",
+        #     material="matte_black",
+        # )
+        # base.add(
+        #     "geom",
+        #     type="mesh",
+        #     mesh="LeftFrontWheelFootMesh",
+        #     material="matte_black",
+        # )
+        # base.add(
+        #     "geom",
+        #     type="mesh",
+        #     mesh="RightBackWheelFootMesh",
+        #     material="matte_black",
+        # )
+        # base.add(
+        #     "geom",
+        #     type="mesh",
+        #     mesh="RightFrontWheelFootMesh",
+        #     material="matte_black",
+        # )
+        # base.add(
+        #     "geom",
+        #     type="mesh",
+        #     mesh="LeftBackWheelMesh",
+        #     material="cream",
+        # )
+        # base.add(
+        #     "geom",
+        #     type="mesh",
+        #     mesh="LeftFrontWheelMesh",
+        #     material="cream",
+        # )
+        # base.add(
+        #     "geom",
+        #     type="mesh",
+        #     mesh="RightBackWheelMesh",
+        #     material="cream",
+        # )
+        # base.add(
+        #     "geom",
+        #     type="mesh",
+        #     mesh="RightFrontWheelMesh",
+        #     material="cream",
+        # )
+        # base.add(
+        #     "geom",
+        #     type="mesh",
+        #     mesh="StepperMesh",
+        #     material="matte_black",
+        # )
         return base
 
     def createChest(self, linear_actuator):
@@ -1089,7 +1238,7 @@ class Baloo:
         )
 
 
-if __name__ == "__main__":    
+if __name__ == "__main__":
     np.set_printoptions(precision=3, suppress=True)
     torso = Baloo(
         "baloo_torso",
@@ -1141,7 +1290,6 @@ if __name__ == "__main__":
 
         # set_joint_angles(model, data, 'left', 0, np.array([.78, .78]))
 
-        print(get_joint_angles(model, data, 'left'))
         # Close the viewer automatically after 30 wall-seconds.
         start = time.time()
 
@@ -1159,8 +1307,6 @@ if __name__ == "__main__":
             # Pick up changes to the physics state, apply perturbations, update options from GUI.
             viewer.sync()
 
-            angles = get_joint_angles(model, data, 'left')
-
             # if detect_box_touch(model, data):
             # print("box touched at time: ", data.time)
             # get_contact_force(model, data)
@@ -1170,8 +1316,7 @@ if __name__ == "__main__":
             # print(f"contact forces on box\n: {contact_forces}")
 
             # Rudimentary time keeping, will drift relative to wall clock.
-            # print(time.time() - step_start)
-            print(angles[-2:])
+            print(time.time() - step_start)
             time_until_next_step = model.opt.timestep - (time.time() -
                                                          step_start)
             if time_until_next_step > 0:
