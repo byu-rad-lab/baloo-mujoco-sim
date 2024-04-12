@@ -208,10 +208,54 @@ class Baloo:
 
         # self.createSensors()
 
+        self.addPlugins()
+        self.addViveTrackers()
+
+    def addPlugins(self):
+        plugin = self.mjcf_model.extension.add(
+            "plugin",
+            plugin="mujoco.sensor.joint_angle_estimator",
+            # instance="joint_angle_estimator",
+        )
+
+        plugin.add("instance", name="test")
+
+    def addViveTrackers(self):
+        # add framequat to base and tip ref to global frame
+        self.mjcf_model.sensor.add(
+            "framequat",
+            name="0_B0_framequat",
+            objtype="body",
+            objname="0_B0",
+        )
+
+        self.mjcf_model.sensor.add(
+            "framequat",
+            name=f"0_B{self.num_disks-1}_framequat",
+            objtype="body",
+            objname=f"0_B{self.num_disks-1}",
+        )
+
+        #add frameangvel to tip, ref to base frame
+        self.mjcf_model.sensor.add(
+            "frameangvel",
+            name=f"0_B{self.num_disks-1}_frameangvel",
+            objtype="body",
+            objname=f"0_B{self.num_disks-1}",
+            reftype="body",
+            refname="0_B0",
+        )
+
+        self.mjcf_model.sensor.add(
+            "plugin",
+            plugin="mujoco.sensor.joint_angle_estimator",
+            instance="test",
+            name='vive_tracker')
+
     def setCustomData(self):
         self.mjcf_model.custom.add(
             "numeric",
-            name="num_joint_disks",
+            name="num_disks",
             size=1,
             data=[self.num_disks],
         )
@@ -1262,7 +1306,7 @@ if __name__ == "__main__":
     )
 
     # to actually write xml file. There's a weird bug in the stl that you need to fix.
-    f = open("baloo.xml", "w")
+    f = open("single_joint.xml", "w")
     f.write(xml)
     f.close()
 
@@ -1274,25 +1318,8 @@ if __name__ == "__main__":
 
     import mujoco.viewer
 
-    #! this python loop can run at about .003 s/step period, so if the model has a smaller time step, you won't get real time visualization.
-    #! I think this is a python/viz limitation because when I run the same model at .001s, its still 5x real time.
-
     with mujoco.viewer.launch_passive(model, data) as viewer:
-        # with viewer.lock():
-        # disable shadows and reflectionas to boost frame rate
-        # viewer.scn.flags[mujoco.mjtRndFlag.mjRND_SHADOW] = False
-        # viewer.scn.flags[mujoco.mjtRndFlag.mjRND_REFLECTION] = False
-        #
-        # set transparent bodies, and contact points for better visualization
-        # viewer.opt.flags[mujoco.mjtVisFlag.mjVIS_TRANSPARENT] = True
-        # viewer.opt.flags[mujoco.mjtVisFlag.mjVIS_CONTACTPOINT] = True
-        # viewer.opt.label = mujoco.mjtLabel.mjLABEL_CONTACTPOINT
-
-        # set_joint_angles(model, data, 'left', 0, np.array([.78, .78]))
-
-        # Close the viewer automatically after 30 wall-seconds.
         start = time.time()
-
         while viewer.is_running():
             step_start = time.time()
 
@@ -1300,20 +1327,18 @@ if __name__ == "__main__":
             # a policy and applies a control signal before stepping the physics.
             mujoco.mj_step(model, data)
 
-            # Example modification of a viewer option: toggle contact points every two seconds.
-            # with viewer.lock():
-            #     viewer.opt.flags[mujoco.mjtVisFlag.mjVIS_CONTACTPOINT] = int(data.time % 2)
+            # print(data.sensor('vive_tracker').data)
+            print(f"First Disk Quat: {data.sensor('0_B0_framequat')}")
+            print(f"Last Disk Quat: {data.sensor('0_B4_framequat')}")
+
+            #conjugate and multiply
+            # R = mujoco.mju_quat2Mat(data.sensor('0_B4_framequat').data)
+
+            print(f"Last Disk Vel: {data.sensor('0_B4_frameangvel')}")
+            print(f"Vive Tracker: {data.sensor('vive_tracker').data}")
 
             # Pick up changes to the physics state, apply perturbations, update options from GUI.
             viewer.sync()
-
-            # if detect_box_touch(model, data):
-            # print("box touched at time: ", data.time)
-            # get_contact_force(model, data)
-
-            # contact_forces = get_contact_forces_on_body(model, data, "box")
-            # print(f"net force on box: {contact_forces.sum(axis=0)}")
-            # print(f"contact forces on box\n: {contact_forces}")
 
             # Rudimentary time keeping, will drift relative to wall clock.
             print(time.time() - step_start)

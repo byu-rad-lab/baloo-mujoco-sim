@@ -12,7 +12,7 @@ from baloo_mj_api import set_joint_angles, get_joint_angles
 
 
 class Baloo:
-    def __init__(self, name, num_disks, arm_angles=[]) -> None:
+    def __init__(self, name, num_disks) -> None:
 
         print(
             "Remember to build all plugins with current version of mujoco before running this script."
@@ -65,7 +65,6 @@ class Baloo:
             pos=[0, 0, 4],
             specular=[0.2, 0.2, 0.2],
         )
-
         # add fixed camera view
         self.mjcf_model.worldbody.add(
             "camera",
@@ -74,7 +73,28 @@ class Baloo:
             xyaxes=[-0.882, -0.472, 0.000, 0.238, -0.446, 0.863],
         )
 
-        # TODO: add createObject to be manipulated here.
+        self.createObject()
+        linear_actuator = self.createBase(self.mjcf_model.worldbody)
+        chest = self.createChest(linear_actuator)
+        right_shoulder, left_shoulder = self.createShoulders(chest)
+
+        right_last_disk = self.createLargeJoint(right_shoulder, "right")
+        right_link0 = self.addLink0(right_last_disk, "right")
+        last_disk = self.createMediumJoint(right_link0, "right")
+        right_link1 = self.addLink1(last_disk, "right")
+        last_disk = self.createSmallJoint(right_link1, "right")
+        self.createActuators("right")
+
+        left_last_disk = self.createLargeJoint(left_shoulder, "left")
+        left_link0 = self.addLink0(left_last_disk, "left")
+        last_disk = self.createMediumJoint(left_link0, "left")
+        left_link1 = self.addLink1(last_disk, "left")
+        last_disk = self.createSmallJoint(left_link1, "left")
+        self.createActuators("left")
+
+        self.createSensors()
+
+    def createObject(self):
         # pos = (-.5, .5)m, box of .5 m side,
         mass = 5
         width = 0.5 / 2
@@ -106,26 +126,6 @@ class Baloo:
         )
 
         box.add("freejoint")
-
-        linear_actuator = self.createBase(self.mjcf_model.worldbody)
-        chest = self.createChest(linear_actuator)
-        right_shoulder, left_shoulder = self.createShoulders(chest)
-
-        right_last_disk = self.createLargeJoint(right_shoulder, "right")
-        right_link0 = self.addLink0(right_last_disk, "right")
-        last_disk = self.createMediumJoint(right_link0, "right")
-        right_link1 = self.addLink1(last_disk, "right")
-        last_disk = self.createSmallJoint(right_link1, "right")
-        self.createActuators("right")
-
-        left_last_disk = self.createLargeJoint(left_shoulder, "left")
-        left_link0 = self.addLink0(left_last_disk, "left")
-        last_disk = self.createMediumJoint(left_link0, "left")
-        left_link1 = self.addLink1(last_disk, "left")
-        last_disk = self.createSmallJoint(left_link1, "left")
-        self.createActuators("left")
-
-        self.createSensors()
 
     def setCustomData(self):
         self.mjcf_model.custom.add(
@@ -474,6 +474,8 @@ class Baloo:
                      pos=[0, 0, 0])
             body.add("joint", name=f"{side}_{joint_num}_Jx_{i-1}", axis=self.X)
             body.add("joint", name=f"{side}_{joint_num}_Jy_{i-1}", axis=self.Y)
+
+            #TODO ADD SITES AT 4 AXES FOR ACTUATORs
             prev_body = body
 
         return body
@@ -1036,14 +1038,14 @@ class Baloo:
         four_damping = four_lumped_damping * self.num_disks
 
         # create default class for 8 bellows disks. Then I use this as childclass so that all elements in a given body default to these settings, unless overwritten.
-        disk_class = self.mjcf_model.default.add("default",
-                                                 dclass="large_joint")
-        disk_class.geom.set_attributes(
+        large_class = self.mjcf_model.default.add("default",
+                                                  dclass="large_joint")
+        large_class.geom.set_attributes(
             type="cylinder",
             rgba=self.GRAY,
-            size=[joint_radius8, self.disk_half_height * 0.8],
+            size=[joint_radius8, self.disk_half_height],
         )
-        disk_class.joint.set_attributes(
+        large_class.joint.set_attributes(
             type="hinge",
             group=3,
             stiffness=eight_stiffness,
@@ -1054,14 +1056,14 @@ class Baloo:
         )
 
         # create default class for 8 bellows disks. Then I use this as childclass so that all elements in a given body default to these settings, unless overwritten.
-        disk_class = self.mjcf_model.default.add("default",
-                                                 dclass="medium_joint")
-        disk_class.geom.set_attributes(
+        medium_class = self.mjcf_model.default.add("default",
+                                                   dclass="medium_joint")
+        medium_class.geom.set_attributes(
             type="cylinder",
             rgba=self.GRAY,
-            size=[joint_radius4, self.disk_half_height * 0.8],
+            size=[joint_radius4, self.disk_half_height],
         )
-        disk_class.joint.set_attributes(
+        medium_class.joint.set_attributes(
             type="hinge",
             group=3,
             stiffness=four_stiffness,
@@ -1071,14 +1073,14 @@ class Baloo:
             range=[-four_limit, four_limit],
         )
 
-        disk_class = self.mjcf_model.default.add("default",
-                                                 dclass="small_joint")
-        disk_class.geom.set_attributes(
+        small_class = self.mjcf_model.default.add("default",
+                                                  dclass="small_joint")
+        small_class.geom.set_attributes(
             type="cylinder",
             rgba=self.GRAY,
-            size=[joint_radius4, self.disk_half_height * 0.8],
+            size=[joint_radius4, self.disk_half_height],
         )
-        disk_class.joint.set_attributes(
+        small_class.joint.set_attributes(
             type="hinge",
             group=3,
             stiffness=four_stiffness,
@@ -1089,7 +1091,7 @@ class Baloo:
         )
 
 
-if __name__ == "__main__":    
+if __name__ == "__main__":
     np.set_printoptions(precision=3, suppress=True)
     torso = Baloo(
         "baloo_torso",

@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from copy import deepcopy
 import mujoco.viewer
+from baloo_mj_api import get_joint_pressures
 
 # path to robot description file
 XML_PATH = "/home/curtis/curtis_ws/src/curtis_sandbox/src/mujoco/models/baloo/baloo.xml"
@@ -12,7 +13,6 @@ model = mujoco.MjModel.from_xml_path(XML_PATH)
 data = mujoco.MjData(model)
 
 
-from baloo_lib import *
 
 # set printing precision to 2 decimals
 np.set_printoptions(precision=2)
@@ -32,12 +32,6 @@ left_jvel_hist = []
 right_jvel_hist = []
 time_hist = []
 
-def print_tactile_image(image):
-    for row in image:
-        for value in row:
-            print(f"{value:.1f}", end=" ")
-        print()
-    print()
 
 # time length of simulation
 # duration = 5.0  # (seconds)
@@ -58,12 +52,13 @@ with mujoco.viewer.launch_passive(model, data) as viewer:
 
 
         # update tactile image
-        image = get_tactile_image(model, data, "chest", None)
-        print(get_elevator_vel(model, data))
+        # image = get_tactile_image(model, data, "chest", None)
+        # print(get_elevator_vel(model, data))
         # print_tactile_image(image)
 
         # integrate continous dynamics
         mujoco.mj_step(model, data)
+        print(get_joint_pressures(model, data, 'left', 0))
         # save sensor readings, 6 angles, 6 velocties
         # left_jangles_hist.append(get_joint_angles(model, data, "left"))
         # right_jangles_hist.append(get_joint_angles(model, data, "right"))
