@@ -3,20 +3,47 @@ from collections import deque
 
 
 class JointAnglePlotter:
-    def __init__(self):
-        self.fig, self.ax = plt.subplots()
-        self.line, = self.ax.plot([], [], 'r-')
-        self.x = deque(maxlen=100)
-        self.y = deque(maxlen=100)
-        self.ax.set_ylim(-1, 1)
+    def __init__(self, max_len=500):
+        self.fig, self.ax = plt.subplots(2, 1,
+                                         sharex=True)  # Create 2x1 subplots
+        self.u_line, = self.ax[0].plot([], [], 'r-', label='u (rad)')
+        self.v_line, = self.ax[0].plot([], [], 'b-', label='v (rad)')
+        self.udot_line, = self.ax[1].plot([], [], 'r-', label='udot (rad/s)')
+        self.vdot_line, = self.ax[1].plot([], [], 'b-', label='vdot (rad/s)')
+
+        self.x = deque(maxlen=max_len)
+        self.y_u = deque(maxlen=max_len)
+        self.y_v = deque(maxlen=max_len)
+        self.y_udot = deque(maxlen=max_len)
+        self.y_vdot = deque(maxlen=max_len)
+
+        self.ax[0].set_ylim(-1.57, 1.57)
+        self.ax[1].set_ylim(-5, 5)
+        self.ax[1].set_xlabel('Sim Time (s)')
+        for ax in self.ax:
+            ax.grid(True)
+            ax.legend()
 
     def update(self, data):
         self.x.append(data.time)
-        self.y.append(data.sensor('vive_tracker').data[0])
-        self.line.set_ydata(self.y)
-        self.line.set_xdata(self.x)
-        self.ax.relim()
-        self.ax.autoscale_view()
+        self.y_u.append(data.sensor('vive_tracker').data[0])
+        self.y_v.append(data.sensor('vive_tracker').data[1])
+        self.y_udot.append(data.sensor('vive_tracker').data[2])
+        self.y_vdot.append(data.sensor('vive_tracker').data[3])
+
+        self.u_line.set_ydata(self.y_u)
+        self.u_line.set_xdata(self.x)
+        self.v_line.set_ydata(self.y_v)
+        self.v_line.set_xdata(self.x)
+        self.udot_line.set_ydata(self.y_udot)
+        self.udot_line.set_xdata(self.x)
+        self.vdot_line.set_ydata(self.y_vdot)
+        self.vdot_line.set_xdata(self.x)
+
+        for ax in self.ax:
+            ax.relim()
+            ax.autoscale_view()
+
         self.fig.canvas.draw()
         self.fig.canvas.flush_events()
 

@@ -1357,7 +1357,7 @@ if __name__ == "__main__":
             viewer.sync()
             plot_start = time.time()
             plotter.update(data)
-            # print(time.time() - plot_start)
+            print(time.time() - plot_start)
 
             # Rudimentary time keeping, will drift relative to wall clock.
             # print(time.time() - step_start)
@@ -1365,3 +1365,5 @@ if __name__ == "__main__":
                                                          step_start)
             if time_until_next_step > 0:
                 time.sleep(time_until_next_step)
+
+        plotter.close()
