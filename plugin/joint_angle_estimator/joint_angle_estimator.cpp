@@ -174,8 +174,8 @@ namespace mujoco::plugin::sensor {
         // set joint velocities in sensordata
         //this part seems a little silly. I'm coping angvel from sensordata and putting it into another part of sensor data. Necessary?
 
-        mysensordata[2] = 0;
-        mysensordata[3] = 0;
+        mysensordata[2] = wx;
+        mysensordata[3] = wy;
 
         mj_freeStack(d);
     }

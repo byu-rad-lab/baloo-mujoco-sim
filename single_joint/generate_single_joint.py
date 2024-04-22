@@ -1313,13 +1313,21 @@ if __name__ == "__main__":
     # Load model for simulation.
     model = mujoco.MjModel.from_xml_path(f.name)
     data = mujoco.MjData(model)
-
     import time
-
-    import mujoco.viewer
-
+    # context = mujoco.GLContext(1000,1000)
+    # context.make_current()
+    # fig = mujoco.MjvFigure()
+    # viewport = mujoco.MjrRect(0, 0, 800, 800)
+    from plotter import JointAnglePlotter
+    plotter = JointAnglePlotter()
+    plotter.show()
     with mujoco.viewer.launch_passive(model, data) as viewer:
         start = time.time()
+
+        # with viewer.lock():q
+        #     #update gui things
+        #     mujoco.mjr_figure(viewport, fig, context)
+
         while viewer.is_running():
             step_start = time.time()
 
@@ -1330,26 +1338,29 @@ if __name__ == "__main__":
             # print(data.sensor('vive_tracker').data)
             # print(data.sensor('0_B0_framequat').id)
             # print(data.sensordata[:4])
-            print(f"First Disk Quat: {data.sensor('0_B0_framequat').data}")
+            # print(f"First Disk Quat: {data.sensor('0_B0_framequat').data}")
 
             # print(data.sensor("0_B4_framequat").id)
             # print(data.sensordata[4:8])
-            print(f"Last Disk Quat: {data.sensor('0_B4_framequat').data}")
+            # print(f"Last Disk Quat: {data.sensor('0_B4_framequat').data}")
 
             # #conjugate and multiply
             # # R = mujoco.mju_quat2Mat(data.sensor('0_B4_framequat').data)
 
             # print(data.sensordata[8:11])
-            print(f"Last Disk Vel: {data.sensor('0_B4_frameangvel').data}")
+            # print(f"Last Disk Vel: {data.sensor('0_B4_frameangvel').data}")
 
             # print(data.sensordata[-4:])
-            print(f"Vive Tracker: {data.sensor('vive_tracker').data}")
+            # print(f"Vive Tracker: {data.sensor('vive_tracker').data}")
 
             # Pick up changes to the physics state, apply perturbations, update options from GUI.
             viewer.sync()
+            plot_start = time.time()
+            plotter.update(data)
+            # print(time.time() - plot_start)
 
             # Rudimentary time keeping, will drift relative to wall clock.
-            print(time.time() - step_start)
+            # print(time.time() - step_start)
             time_until_next_step = model.opt.timestep - (time.time() -
                                                          step_start)
             if time_until_next_step > 0:
