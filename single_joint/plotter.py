@@ -1,5 +1,21 @@
+"""
+Curtis Johnson - 4/22/24
+
+Simple maplotlib plotter to do live plotting from mujoco.
+
+This is pretty slow still, but Im not sure its worth the time to speed up.
+
+I looked into adding plotting directly into the mujoco gui, but this seemed somewhat difficult
+without writing my own viewer. I just want to keep the default, so here we are.
+
+I also looked at pyqtgraph since its faster, but the Qt has issues with all of the threads
+already running. 
+
+"""
+
 import matplotlib.pyplot as plt
 from collections import deque
+import pyqtgraph as pg
 
 
 class JointAnglePlotter:
