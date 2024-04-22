@@ -40,12 +40,13 @@ class JointAnglePlotter:
             ax.grid(True)
             ax.legend()
 
-    def update(self, data):
+    def update(self, model, data):
         self.x.append(data.time)
-        self.y_u.append(data.sensor('vive_tracker').data[0])
-        self.y_v.append(data.sensor('vive_tracker').data[1])
-        self.y_udot.append(data.sensor('vive_tracker').data[2])
-        self.y_vdot.append(data.sensor('vive_tracker').data[3])
+        #TODO: dynamically go into model to get desired sesnro values
+        self.y_u.append(data.sensor('left_0').data[0])
+        self.y_v.append(data.sensor('left_0').data[1])
+        self.y_udot.append(data.sensor('left_0').data[2])
+        self.y_vdot.append(data.sensor('left_0').data[3])
 
         self.u_line.set_ydata(self.y_u)
         self.u_line.set_xdata(self.x)

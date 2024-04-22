@@ -215,42 +215,38 @@ class Baloo:
         plugin = self.mjcf_model.extension.add(
             "plugin",
             plugin="mujoco.sensor.joint_angle_estimator",
-            # instance="joint_angle_estimator",
         )
-
-        plugin.add("instance", name="test")
 
     def addViveTrackers(self):
         # add framequat to base and tip ref to global frame
         self.mjcf_model.sensor.add(
             "framequat",
-            name="0_B0_framequat",
+            name="left_0_B0_framequat",
             objtype="body",
-            objname="0_B0",
+            objname="left_0_B0",
         )
 
         self.mjcf_model.sensor.add(
             "framequat",
-            name=f"0_B{self.num_disks-1}_framequat",
+            name=f"left_0_B{self.num_disks-1}_framequat",
             objtype="body",
-            objname=f"0_B{self.num_disks-1}",
+            objname=f"left_0_B{self.num_disks-1}",
         )
 
         #add frameangvel to tip, ref to base frame
         self.mjcf_model.sensor.add(
             "frameangvel",
-            name=f"0_B{self.num_disks-1}_frameangvel",
+            name=f"left_0_B{self.num_disks-1}_frameangvel",
             objtype="body",
-            objname=f"0_B{self.num_disks-1}",
+            objname=f"left_0_B{self.num_disks-1}",
             reftype="body",
-            refname="0_B0",
+            refname="left_0_B0",
         )
 
         self.mjcf_model.sensor.add(
             "plugin",
             plugin="mujoco.sensor.joint_angle_estimator",
-            instance="test",
-            name='vive_tracker')
+            name='left_0')
 
     def setCustomData(self):
         self.mjcf_model.custom.add(
@@ -673,16 +669,17 @@ class Baloo:
 
         # create first body, whose frame is offset
         joint_num = 0
+        side = "left"
         first_disk = body.add(
             "body",
-            name=f"{joint_num}_B0",
+            name=f"{side}_{joint_num}_B{0}",
             childclass="small_joint",
             pos=[0, 0, (disk_half_height)],  # from pneubotics
             euler=[0, 0, 0],
         )
         first_disk.add(
             "geom",
-            name=f"{joint_num}_G0",
+            name=f"{side}_{joint_num}_G0",
         )
         first_disk.add("inertial",
                        mass=disk_mass,
@@ -718,27 +715,28 @@ class Baloo:
         )
 
         # for self.num_disks (+1 bc I already made first disk above): create body, add inertial, add geom
+        # f"{side}_{joint_num}_B{i}" is format of disk bodies generally
         prev_body = first_disk
         for i in range(1, self.num_disks):
             body = prev_body.add(
                 "body",
-                name=f"{joint_num}_B{i}",
+                name=f"{side}_{joint_num}_B{i}",
                 pos=[0, 0, (2 * disk_height)],
             )
             body.add(
                 "geom",
-                name=f"{joint_num}_G{i}",
+                name=f"{side}_{joint_num}_G{i}",
             )
             body.add("inertial",
                      mass=disk_mass,
                      diaginertia=[Ixy, Ixy, Iz],
                      pos=[0, 0, 0])
             body.add("joint",
-                     name=f"{joint_num}_Jx_{i-1}",
+                     name=f"{side}_{joint_num}_Jx_{i-1}",
                      axis=self.X,
                      pos=[0, 0, -disk_height])
             body.add("joint",
-                     name=f"{joint_num}_Jy_{i-1}",
+                     name=f"{side}_{joint_num}_Jy_{i-1}",
                      axis=self.Y,
                      pos=[0, 0, -disk_height])
             prev_body = body
@@ -1355,9 +1353,7 @@ if __name__ == "__main__":
 
             # Pick up changes to the physics state, apply perturbations, update options from GUI.
             viewer.sync()
-            plot_start = time.time()
-            plotter.update(data)
-            print(time.time() - plot_start)
+            # plotter.update(model, data)
 
             # Rudimentary time keeping, will drift relative to wall clock.
             # print(time.time() - step_start)

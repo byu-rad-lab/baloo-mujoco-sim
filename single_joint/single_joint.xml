@@ -25,9 +25,7 @@
     </default>
   </default>
   <extension>
-    <plugin plugin="mujoco.sensor.joint_angle_estimator">
-      <instance name="test"/>
-    </plugin>
+    <plugin plugin="mujoco.sensor.joint_angle_estimator"/>
   </extension>
   <custom>
     <numeric name="num_disks" size="1" data="5"/>
@@ -69,48 +67,48 @@
     <geom name="world" class="/" type="plane" condim="1" size="0 0 1" material="matplane"/>
     <light name="//unnamed_light_0" class="/" directional="true" pos="0 0 4" dir="0 0 -1" diffuse="0.59999999999999998 0.59999999999999998 0.59999999999999998" specular="0.20000000000000001 0.20000000000000001 0.20000000000000001"/>
     <camera name="fixedcam" class="/" pos="-1.357 2.722 2.4470000000000001" xyaxes="-0.88200000000000001 -0.47199999999999998 0 0.23799999999999999 -0.44600000000000001 0.86299999999999999"/>
-    <body name="0_B0" childclass="small_joint" pos="0 0 0.011111111111111112" euler="0 0 0">
-      <geom name="0_G0"/>
+    <body name="left_0_B0" childclass="small_joint" pos="0 0 0.011111111111111112" euler="0 0 0">
+      <geom name="left_0_G0"/>
       <inertial pos="0 0 0" mass="0.26519999999999999" diaginertia="0.00043523358024691365 0.00043523358024691365 0.00084864000000000001"/>
       <site name="xsite0" rgba="0 1 0 1" pos="0.040000000000000001 0 0"/>
       <site name="-xsite0" rgba="0 1 0 1" pos="-0.040000000000000001 0 0"/>
       <site name="ysite0" rgba="0 1 0 1" pos="0 0.040000000000000001 0"/>
       <site name="-ysite0" rgba="0 1 0 1" pos="0 -0.040000000000000001 0"/>
-      <body name="0_B1" pos="0 0 0.044444444444444446">
-        <geom name="0_G1"/>
+      <body name="left_0_B1" pos="0 0 0.044444444444444446">
+        <geom name="left_0_G1"/>
         <inertial pos="0 0 0" mass="0.26519999999999999" diaginertia="0.00043523358024691365 0.00043523358024691365 0.00084864000000000001"/>
-        <joint name="0_Jx_0" pos="0 0 -0.022222222222222223" axis="1 0 0"/>
-        <joint name="0_Jy_0" pos="0 0 -0.022222222222222223" axis="0 1 0"/>
+        <joint name="left_0_Jx_0" pos="0 0 -0.022222222222222223" axis="1 0 0"/>
+        <joint name="left_0_Jy_0" pos="0 0 -0.022222222222222223" axis="0 1 0"/>
         <site name="rotation_center1" rgba="1 0 0 1" pos="0 0 -0.022222222222222223"/>
         <site name="xsite1" rgba="0 1 0 1" pos="0.040000000000000001 0 0"/>
         <site name="-xsite1" rgba="0 1 0 1" pos="-0.040000000000000001 0 0"/>
         <site name="ysite1" rgba="0 1 0 1" pos="0 0.040000000000000001 0"/>
         <site name="-ysite1" rgba="0 1 0 1" pos="0 -0.040000000000000001 0"/>
-        <body name="0_B2" pos="0 0 0.044444444444444446">
-          <geom name="0_G2"/>
+        <body name="left_0_B2" pos="0 0 0.044444444444444446">
+          <geom name="left_0_G2"/>
           <inertial pos="0 0 0" mass="0.26519999999999999" diaginertia="0.00043523358024691365 0.00043523358024691365 0.00084864000000000001"/>
-          <joint name="0_Jx_1" pos="0 0 -0.022222222222222223" axis="1 0 0"/>
-          <joint name="0_Jy_1" pos="0 0 -0.022222222222222223" axis="0 1 0"/>
+          <joint name="left_0_Jx_1" pos="0 0 -0.022222222222222223" axis="1 0 0"/>
+          <joint name="left_0_Jy_1" pos="0 0 -0.022222222222222223" axis="0 1 0"/>
           <site name="rotation_center2" rgba="1 0 0 1" pos="0 0 -0.022222222222222223"/>
           <site name="xsite2" rgba="0 1 0 1" pos="0.040000000000000001 0 0"/>
           <site name="-xsite2" rgba="0 1 0 1" pos="-0.040000000000000001 0 0"/>
           <site name="ysite2" rgba="0 1 0 1" pos="0 0.040000000000000001 0"/>
           <site name="-ysite2" rgba="0 1 0 1" pos="0 -0.040000000000000001 0"/>
-          <body name="0_B3" pos="0 0 0.044444444444444446">
-            <geom name="0_G3"/>
+          <body name="left_0_B3" pos="0 0 0.044444444444444446">
+            <geom name="left_0_G3"/>
             <inertial pos="0 0 0" mass="0.26519999999999999" diaginertia="0.00043523358024691365 0.00043523358024691365 0.00084864000000000001"/>
-            <joint name="0_Jx_2" pos="0 0 -0.022222222222222223" axis="1 0 0"/>
-            <joint name="0_Jy_2" pos="0 0 -0.022222222222222223" axis="0 1 0"/>
+            <joint name="left_0_Jx_2" pos="0 0 -0.022222222222222223" axis="1 0 0"/>
+            <joint name="left_0_Jy_2" pos="0 0 -0.022222222222222223" axis="0 1 0"/>
             <site name="rotation_center3" rgba="1 0 0 1" pos="0 0 -0.022222222222222223"/>
             <site name="xsite3" rgba="0 1 0 1" pos="0.040000000000000001 0 0"/>
             <site name="-xsite3" rgba="0 1 0 1" pos="-0.040000000000000001 0 0"/>
             <site name="ysite3" rgba="0 1 0 1" pos="0 0.040000000000000001 0"/>
             <site name="-ysite3" rgba="0 1 0 1" pos="0 -0.040000000000000001 0"/>
-            <body name="0_B4" pos="0 0 0.044444444444444446">
-              <geom name="0_G4"/>
+            <body name="left_0_B4" pos="0 0 0.044444444444444446">
+              <geom name="left_0_G4"/>
               <inertial pos="0 0 0" mass="0.26519999999999999" diaginertia="0.00043523358024691365 0.00043523358024691365 0.00084864000000000001"/>
-              <joint name="0_Jx_3" pos="0 0 -0.022222222222222223" axis="1 0 0"/>
-              <joint name="0_Jy_3" pos="0 0 -0.022222222222222223" axis="0 1 0"/>
+              <joint name="left_0_Jx_3" pos="0 0 -0.022222222222222223" axis="1 0 0"/>
+              <joint name="left_0_Jy_3" pos="0 0 -0.022222222222222223" axis="0 1 0"/>
               <site name="rotation_center4" rgba="1 0 0 1" pos="0 0 -0.022222222222222223"/>
               <site name="xsite4" rgba="0 1 0 1" pos="0.040000000000000001 0 0"/>
               <site name="-xsite4" rgba="0 1 0 1" pos="-0.040000000000000001 0 0"/>
@@ -159,9 +157,9 @@
     <cylinder name="p3" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="-ytest" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
   </actuator>
   <sensor>
-    <framequat name="0_B0_framequat" objtype="body" objname="0_B0"/>
-    <framequat name="0_B4_framequat" objtype="body" objname="0_B4"/>
-    <frameangvel name="0_B4_frameangvel" objtype="body" objname="0_B4" reftype="body" refname="0_B0"/>
-    <plugin name="vive_tracker" plugin="mujoco.sensor.joint_angle_estimator" instance="test"/>
+    <framequat name="left_0_B0_framequat" objtype="body" objname="left_0_B0"/>
+    <framequat name="left_0_B4_framequat" objtype="body" objname="left_0_B4"/>
+    <frameangvel name="left_0_B4_frameangvel" objtype="body" objname="left_0_B4" reftype="body" refname="left_0_B0"/>
+    <plugin name="left_0" plugin="mujoco.sensor.joint_angle_estimator"/>
   </sensor>
 </mujoco>
