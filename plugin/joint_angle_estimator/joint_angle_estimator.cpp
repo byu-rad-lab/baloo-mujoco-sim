@@ -92,7 +92,6 @@ namespace mujoco::plugin::sensor {
 
         // FOR JOINT ANGLES
         //get orientation of first and last disk in global frame
-        // mjtNum* numDisks = d->userdata; //! this is always 1!!! because its in model, not data
         std::string numDisksName = "num_disks";
         int numDisksId = mj_name2id(m, mjOBJ_NUMERIC, numDisksName.c_str());
         if (numDisksId == -1)
@@ -111,16 +110,20 @@ namespace mujoco::plugin::sensor {
             mju_error("base_quat_id is -1");
             return;
         }
-        mjtNum* r_base = d->sensordata + base_quat_id; //should be 1,0,0,0
 
-        std::string tip_quat_name = "0_B" + std::to_string(5 - 1) + "_framequat";
+        //get sensor_adr out of model with sensor id
+        int base_quat_adr = m->sensor_adr[base_quat_id];
+        mjtNum* r_base = d->sensordata + base_quat_adr; //should be 1,0,0,0
+
+        std::string tip_quat_name = "0_B" + std::to_string(int(*numDisks) - 1) + "_framequat";
         int tip_quat_id = mj_name2id(m, mjOBJ_SENSOR, tip_quat_name.c_str());
         if (tip_quat_id == -1)
         {
             mju_error("tip_quat_id is -1");
             return;
         }
-        mjtNum* r_tip = d->sensordata + tip_quat_id;
+        int tip_quat_adr = m->sensor_adr[tip_quat_id];
+        mjtNum* r_tip = d->sensordata + tip_quat_adr;
 
         //get relative orientation between first and last disk
         mjtNum r_base_conj[4]{ 0 };
@@ -134,32 +137,45 @@ namespace mujoco::plugin::sensor {
         mjtNum R_base2Tip[9]{ 0 };
         mju_quat2Mat(R_base2Tip, r_base2Tip);
         mjtNum phi = mju_acos(R_base2Tip[8]);
-        mjtNum u = R_base2Tip[7] * phi / mju_sin(phi);
-        mjtNum v = R_base2Tip[2] * phi / mju_sin(phi);
+
+        // avoid division by zero, see allen eq 14
+        mjtNum u = 0;
+        mjtNum v = 0;
+        if (phi < 1e-6)
+        {
+            u = R_base2Tip[7];
+            v = R_base2Tip[2];
+        }
+        else
+        {
+            u = R_base2Tip[7] * phi / mju_sin(phi);
+            v = R_base2Tip[2] * phi / mju_sin(phi);
+        }
 
         //set joint angles in sensordata
-        mysensordata[0] = base_quat_id;
-        mysensordata[1] = tip_quat_id;
+        mysensordata[0] = u;
+        mysensordata[1] = v;
 
         //FOR JOINT VELOCITIES
         //get sensor id for frameangvel sensor on last disk of joint. Note that frameangvel is referenced to base disk in xml, not referenced to global coords.
-        std::string tip_angvel_name = "0_B" + std::to_string(5 - 1) + "_frameangvel";
+        std::string tip_angvel_name = "0_B" + std::to_string(int(*numDisks) - 1) + "_frameangvel";
         int tip_angvel_id = mj_name2id(m, mjOBJ_SENSOR, tip_angvel_name.c_str());
         if (tip_angvel_id == -1)
         {
-            // mju_error("tip_angvel_id is -1");
-            // return;
+            mju_error("tip_angvel_id is -1");
+            return;
         }
 
         //get angular velocity of first and last disk in joint frame
-        mjtNum wx = d->sensordata[tip_angvel_id];
-        mjtNum wy = d->sensordata[tip_angvel_id + 1];
+        int tip_angvel_adr = m->sensor_adr[tip_angvel_id];
+        mjtNum wx = d->sensordata[tip_angvel_adr];
+        mjtNum wy = d->sensordata[tip_angvel_adr + 1];
 
         // set joint velocities in sensordata
         //this part seems a little silly. I'm coping angvel from sensordata and putting it into another part of sensor data. Necessary?
 
-        mysensordata[2] = tip_angvel_id;
-        mysensordata[3] = *numDisks;
+        mysensordata[2] = 0;
+        mysensordata[3] = 0;
 
         mj_freeStack(d);
     }

@@ -30,7 +30,7 @@
     </plugin>
   </extension>
   <custom>
-    <numeric name="num_joint_disks" size="1" data="5"/>
+    <numeric name="num_disks" size="1" data="5"/>
   </custom>
   <asset>
     <texture name="texplane" type="2d" builtin="checker" mark="cross" width="512" height="512"/>

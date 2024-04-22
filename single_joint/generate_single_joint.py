@@ -1328,13 +1328,21 @@ if __name__ == "__main__":
             mujoco.mj_step(model, data)
 
             # print(data.sensor('vive_tracker').data)
-            print(f"First Disk Quat: {data.sensor('0_B0_framequat')}")
-            print(f"Last Disk Quat: {data.sensor('0_B4_framequat')}")
+            # print(data.sensor('0_B0_framequat').id)
+            # print(data.sensordata[:4])
+            print(f"First Disk Quat: {data.sensor('0_B0_framequat').data}")
 
-            #conjugate and multiply
-            # R = mujoco.mju_quat2Mat(data.sensor('0_B4_framequat').data)
+            # print(data.sensor("0_B4_framequat").id)
+            # print(data.sensordata[4:8])
+            print(f"Last Disk Quat: {data.sensor('0_B4_framequat').data}")
 
-            print(f"Last Disk Vel: {data.sensor('0_B4_frameangvel')}")
+            # #conjugate and multiply
+            # # R = mujoco.mju_quat2Mat(data.sensor('0_B4_framequat').data)
+
+            # print(data.sensordata[8:11])
+            print(f"Last Disk Vel: {data.sensor('0_B4_frameangvel').data}")
+
+            # print(data.sensordata[-4:])
             print(f"Vive Tracker: {data.sensor('vive_tracker').data}")
 
             # Pick up changes to the physics state, apply perturbations, update options from GUI.
