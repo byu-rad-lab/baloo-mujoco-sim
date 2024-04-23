@@ -12,7 +12,7 @@
     <default class="/">
       <default class="large_joint">
         <joint group="3" type="hinge" pos="0 0 0.022222222222222223" stiffness="540" damping="30"/>
-        <geom type="cylinder" size="0.125 0.011111111111111112" rgba="0.47058823529411764 0.47058823529411764 0.47058823529411764 0.69999999999999996"/>
+        <geom type="cylinder" size="0.125 0.0055555555555555558" rgba="0.47058823529411764 0.47058823529411764 0.47058823529411764 0.69999999999999996"/>
       </default>
       <default class="medium_joint">
         <joint group="3" type="hinge" pos="0 0 0.022222222222222223" stiffness="120" damping="60"/>
@@ -1803,78 +1803,86 @@
           <body name="right_0_B0" childclass="large_joint" pos="0 0 -0.1381111111111111" euler="0 0 45">
             <geom name="right_0_G0" class="large_joint"/>
             <inertial pos="0 0 0" mass="0.53059999999999996" diaginertia="0.002094491640946502 0.002094491640946502 0.0041453124999999997"/>
-            <site name="right_0_xsite0" class="bellows_site" pos="0.074999999999999997 0 0"/>
-            <site name="right_0_-xsite0" class="bellows_site" pos="-0.074999999999999997 0 0"/>
-            <site name="right_0_ysite0" class="bellows_site" pos="0 0.074999999999999997 0"/>
-            <site name="right_0_-ysite0" class="bellows_site" pos="0 -0.074999999999999997 0"/>
+            <site name="right_j0_b0_site0" class="bellows_site" pos="0 0.074999999999999997 0"/>
+            <site name="right_j0_b0_site1" class="bellows_site" pos="0 -0.074999999999999997 0"/>
+            <site name="right_j0_b0_site2" class="bellows_site" pos="0.074999999999999997 0 0"/>
+            <site name="right_j0_b0_site3" class="bellows_site" pos="-0.074999999999999997 0 0"/>
+            <site name="right_j0_b0_site0_A" rgba="1 1 1 1" pos="-0.028701257427381728 0.069290964938346508 0"/>
+            <site name="right_j0_b0_site0_B" group="1" rgba="1 1 1 1" pos="0.028701257427381728 0.069290964938346508 0"/>
+            <site name="right_j0_b0_site1_A" rgba="1 1 1 1" pos="0.028701257427381728 -0.069290964938346508 0"/>
+            <site name="right_j0_b0_site1_B" group="1" rgba="1 1 1 1" pos="-0.028701257427381728 -0.069290964938346508 0"/>
+            <site name="right_j0_b0_site2_A" rgba="1 1 1 1" pos="0.069290964938346508 0.028701257427381728 0"/>
+            <site name="right_j0_b0_site2_B" group="1" rgba="1 1 1 1" pos="0.069290964938346508 -0.028701257427381728 0"/>
+            <site name="right_j0_b0_site3_A" rgba="1 1 1 1" pos="-0.069290964938346508 -0.028701257427381728 0"/>
+            <site name="right_j0_b0_site3_B" group="1" rgba="1 1 1 1" pos="-0.069290964938346508 0.028701257427381728 0"/>
             <body name="right_0_B1" childclass="large_joint" pos="0 0 -0.044444444444444446">
               <geom name="right_0_G1" class="large_joint"/>
               <inertial pos="0 0 0" mass="0.53059999999999996" diaginertia="0.002094491640946502 0.002094491640946502 0.0041453124999999997"/>
               <joint name="right_0_Jx_0" class="large_joint" axis="1 0 0"/>
               <joint name="right_0_Jy_0" class="large_joint" axis="0 1 0"/>
-              <site name="right_0_xsite1" class="bellows_site" pos="0.074999999999999997 0 0"/>
-              <site name="right_0_xsite1_plus30" group="1" rgba="1 1 1 1" pos="0.069290964938346508 0.028701257427381728 0"/>
-              <site name="right_0_xsite1_minus30" group="1" rgba="1 1 1 1" pos="0.069290964938346508 -0.028701257427381728 0"/>
-              <site name="right_0_-xsite1" class="bellows_site" pos="-0.074999999999999997 0 0"/>
-              <site name="right_0_-xsite1_plus30" group="1" rgba="1 1 1 1" pos="-0.069290964938346508 -0.028701257427381728 0"/>
-              <site name="right_0_-xsite1_minus30" group="1" rgba="1 1 1 1" pos="-0.069290964938346508 0.028701257427381728 0"/>
-              <site name="right_0_ysite1" class="bellows_site" pos="0 0.074999999999999997 0"/>
-              <site name="right_0_ysite1_plus30" group="1" rgba="1 1 1 1" pos="-0.028701257427381728 0.069290964938346508 0"/>
-              <site name="right_0_ysite1_minus30" group="1" rgba="1 1 1 1" pos="0.028701257427381728 0.069290964938346508 0"/>
-              <site name="right_0_-ysite1" class="bellows_site" pos="0 -0.074999999999999997 0"/>
-              <site name="right_0_-ysite1_plus30" group="1" rgba="1 1 1 1" pos="0.028701257427381728 -0.069290964938346508 0"/>
-              <site name="right_0_-ysite1_minus30" group="1" rgba="1 1 1 1" pos="-0.028701257427381728 -0.069290964938346508 0"/>
+              <site name="right_j0_b1_site0" class="bellows_site" pos="0 0.074999999999999997 0"/>
+              <site name="right_j0_b1_site1" class="bellows_site" pos="0 -0.074999999999999997 0"/>
+              <site name="right_j0_b1_site2" class="bellows_site" pos="0.074999999999999997 0 0"/>
+              <site name="right_j0_b1_site3" class="bellows_site" pos="-0.074999999999999997 0 0"/>
+              <site name="right_j0_b1_site0_A" rgba="1 1 1 1" pos="-0.028701257427381728 0.069290964938346508 0"/>
+              <site name="right_j0_b1_site0_B" group="1" rgba="1 1 1 1" pos="0.028701257427381728 0.069290964938346508 0"/>
+              <site name="right_j0_b1_site1_A" rgba="1 1 1 1" pos="0.028701257427381728 -0.069290964938346508 0"/>
+              <site name="right_j0_b1_site1_B" group="1" rgba="1 1 1 1" pos="-0.028701257427381728 -0.069290964938346508 0"/>
+              <site name="right_j0_b1_site2_A" rgba="1 1 1 1" pos="0.069290964938346508 0.028701257427381728 0"/>
+              <site name="right_j0_b1_site2_B" group="1" rgba="1 1 1 1" pos="0.069290964938346508 -0.028701257427381728 0"/>
+              <site name="right_j0_b1_site3_A" rgba="1 1 1 1" pos="-0.069290964938346508 -0.028701257427381728 0"/>
+              <site name="right_j0_b1_site3_B" group="1" rgba="1 1 1 1" pos="-0.069290964938346508 0.028701257427381728 0"/>
               <body name="right_0_B2" childclass="large_joint" pos="0 0 -0.044444444444444446">
                 <geom name="right_0_G2" class="large_joint"/>
                 <inertial pos="0 0 0" mass="0.53059999999999996" diaginertia="0.002094491640946502 0.002094491640946502 0.0041453124999999997"/>
                 <joint name="right_0_Jx_1" class="large_joint" axis="1 0 0"/>
                 <joint name="right_0_Jy_1" class="large_joint" axis="0 1 0"/>
-                <site name="right_0_xsite2" class="bellows_site" pos="0.074999999999999997 0 0"/>
-                <site name="right_0_xsite2_plus30" group="1" rgba="1 1 1 1" pos="0.069290964938346508 0.028701257427381728 0"/>
-                <site name="right_0_xsite2_minus30" group="1" rgba="1 1 1 1" pos="0.069290964938346508 -0.028701257427381728 0"/>
-                <site name="right_0_-xsite2" class="bellows_site" pos="-0.074999999999999997 0 0"/>
-                <site name="right_0_-xsite2_plus30" group="1" rgba="1 1 1 1" pos="-0.069290964938346508 -0.028701257427381728 0"/>
-                <site name="right_0_-xsite2_minus30" group="1" rgba="1 1 1 1" pos="-0.069290964938346508 0.028701257427381728 0"/>
-                <site name="right_0_ysite2" class="bellows_site" pos="0 0.074999999999999997 0"/>
-                <site name="right_0_ysite2_plus30" group="1" rgba="1 1 1 1" pos="-0.028701257427381728 0.069290964938346508 0"/>
-                <site name="right_0_ysite2_minus30" group="1" rgba="1 1 1 1" pos="0.028701257427381728 0.069290964938346508 0"/>
-                <site name="right_0_-ysite2" class="bellows_site" pos="0 -0.074999999999999997 0"/>
-                <site name="right_0_-ysite2_plus30" group="1" rgba="1 1 1 1" pos="0.028701257427381728 -0.069290964938346508 0"/>
-                <site name="right_0_-ysite2_minus30" group="1" rgba="1 1 1 1" pos="-0.028701257427381728 -0.069290964938346508 0"/>
+                <site name="right_j0_b2_site0" class="bellows_site" pos="0 0.074999999999999997 0"/>
+                <site name="right_j0_b2_site1" class="bellows_site" pos="0 -0.074999999999999997 0"/>
+                <site name="right_j0_b2_site2" class="bellows_site" pos="0.074999999999999997 0 0"/>
+                <site name="right_j0_b2_site3" class="bellows_site" pos="-0.074999999999999997 0 0"/>
+                <site name="right_j0_b2_site0_A" rgba="1 1 1 1" pos="-0.028701257427381728 0.069290964938346508 0"/>
+                <site name="right_j0_b2_site0_B" group="1" rgba="1 1 1 1" pos="0.028701257427381728 0.069290964938346508 0"/>
+                <site name="right_j0_b2_site1_A" rgba="1 1 1 1" pos="0.028701257427381728 -0.069290964938346508 0"/>
+                <site name="right_j0_b2_site1_B" group="1" rgba="1 1 1 1" pos="-0.028701257427381728 -0.069290964938346508 0"/>
+                <site name="right_j0_b2_site2_A" rgba="1 1 1 1" pos="0.069290964938346508 0.028701257427381728 0"/>
+                <site name="right_j0_b2_site2_B" group="1" rgba="1 1 1 1" pos="0.069290964938346508 -0.028701257427381728 0"/>
+                <site name="right_j0_b2_site3_A" rgba="1 1 1 1" pos="-0.069290964938346508 -0.028701257427381728 0"/>
+                <site name="right_j0_b2_site3_B" group="1" rgba="1 1 1 1" pos="-0.069290964938346508 0.028701257427381728 0"/>
                 <body name="right_0_B3" childclass="large_joint" pos="0 0 -0.044444444444444446">
                   <geom name="right_0_G3" class="large_joint"/>
                   <inertial pos="0 0 0" mass="0.53059999999999996" diaginertia="0.002094491640946502 0.002094491640946502 0.0041453124999999997"/>
                   <joint name="right_0_Jx_2" class="large_joint" axis="1 0 0"/>
                   <joint name="right_0_Jy_2" class="large_joint" axis="0 1 0"/>
-                  <site name="right_0_xsite3" class="bellows_site" pos="0.074999999999999997 0 0"/>
-                  <site name="right_0_xsite3_plus30" group="1" rgba="1 1 1 1" pos="0.069290964938346508 0.028701257427381728 0"/>
-                  <site name="right_0_xsite3_minus30" group="1" rgba="1 1 1 1" pos="0.069290964938346508 -0.028701257427381728 0"/>
-                  <site name="right_0_-xsite3" class="bellows_site" pos="-0.074999999999999997 0 0"/>
-                  <site name="right_0_-xsite3_plus30" group="1" rgba="1 1 1 1" pos="-0.069290964938346508 -0.028701257427381728 0"/>
-                  <site name="right_0_-xsite3_minus30" group="1" rgba="1 1 1 1" pos="-0.069290964938346508 0.028701257427381728 0"/>
-                  <site name="right_0_ysite3" class="bellows_site" pos="0 0.074999999999999997 0"/>
-                  <site name="right_0_ysite3_plus30" group="1" rgba="1 1 1 1" pos="-0.028701257427381728 0.069290964938346508 0"/>
-                  <site name="right_0_ysite3_minus30" group="1" rgba="1 1 1 1" pos="0.028701257427381728 0.069290964938346508 0"/>
-                  <site name="right_0_-ysite3" class="bellows_site" pos="0 -0.074999999999999997 0"/>
-                  <site name="right_0_-ysite3_plus30" group="1" rgba="1 1 1 1" pos="0.028701257427381728 -0.069290964938346508 0"/>
-                  <site name="right_0_-ysite3_minus30" group="1" rgba="1 1 1 1" pos="-0.028701257427381728 -0.069290964938346508 0"/>
+                  <site name="right_j0_b3_site0" class="bellows_site" pos="0 0.074999999999999997 0"/>
+                  <site name="right_j0_b3_site1" class="bellows_site" pos="0 -0.074999999999999997 0"/>
+                  <site name="right_j0_b3_site2" class="bellows_site" pos="0.074999999999999997 0 0"/>
+                  <site name="right_j0_b3_site3" class="bellows_site" pos="-0.074999999999999997 0 0"/>
+                  <site name="right_j0_b3_site0_A" rgba="1 1 1 1" pos="-0.028701257427381728 0.069290964938346508 0"/>
+                  <site name="right_j0_b3_site0_B" group="1" rgba="1 1 1 1" pos="0.028701257427381728 0.069290964938346508 0"/>
+                  <site name="right_j0_b3_site1_A" rgba="1 1 1 1" pos="0.028701257427381728 -0.069290964938346508 0"/>
+                  <site name="right_j0_b3_site1_B" group="1" rgba="1 1 1 1" pos="-0.028701257427381728 -0.069290964938346508 0"/>
+                  <site name="right_j0_b3_site2_A" rgba="1 1 1 1" pos="0.069290964938346508 0.028701257427381728 0"/>
+                  <site name="right_j0_b3_site2_B" group="1" rgba="1 1 1 1" pos="0.069290964938346508 -0.028701257427381728 0"/>
+                  <site name="right_j0_b3_site3_A" rgba="1 1 1 1" pos="-0.069290964938346508 -0.028701257427381728 0"/>
+                  <site name="right_j0_b3_site3_B" group="1" rgba="1 1 1 1" pos="-0.069290964938346508 0.028701257427381728 0"/>
                   <body name="right_0_B4" childclass="large_joint" pos="0 0 -0.044444444444444446">
                     <geom name="right_0_G4" class="large_joint"/>
                     <inertial pos="0 0 0" mass="0.53059999999999996" diaginertia="0.002094491640946502 0.002094491640946502 0.0041453124999999997"/>
                     <joint name="right_0_Jx_3" class="large_joint" axis="1 0 0"/>
                     <joint name="right_0_Jy_3" class="large_joint" axis="0 1 0"/>
-                    <site name="right_0_xsite4" class="bellows_site" pos="0.074999999999999997 0 0"/>
-                    <site name="right_0_xsite4_plus30" group="1" rgba="1 1 1 1" pos="0.069290964938346508 0.028701257427381728 0"/>
-                    <site name="right_0_xsite4_minus30" group="1" rgba="1 1 1 1" pos="0.069290964938346508 -0.028701257427381728 0"/>
-                    <site name="right_0_-xsite4" class="bellows_site" pos="-0.074999999999999997 0 0"/>
-                    <site name="right_0_-xsite4_plus30" group="1" rgba="1 1 1 1" pos="-0.069290964938346508 -0.028701257427381728 0"/>
-                    <site name="right_0_-xsite4_minus30" group="1" rgba="1 1 1 1" pos="-0.069290964938346508 0.028701257427381728 0"/>
-                    <site name="right_0_ysite4" class="bellows_site" pos="0 0.074999999999999997 0"/>
-                    <site name="right_0_ysite4_plus30" group="1" rgba="1 1 1 1" pos="-0.028701257427381728 0.069290964938346508 0"/>
-                    <site name="right_0_ysite4_minus30" group="1" rgba="1 1 1 1" pos="0.028701257427381728 0.069290964938346508 0"/>
-                    <site name="right_0_-ysite4" class="bellows_site" pos="0 -0.074999999999999997 0"/>
-                    <site name="right_0_-ysite4_plus30" group="1" rgba="1 1 1 1" pos="0.028701257427381728 -0.069290964938346508 0"/>
-                    <site name="right_0_-ysite4_minus30" group="1" rgba="1 1 1 1" pos="-0.028701257427381728 -0.069290964938346508 0"/>
+                    <site name="right_j0_b4_site0" class="bellows_site" pos="0 0.074999999999999997 0"/>
+                    <site name="right_j0_b4_site1" class="bellows_site" pos="0 -0.074999999999999997 0"/>
+                    <site name="right_j0_b4_site2" class="bellows_site" pos="0.074999999999999997 0 0"/>
+                    <site name="right_j0_b4_site3" class="bellows_site" pos="-0.074999999999999997 0 0"/>
+                    <site name="right_j0_b4_site0_A" rgba="1 1 1 1" pos="-0.028701257427381728 0.069290964938346508 0"/>
+                    <site name="right_j0_b4_site0_B" group="1" rgba="1 1 1 1" pos="0.028701257427381728 0.069290964938346508 0"/>
+                    <site name="right_j0_b4_site1_A" rgba="1 1 1 1" pos="0.028701257427381728 -0.069290964938346508 0"/>
+                    <site name="right_j0_b4_site1_B" group="1" rgba="1 1 1 1" pos="-0.028701257427381728 -0.069290964938346508 0"/>
+                    <site name="right_j0_b4_site2_A" rgba="1 1 1 1" pos="0.069290964938346508 0.028701257427381728 0"/>
+                    <site name="right_j0_b4_site2_B" group="1" rgba="1 1 1 1" pos="0.069290964938346508 -0.028701257427381728 0"/>
+                    <site name="right_j0_b4_site3_A" rgba="1 1 1 1" pos="-0.069290964938346508 -0.028701257427381728 0"/>
+                    <site name="right_j0_b4_site3_B" group="1" rgba="1 1 1 1" pos="-0.069290964938346508 0.028701257427381728 0"/>
                     <body name="right_link0" pos="0 0 -0.11111111111111112" euler="0 0 -45">
                       <inertial pos="0 0 0" mass="3.8809999999999998" diaginertia="0.108 0.108 0.023"/>
                       <geom name="right_link0" type="cylinder" size="0.13 0.10000000000000001" rgba="0 0 0 1"/>
@@ -3929,46 +3937,46 @@
                       <body name="right_1_B0" childclass="medium_joint" pos="0 0 -0.11111111111111112" euler="0 0 45">
                         <geom name="right_1_G0" class="medium_joint"/>
                         <inertial pos="0 0 0" mass="0.26519999999999999" diaginertia="0.00067391358024691372 0.00067391358024691372 0.0013260000000000001"/>
-                        <site name="right_1_xsite0" class="bellows_site" pos="0.059999999999999998 0 0"/>
-                        <site name="right_1_-xsite0" class="bellows_site" pos="-0.059999999999999998 0 0"/>
-                        <site name="right_1_ysite0" class="bellows_site" pos="0 0.059999999999999998 0"/>
-                        <site name="right_1_-ysite0" class="bellows_site" pos="0 -0.059999999999999998 0"/>
+                        <site name="right_j1_b0_site0" class="bellows_site" pos="0 0.059999999999999998 0"/>
+                        <site name="right_j1_b0_site1" class="bellows_site" pos="0 -0.059999999999999998 0"/>
+                        <site name="right_j1_b0_site2" class="bellows_site" pos="0.059999999999999998 0 0"/>
+                        <site name="right_j1_b0_site3" class="bellows_site" pos="-0.059999999999999998 0 0"/>
                         <body name="right_1_B1" pos="0 0 -0.044444444444444446">
                           <geom name="right_1_G1" class="medium_joint"/>
                           <inertial pos="0 0 0" mass="0.26519999999999999" diaginertia="0.00067391358024691372 0.00067391358024691372 0.0013260000000000001"/>
                           <joint name="right_1_Jx_0" class="medium_joint" axis="1 0 0"/>
                           <joint name="right_1_Jy_0" class="medium_joint" axis="0 1 0"/>
-                          <site name="right_1_xsite1" class="bellows_site" pos="0.059999999999999998 0 0"/>
-                          <site name="right_1_-xsite1" class="bellows_site" pos="-0.059999999999999998 0 0"/>
-                          <site name="right_1_ysite1" class="bellows_site" pos="0 0.059999999999999998 0"/>
-                          <site name="right_1_-ysite1" class="bellows_site" pos="0 -0.059999999999999998 0"/>
+                          <site name="right_j1_b1_site0" class="bellows_site" pos="0 0.059999999999999998 0"/>
+                          <site name="right_j1_b1_site1" class="bellows_site" pos="0 -0.059999999999999998 0"/>
+                          <site name="right_j1_b1_site2" class="bellows_site" pos="0.059999999999999998 0 0"/>
+                          <site name="right_j1_b1_site3" class="bellows_site" pos="-0.059999999999999998 0 0"/>
                           <body name="right_1_B2" pos="0 0 -0.044444444444444446">
                             <geom name="right_1_G2" class="medium_joint"/>
                             <inertial pos="0 0 0" mass="0.26519999999999999" diaginertia="0.00067391358024691372 0.00067391358024691372 0.0013260000000000001"/>
                             <joint name="right_1_Jx_1" class="medium_joint" axis="1 0 0"/>
                             <joint name="right_1_Jy_1" class="medium_joint" axis="0 1 0"/>
-                            <site name="right_1_xsite2" class="bellows_site" pos="0.059999999999999998 0 0"/>
-                            <site name="right_1_-xsite2" class="bellows_site" pos="-0.059999999999999998 0 0"/>
-                            <site name="right_1_ysite2" class="bellows_site" pos="0 0.059999999999999998 0"/>
-                            <site name="right_1_-ysite2" class="bellows_site" pos="0 -0.059999999999999998 0"/>
+                            <site name="right_j1_b2_site0" class="bellows_site" pos="0 0.059999999999999998 0"/>
+                            <site name="right_j1_b2_site1" class="bellows_site" pos="0 -0.059999999999999998 0"/>
+                            <site name="right_j1_b2_site2" class="bellows_site" pos="0.059999999999999998 0 0"/>
+                            <site name="right_j1_b2_site3" class="bellows_site" pos="-0.059999999999999998 0 0"/>
                             <body name="right_1_B3" pos="0 0 -0.044444444444444446">
                               <geom name="right_1_G3" class="medium_joint"/>
                               <inertial pos="0 0 0" mass="0.26519999999999999" diaginertia="0.00067391358024691372 0.00067391358024691372 0.0013260000000000001"/>
                               <joint name="right_1_Jx_2" class="medium_joint" axis="1 0 0"/>
                               <joint name="right_1_Jy_2" class="medium_joint" axis="0 1 0"/>
-                              <site name="right_1_xsite3" class="bellows_site" pos="0.059999999999999998 0 0"/>
-                              <site name="right_1_-xsite3" class="bellows_site" pos="-0.059999999999999998 0 0"/>
-                              <site name="right_1_ysite3" class="bellows_site" pos="0 0.059999999999999998 0"/>
-                              <site name="right_1_-ysite3" class="bellows_site" pos="0 -0.059999999999999998 0"/>
+                              <site name="right_j1_b3_site0" class="bellows_site" pos="0 0.059999999999999998 0"/>
+                              <site name="right_j1_b3_site1" class="bellows_site" pos="0 -0.059999999999999998 0"/>
+                              <site name="right_j1_b3_site2" class="bellows_site" pos="0.059999999999999998 0 0"/>
+                              <site name="right_j1_b3_site3" class="bellows_site" pos="-0.059999999999999998 0 0"/>
                               <body name="right_1_B4" pos="0 0 -0.044444444444444446">
                                 <geom name="right_1_G4" class="medium_joint"/>
                                 <inertial pos="0 0 0" mass="0.26519999999999999" diaginertia="0.00067391358024691372 0.00067391358024691372 0.0013260000000000001"/>
                                 <joint name="right_1_Jx_3" class="medium_joint" axis="1 0 0"/>
                                 <joint name="right_1_Jy_3" class="medium_joint" axis="0 1 0"/>
-                                <site name="right_1_xsite4" class="bellows_site" pos="0.059999999999999998 0 0"/>
-                                <site name="right_1_-xsite4" class="bellows_site" pos="-0.059999999999999998 0 0"/>
-                                <site name="right_1_ysite4" class="bellows_site" pos="0 0.059999999999999998 0"/>
-                                <site name="right_1_-ysite4" class="bellows_site" pos="0 -0.059999999999999998 0"/>
+                                <site name="right_j1_b4_site0" class="bellows_site" pos="0 0.059999999999999998 0"/>
+                                <site name="right_j1_b4_site1" class="bellows_site" pos="0 -0.059999999999999998 0"/>
+                                <site name="right_j1_b4_site2" class="bellows_site" pos="0.059999999999999998 0 0"/>
+                                <site name="right_j1_b4_site3" class="bellows_site" pos="-0.059999999999999998 0 0"/>
                                 <body name="right_link1" pos="0 0 -0.091111111111111115" euler="0 0 -45">
                                   <inertial pos="0 0 0" mass="3.4740000000000002" diaginertia="0.050000000000000003 0.050000000000000003 0.017000000000000001"/>
                                   <geom name="right_link1" type="cylinder" size="0.10000000000000001 0.080000000000000002" rgba="0 0 0 1"/>
@@ -6023,46 +6031,46 @@
                                   <body name="right_2_B0" childclass="small_joint" pos="0 0 -0.091111111111111115" euler="0 0 45">
                                     <geom name="right_2_G0" class="small_joint"/>
                                     <inertial pos="0 0 0" mass="0.26519999999999999" diaginertia="0.00043523358024691365 0.00043523358024691365 0.00084864000000000001"/>
-                                    <site name="right_2_xsite0" class="bellows_site" pos="0.040000000000000001 0 0"/>
-                                    <site name="right_2_-xsite0" class="bellows_site" pos="-0.040000000000000001 0 0"/>
-                                    <site name="right_2_ysite0" class="bellows_site" pos="0 0.040000000000000001 0"/>
-                                    <site name="right_2_-ysite0" class="bellows_site" pos="0 -0.040000000000000001 0"/>
+                                    <site name="right_j2_b0_site0" class="bellows_site" pos="0 0.040000000000000001 0"/>
+                                    <site name="right_j2_b0_site1" class="bellows_site" pos="0 -0.040000000000000001 0"/>
+                                    <site name="right_j2_b0_site2" class="bellows_site" pos="0.040000000000000001 0 0"/>
+                                    <site name="right_j2_b0_site3" class="bellows_site" pos="-0.040000000000000001 0 0"/>
                                     <body name="right_2_B1" childclass="small_joint" pos="0 0 -0.044444444444444446">
                                       <geom name="right_2_G1" class="small_joint"/>
                                       <inertial pos="0 0 0" mass="0.26519999999999999" diaginertia="0.00043523358024691365 0.00043523358024691365 0.00084864000000000001"/>
                                       <joint name="right_2_Jx_0" class="small_joint" axis="1 0 0"/>
                                       <joint name="right_2_Jy_0" class="small_joint" axis="0 1 0"/>
-                                      <site name="right_2_xsite1" class="bellows_site" pos="0.040000000000000001 0 0"/>
-                                      <site name="right_2_-xsite1" class="bellows_site" pos="-0.040000000000000001 0 0"/>
-                                      <site name="right_2_ysite1" class="bellows_site" pos="0 0.040000000000000001 0"/>
-                                      <site name="right_2_-ysite1" class="bellows_site" pos="0 -0.040000000000000001 0"/>
+                                      <site name="right_j2_b1_site0" class="bellows_site" pos="0 0.040000000000000001 0"/>
+                                      <site name="right_j2_b1_site1" class="bellows_site" pos="0 -0.040000000000000001 0"/>
+                                      <site name="right_j2_b1_site2" class="bellows_site" pos="0.040000000000000001 0 0"/>
+                                      <site name="right_j2_b1_site3" class="bellows_site" pos="-0.040000000000000001 0 0"/>
                                       <body name="right_2_B2" childclass="small_joint" pos="0 0 -0.044444444444444446">
                                         <geom name="right_2_G2" class="small_joint"/>
                                         <inertial pos="0 0 0" mass="0.26519999999999999" diaginertia="0.00043523358024691365 0.00043523358024691365 0.00084864000000000001"/>
                                         <joint name="right_2_Jx_1" class="small_joint" axis="1 0 0"/>
                                         <joint name="right_2_Jy_1" class="small_joint" axis="0 1 0"/>
-                                        <site name="right_2_xsite2" class="bellows_site" pos="0.040000000000000001 0 0"/>
-                                        <site name="right_2_-xsite2" class="bellows_site" pos="-0.040000000000000001 0 0"/>
-                                        <site name="right_2_ysite2" class="bellows_site" pos="0 0.040000000000000001 0"/>
-                                        <site name="right_2_-ysite2" class="bellows_site" pos="0 -0.040000000000000001 0"/>
+                                        <site name="right_j2_b2_site0" class="bellows_site" pos="0 0.040000000000000001 0"/>
+                                        <site name="right_j2_b2_site1" class="bellows_site" pos="0 -0.040000000000000001 0"/>
+                                        <site name="right_j2_b2_site2" class="bellows_site" pos="0.040000000000000001 0 0"/>
+                                        <site name="right_j2_b2_site3" class="bellows_site" pos="-0.040000000000000001 0 0"/>
                                         <body name="right_2_B3" childclass="small_joint" pos="0 0 -0.044444444444444446">
                                           <geom name="right_2_G3" class="small_joint"/>
                                           <inertial pos="0 0 0" mass="0.26519999999999999" diaginertia="0.00043523358024691365 0.00043523358024691365 0.00084864000000000001"/>
                                           <joint name="right_2_Jx_2" class="small_joint" axis="1 0 0"/>
                                           <joint name="right_2_Jy_2" class="small_joint" axis="0 1 0"/>
-                                          <site name="right_2_xsite3" class="bellows_site" pos="0.040000000000000001 0 0"/>
-                                          <site name="right_2_-xsite3" class="bellows_site" pos="-0.040000000000000001 0 0"/>
-                                          <site name="right_2_ysite3" class="bellows_site" pos="0 0.040000000000000001 0"/>
-                                          <site name="right_2_-ysite3" class="bellows_site" pos="0 -0.040000000000000001 0"/>
+                                          <site name="right_j2_b3_site0" class="bellows_site" pos="0 0.040000000000000001 0"/>
+                                          <site name="right_j2_b3_site1" class="bellows_site" pos="0 -0.040000000000000001 0"/>
+                                          <site name="right_j2_b3_site2" class="bellows_site" pos="0.040000000000000001 0 0"/>
+                                          <site name="right_j2_b3_site3" class="bellows_site" pos="-0.040000000000000001 0 0"/>
                                           <body name="right_2_B4" childclass="small_joint" pos="0 0 -0.044444444444444446">
                                             <geom name="right_2_G4" class="small_joint"/>
                                             <inertial pos="0 0 0" mass="0.26519999999999999" diaginertia="0.00043523358024691365 0.00043523358024691365 0.00084864000000000001"/>
                                             <joint name="right_2_Jx_3" class="small_joint" axis="1 0 0"/>
                                             <joint name="right_2_Jy_3" class="small_joint" axis="0 1 0"/>
-                                            <site name="right_2_xsite4" class="bellows_site" pos="0.040000000000000001 0 0"/>
-                                            <site name="right_2_-xsite4" class="bellows_site" pos="-0.040000000000000001 0 0"/>
-                                            <site name="right_2_ysite4" class="bellows_site" pos="0 0.040000000000000001 0"/>
-                                            <site name="right_2_-ysite4" class="bellows_site" pos="0 -0.040000000000000001 0"/>
+                                            <site name="right_j2_b4_site0" class="bellows_site" pos="0 0.040000000000000001 0"/>
+                                            <site name="right_j2_b4_site1" class="bellows_site" pos="0 -0.040000000000000001 0"/>
+                                            <site name="right_j2_b4_site2" class="bellows_site" pos="0.040000000000000001 0 0"/>
+                                            <site name="right_j2_b4_site3" class="bellows_site" pos="-0.040000000000000001 0 0"/>
                                           </body>
                                         </body>
                                       </body>
@@ -6087,78 +6095,86 @@
           <body name="left_0_B0" childclass="large_joint" pos="0 0 -0.1381111111111111" euler="0 0 45">
             <geom name="left_0_G0" class="large_joint"/>
             <inertial pos="0 0 0" mass="0.53059999999999996" diaginertia="0.002094491640946502 0.002094491640946502 0.0041453124999999997"/>
-            <site name="left_0_xsite0" class="bellows_site" pos="0.074999999999999997 0 0"/>
-            <site name="left_0_-xsite0" class="bellows_site" pos="-0.074999999999999997 0 0"/>
-            <site name="left_0_ysite0" class="bellows_site" pos="0 0.074999999999999997 0"/>
-            <site name="left_0_-ysite0" class="bellows_site" pos="0 -0.074999999999999997 0"/>
+            <site name="left_j0_b0_site0" class="bellows_site" pos="0 0.074999999999999997 0"/>
+            <site name="left_j0_b0_site1" class="bellows_site" pos="0 -0.074999999999999997 0"/>
+            <site name="left_j0_b0_site2" class="bellows_site" pos="0.074999999999999997 0 0"/>
+            <site name="left_j0_b0_site3" class="bellows_site" pos="-0.074999999999999997 0 0"/>
+            <site name="left_j0_b0_site0_A" rgba="1 1 1 1" pos="-0.028701257427381728 0.069290964938346508 0"/>
+            <site name="left_j0_b0_site0_B" group="1" rgba="1 1 1 1" pos="0.028701257427381728 0.069290964938346508 0"/>
+            <site name="left_j0_b0_site1_A" rgba="1 1 1 1" pos="0.028701257427381728 -0.069290964938346508 0"/>
+            <site name="left_j0_b0_site1_B" group="1" rgba="1 1 1 1" pos="-0.028701257427381728 -0.069290964938346508 0"/>
+            <site name="left_j0_b0_site2_A" rgba="1 1 1 1" pos="0.069290964938346508 0.028701257427381728 0"/>
+            <site name="left_j0_b0_site2_B" group="1" rgba="1 1 1 1" pos="0.069290964938346508 -0.028701257427381728 0"/>
+            <site name="left_j0_b0_site3_A" rgba="1 1 1 1" pos="-0.069290964938346508 -0.028701257427381728 0"/>
+            <site name="left_j0_b0_site3_B" group="1" rgba="1 1 1 1" pos="-0.069290964938346508 0.028701257427381728 0"/>
             <body name="left_0_B1" childclass="large_joint" pos="0 0 -0.044444444444444446">
               <geom name="left_0_G1" class="large_joint"/>
               <inertial pos="0 0 0" mass="0.53059999999999996" diaginertia="0.002094491640946502 0.002094491640946502 0.0041453124999999997"/>
               <joint name="left_0_Jx_0" class="large_joint" axis="1 0 0"/>
               <joint name="left_0_Jy_0" class="large_joint" axis="0 1 0"/>
-              <site name="left_0_xsite1" class="bellows_site" pos="0.074999999999999997 0 0"/>
-              <site name="left_0_xsite1_plus30" group="1" rgba="1 1 1 1" pos="0.069290964938346508 0.028701257427381728 0"/>
-              <site name="left_0_xsite1_minus30" group="1" rgba="1 1 1 1" pos="0.069290964938346508 -0.028701257427381728 0"/>
-              <site name="left_0_-xsite1" class="bellows_site" pos="-0.074999999999999997 0 0"/>
-              <site name="left_0_-xsite1_plus30" group="1" rgba="1 1 1 1" pos="-0.069290964938346508 -0.028701257427381728 0"/>
-              <site name="left_0_-xsite1_minus30" group="1" rgba="1 1 1 1" pos="-0.069290964938346508 0.028701257427381728 0"/>
-              <site name="left_0_ysite1" class="bellows_site" pos="0 0.074999999999999997 0"/>
-              <site name="left_0_ysite1_plus30" group="1" rgba="1 1 1 1" pos="-0.028701257427381728 0.069290964938346508 0"/>
-              <site name="left_0_ysite1_minus30" group="1" rgba="1 1 1 1" pos="0.028701257427381728 0.069290964938346508 0"/>
-              <site name="left_0_-ysite1" class="bellows_site" pos="0 -0.074999999999999997 0"/>
-              <site name="left_0_-ysite1_plus30" group="1" rgba="1 1 1 1" pos="0.028701257427381728 -0.069290964938346508 0"/>
-              <site name="left_0_-ysite1_minus30" group="1" rgba="1 1 1 1" pos="-0.028701257427381728 -0.069290964938346508 0"/>
+              <site name="left_j0_b1_site0" class="bellows_site" pos="0 0.074999999999999997 0"/>
+              <site name="left_j0_b1_site1" class="bellows_site" pos="0 -0.074999999999999997 0"/>
+              <site name="left_j0_b1_site2" class="bellows_site" pos="0.074999999999999997 0 0"/>
+              <site name="left_j0_b1_site3" class="bellows_site" pos="-0.074999999999999997 0 0"/>
+              <site name="left_j0_b1_site0_A" rgba="1 1 1 1" pos="-0.028701257427381728 0.069290964938346508 0"/>
+              <site name="left_j0_b1_site0_B" group="1" rgba="1 1 1 1" pos="0.028701257427381728 0.069290964938346508 0"/>
+              <site name="left_j0_b1_site1_A" rgba="1 1 1 1" pos="0.028701257427381728 -0.069290964938346508 0"/>
+              <site name="left_j0_b1_site1_B" group="1" rgba="1 1 1 1" pos="-0.028701257427381728 -0.069290964938346508 0"/>
+              <site name="left_j0_b1_site2_A" rgba="1 1 1 1" pos="0.069290964938346508 0.028701257427381728 0"/>
+              <site name="left_j0_b1_site2_B" group="1" rgba="1 1 1 1" pos="0.069290964938346508 -0.028701257427381728 0"/>
+              <site name="left_j0_b1_site3_A" rgba="1 1 1 1" pos="-0.069290964938346508 -0.028701257427381728 0"/>
+              <site name="left_j0_b1_site3_B" group="1" rgba="1 1 1 1" pos="-0.069290964938346508 0.028701257427381728 0"/>
               <body name="left_0_B2" childclass="large_joint" pos="0 0 -0.044444444444444446">
                 <geom name="left_0_G2" class="large_joint"/>
                 <inertial pos="0 0 0" mass="0.53059999999999996" diaginertia="0.002094491640946502 0.002094491640946502 0.0041453124999999997"/>
                 <joint name="left_0_Jx_1" class="large_joint" axis="1 0 0"/>
                 <joint name="left_0_Jy_1" class="large_joint" axis="0 1 0"/>
-                <site name="left_0_xsite2" class="bellows_site" pos="0.074999999999999997 0 0"/>
-                <site name="left_0_xsite2_plus30" group="1" rgba="1 1 1 1" pos="0.069290964938346508 0.028701257427381728 0"/>
-                <site name="left_0_xsite2_minus30" group="1" rgba="1 1 1 1" pos="0.069290964938346508 -0.028701257427381728 0"/>
-                <site name="left_0_-xsite2" class="bellows_site" pos="-0.074999999999999997 0 0"/>
-                <site name="left_0_-xsite2_plus30" group="1" rgba="1 1 1 1" pos="-0.069290964938346508 -0.028701257427381728 0"/>
-                <site name="left_0_-xsite2_minus30" group="1" rgba="1 1 1 1" pos="-0.069290964938346508 0.028701257427381728 0"/>
-                <site name="left_0_ysite2" class="bellows_site" pos="0 0.074999999999999997 0"/>
-                <site name="left_0_ysite2_plus30" group="1" rgba="1 1 1 1" pos="-0.028701257427381728 0.069290964938346508 0"/>
-                <site name="left_0_ysite2_minus30" group="1" rgba="1 1 1 1" pos="0.028701257427381728 0.069290964938346508 0"/>
-                <site name="left_0_-ysite2" class="bellows_site" pos="0 -0.074999999999999997 0"/>
-                <site name="left_0_-ysite2_plus30" group="1" rgba="1 1 1 1" pos="0.028701257427381728 -0.069290964938346508 0"/>
-                <site name="left_0_-ysite2_minus30" group="1" rgba="1 1 1 1" pos="-0.028701257427381728 -0.069290964938346508 0"/>
+                <site name="left_j0_b2_site0" class="bellows_site" pos="0 0.074999999999999997 0"/>
+                <site name="left_j0_b2_site1" class="bellows_site" pos="0 -0.074999999999999997 0"/>
+                <site name="left_j0_b2_site2" class="bellows_site" pos="0.074999999999999997 0 0"/>
+                <site name="left_j0_b2_site3" class="bellows_site" pos="-0.074999999999999997 0 0"/>
+                <site name="left_j0_b2_site0_A" rgba="1 1 1 1" pos="-0.028701257427381728 0.069290964938346508 0"/>
+                <site name="left_j0_b2_site0_B" group="1" rgba="1 1 1 1" pos="0.028701257427381728 0.069290964938346508 0"/>
+                <site name="left_j0_b2_site1_A" rgba="1 1 1 1" pos="0.028701257427381728 -0.069290964938346508 0"/>
+                <site name="left_j0_b2_site1_B" group="1" rgba="1 1 1 1" pos="-0.028701257427381728 -0.069290964938346508 0"/>
+                <site name="left_j0_b2_site2_A" rgba="1 1 1 1" pos="0.069290964938346508 0.028701257427381728 0"/>
+                <site name="left_j0_b2_site2_B" group="1" rgba="1 1 1 1" pos="0.069290964938346508 -0.028701257427381728 0"/>
+                <site name="left_j0_b2_site3_A" rgba="1 1 1 1" pos="-0.069290964938346508 -0.028701257427381728 0"/>
+                <site name="left_j0_b2_site3_B" group="1" rgba="1 1 1 1" pos="-0.069290964938346508 0.028701257427381728 0"/>
                 <body name="left_0_B3" childclass="large_joint" pos="0 0 -0.044444444444444446">
                   <geom name="left_0_G3" class="large_joint"/>
                   <inertial pos="0 0 0" mass="0.53059999999999996" diaginertia="0.002094491640946502 0.002094491640946502 0.0041453124999999997"/>
                   <joint name="left_0_Jx_2" class="large_joint" axis="1 0 0"/>
                   <joint name="left_0_Jy_2" class="large_joint" axis="0 1 0"/>
-                  <site name="left_0_xsite3" class="bellows_site" pos="0.074999999999999997 0 0"/>
-                  <site name="left_0_xsite3_plus30" group="1" rgba="1 1 1 1" pos="0.069290964938346508 0.028701257427381728 0"/>
-                  <site name="left_0_xsite3_minus30" group="1" rgba="1 1 1 1" pos="0.069290964938346508 -0.028701257427381728 0"/>
-                  <site name="left_0_-xsite3" class="bellows_site" pos="-0.074999999999999997 0 0"/>
-                  <site name="left_0_-xsite3_plus30" group="1" rgba="1 1 1 1" pos="-0.069290964938346508 -0.028701257427381728 0"/>
-                  <site name="left_0_-xsite3_minus30" group="1" rgba="1 1 1 1" pos="-0.069290964938346508 0.028701257427381728 0"/>
-                  <site name="left_0_ysite3" class="bellows_site" pos="0 0.074999999999999997 0"/>
-                  <site name="left_0_ysite3_plus30" group="1" rgba="1 1 1 1" pos="-0.028701257427381728 0.069290964938346508 0"/>
-                  <site name="left_0_ysite3_minus30" group="1" rgba="1 1 1 1" pos="0.028701257427381728 0.069290964938346508 0"/>
-                  <site name="left_0_-ysite3" class="bellows_site" pos="0 -0.074999999999999997 0"/>
-                  <site name="left_0_-ysite3_plus30" group="1" rgba="1 1 1 1" pos="0.028701257427381728 -0.069290964938346508 0"/>
-                  <site name="left_0_-ysite3_minus30" group="1" rgba="1 1 1 1" pos="-0.028701257427381728 -0.069290964938346508 0"/>
+                  <site name="left_j0_b3_site0" class="bellows_site" pos="0 0.074999999999999997 0"/>
+                  <site name="left_j0_b3_site1" class="bellows_site" pos="0 -0.074999999999999997 0"/>
+                  <site name="left_j0_b3_site2" class="bellows_site" pos="0.074999999999999997 0 0"/>
+                  <site name="left_j0_b3_site3" class="bellows_site" pos="-0.074999999999999997 0 0"/>
+                  <site name="left_j0_b3_site0_A" rgba="1 1 1 1" pos="-0.028701257427381728 0.069290964938346508 0"/>
+                  <site name="left_j0_b3_site0_B" group="1" rgba="1 1 1 1" pos="0.028701257427381728 0.069290964938346508 0"/>
+                  <site name="left_j0_b3_site1_A" rgba="1 1 1 1" pos="0.028701257427381728 -0.069290964938346508 0"/>
+                  <site name="left_j0_b3_site1_B" group="1" rgba="1 1 1 1" pos="-0.028701257427381728 -0.069290964938346508 0"/>
+                  <site name="left_j0_b3_site2_A" rgba="1 1 1 1" pos="0.069290964938346508 0.028701257427381728 0"/>
+                  <site name="left_j0_b3_site2_B" group="1" rgba="1 1 1 1" pos="0.069290964938346508 -0.028701257427381728 0"/>
+                  <site name="left_j0_b3_site3_A" rgba="1 1 1 1" pos="-0.069290964938346508 -0.028701257427381728 0"/>
+                  <site name="left_j0_b3_site3_B" group="1" rgba="1 1 1 1" pos="-0.069290964938346508 0.028701257427381728 0"/>
                   <body name="left_0_B4" childclass="large_joint" pos="0 0 -0.044444444444444446">
                     <geom name="left_0_G4" class="large_joint"/>
                     <inertial pos="0 0 0" mass="0.53059999999999996" diaginertia="0.002094491640946502 0.002094491640946502 0.0041453124999999997"/>
                     <joint name="left_0_Jx_3" class="large_joint" axis="1 0 0"/>
                     <joint name="left_0_Jy_3" class="large_joint" axis="0 1 0"/>
-                    <site name="left_0_xsite4" class="bellows_site" pos="0.074999999999999997 0 0"/>
-                    <site name="left_0_xsite4_plus30" group="1" rgba="1 1 1 1" pos="0.069290964938346508 0.028701257427381728 0"/>
-                    <site name="left_0_xsite4_minus30" group="1" rgba="1 1 1 1" pos="0.069290964938346508 -0.028701257427381728 0"/>
-                    <site name="left_0_-xsite4" class="bellows_site" pos="-0.074999999999999997 0 0"/>
-                    <site name="left_0_-xsite4_plus30" group="1" rgba="1 1 1 1" pos="-0.069290964938346508 -0.028701257427381728 0"/>
-                    <site name="left_0_-xsite4_minus30" group="1" rgba="1 1 1 1" pos="-0.069290964938346508 0.028701257427381728 0"/>
-                    <site name="left_0_ysite4" class="bellows_site" pos="0 0.074999999999999997 0"/>
-                    <site name="left_0_ysite4_plus30" group="1" rgba="1 1 1 1" pos="-0.028701257427381728 0.069290964938346508 0"/>
-                    <site name="left_0_ysite4_minus30" group="1" rgba="1 1 1 1" pos="0.028701257427381728 0.069290964938346508 0"/>
-                    <site name="left_0_-ysite4" class="bellows_site" pos="0 -0.074999999999999997 0"/>
-                    <site name="left_0_-ysite4_plus30" group="1" rgba="1 1 1 1" pos="0.028701257427381728 -0.069290964938346508 0"/>
-                    <site name="left_0_-ysite4_minus30" group="1" rgba="1 1 1 1" pos="-0.028701257427381728 -0.069290964938346508 0"/>
+                    <site name="left_j0_b4_site0" class="bellows_site" pos="0 0.074999999999999997 0"/>
+                    <site name="left_j0_b4_site1" class="bellows_site" pos="0 -0.074999999999999997 0"/>
+                    <site name="left_j0_b4_site2" class="bellows_site" pos="0.074999999999999997 0 0"/>
+                    <site name="left_j0_b4_site3" class="bellows_site" pos="-0.074999999999999997 0 0"/>
+                    <site name="left_j0_b4_site0_A" rgba="1 1 1 1" pos="-0.028701257427381728 0.069290964938346508 0"/>
+                    <site name="left_j0_b4_site0_B" group="1" rgba="1 1 1 1" pos="0.028701257427381728 0.069290964938346508 0"/>
+                    <site name="left_j0_b4_site1_A" rgba="1 1 1 1" pos="0.028701257427381728 -0.069290964938346508 0"/>
+                    <site name="left_j0_b4_site1_B" group="1" rgba="1 1 1 1" pos="-0.028701257427381728 -0.069290964938346508 0"/>
+                    <site name="left_j0_b4_site2_A" rgba="1 1 1 1" pos="0.069290964938346508 0.028701257427381728 0"/>
+                    <site name="left_j0_b4_site2_B" group="1" rgba="1 1 1 1" pos="0.069290964938346508 -0.028701257427381728 0"/>
+                    <site name="left_j0_b4_site3_A" rgba="1 1 1 1" pos="-0.069290964938346508 -0.028701257427381728 0"/>
+                    <site name="left_j0_b4_site3_B" group="1" rgba="1 1 1 1" pos="-0.069290964938346508 0.028701257427381728 0"/>
                     <body name="left_link0" pos="0 0 -0.11111111111111112" euler="0 0 -45">
                       <inertial pos="0 0 0" mass="3.8809999999999998" diaginertia="0.108 0.108 0.023"/>
                       <geom name="left_link0" type="cylinder" size="0.13 0.10000000000000001" rgba="0 0 0 1"/>
@@ -8213,46 +8229,46 @@
                       <body name="left_1_B0" childclass="medium_joint" pos="0 0 -0.11111111111111112" euler="0 0 45">
                         <geom name="left_1_G0" class="medium_joint"/>
                         <inertial pos="0 0 0" mass="0.26519999999999999" diaginertia="0.00067391358024691372 0.00067391358024691372 0.0013260000000000001"/>
-                        <site name="left_1_xsite0" class="bellows_site" pos="0.059999999999999998 0 0"/>
-                        <site name="left_1_-xsite0" class="bellows_site" pos="-0.059999999999999998 0 0"/>
-                        <site name="left_1_ysite0" class="bellows_site" pos="0 0.059999999999999998 0"/>
-                        <site name="left_1_-ysite0" class="bellows_site" pos="0 -0.059999999999999998 0"/>
+                        <site name="left_j1_b0_site0" class="bellows_site" pos="0 0.059999999999999998 0"/>
+                        <site name="left_j1_b0_site1" class="bellows_site" pos="0 -0.059999999999999998 0"/>
+                        <site name="left_j1_b0_site2" class="bellows_site" pos="0.059999999999999998 0 0"/>
+                        <site name="left_j1_b0_site3" class="bellows_site" pos="-0.059999999999999998 0 0"/>
                         <body name="left_1_B1" pos="0 0 -0.044444444444444446">
                           <geom name="left_1_G1" class="medium_joint"/>
                           <inertial pos="0 0 0" mass="0.26519999999999999" diaginertia="0.00067391358024691372 0.00067391358024691372 0.0013260000000000001"/>
                           <joint name="left_1_Jx_0" class="medium_joint" axis="1 0 0"/>
                           <joint name="left_1_Jy_0" class="medium_joint" axis="0 1 0"/>
-                          <site name="left_1_xsite1" class="bellows_site" pos="0.059999999999999998 0 0"/>
-                          <site name="left_1_-xsite1" class="bellows_site" pos="-0.059999999999999998 0 0"/>
-                          <site name="left_1_ysite1" class="bellows_site" pos="0 0.059999999999999998 0"/>
-                          <site name="left_1_-ysite1" class="bellows_site" pos="0 -0.059999999999999998 0"/>
+                          <site name="left_j1_b1_site0" class="bellows_site" pos="0 0.059999999999999998 0"/>
+                          <site name="left_j1_b1_site1" class="bellows_site" pos="0 -0.059999999999999998 0"/>
+                          <site name="left_j1_b1_site2" class="bellows_site" pos="0.059999999999999998 0 0"/>
+                          <site name="left_j1_b1_site3" class="bellows_site" pos="-0.059999999999999998 0 0"/>
                           <body name="left_1_B2" pos="0 0 -0.044444444444444446">
                             <geom name="left_1_G2" class="medium_joint"/>
                             <inertial pos="0 0 0" mass="0.26519999999999999" diaginertia="0.00067391358024691372 0.00067391358024691372 0.0013260000000000001"/>
                             <joint name="left_1_Jx_1" class="medium_joint" axis="1 0 0"/>
                             <joint name="left_1_Jy_1" class="medium_joint" axis="0 1 0"/>
-                            <site name="left_1_xsite2" class="bellows_site" pos="0.059999999999999998 0 0"/>
-                            <site name="left_1_-xsite2" class="bellows_site" pos="-0.059999999999999998 0 0"/>
-                            <site name="left_1_ysite2" class="bellows_site" pos="0 0.059999999999999998 0"/>
-                            <site name="left_1_-ysite2" class="bellows_site" pos="0 -0.059999999999999998 0"/>
+                            <site name="left_j1_b2_site0" class="bellows_site" pos="0 0.059999999999999998 0"/>
+                            <site name="left_j1_b2_site1" class="bellows_site" pos="0 -0.059999999999999998 0"/>
+                            <site name="left_j1_b2_site2" class="bellows_site" pos="0.059999999999999998 0 0"/>
+                            <site name="left_j1_b2_site3" class="bellows_site" pos="-0.059999999999999998 0 0"/>
                             <body name="left_1_B3" pos="0 0 -0.044444444444444446">
                               <geom name="left_1_G3" class="medium_joint"/>
                               <inertial pos="0 0 0" mass="0.26519999999999999" diaginertia="0.00067391358024691372 0.00067391358024691372 0.0013260000000000001"/>
                               <joint name="left_1_Jx_2" class="medium_joint" axis="1 0 0"/>
                               <joint name="left_1_Jy_2" class="medium_joint" axis="0 1 0"/>
-                              <site name="left_1_xsite3" class="bellows_site" pos="0.059999999999999998 0 0"/>
-                              <site name="left_1_-xsite3" class="bellows_site" pos="-0.059999999999999998 0 0"/>
-                              <site name="left_1_ysite3" class="bellows_site" pos="0 0.059999999999999998 0"/>
-                              <site name="left_1_-ysite3" class="bellows_site" pos="0 -0.059999999999999998 0"/>
+                              <site name="left_j1_b3_site0" class="bellows_site" pos="0 0.059999999999999998 0"/>
+                              <site name="left_j1_b3_site1" class="bellows_site" pos="0 -0.059999999999999998 0"/>
+                              <site name="left_j1_b3_site2" class="bellows_site" pos="0.059999999999999998 0 0"/>
+                              <site name="left_j1_b3_site3" class="bellows_site" pos="-0.059999999999999998 0 0"/>
                               <body name="left_1_B4" pos="0 0 -0.044444444444444446">
                                 <geom name="left_1_G4" class="medium_joint"/>
                                 <inertial pos="0 0 0" mass="0.26519999999999999" diaginertia="0.00067391358024691372 0.00067391358024691372 0.0013260000000000001"/>
                                 <joint name="left_1_Jx_3" class="medium_joint" axis="1 0 0"/>
                                 <joint name="left_1_Jy_3" class="medium_joint" axis="0 1 0"/>
-                                <site name="left_1_xsite4" class="bellows_site" pos="0.059999999999999998 0 0"/>
-                                <site name="left_1_-xsite4" class="bellows_site" pos="-0.059999999999999998 0 0"/>
-                                <site name="left_1_ysite4" class="bellows_site" pos="0 0.059999999999999998 0"/>
-                                <site name="left_1_-ysite4" class="bellows_site" pos="0 -0.059999999999999998 0"/>
+                                <site name="left_j1_b4_site0" class="bellows_site" pos="0 0.059999999999999998 0"/>
+                                <site name="left_j1_b4_site1" class="bellows_site" pos="0 -0.059999999999999998 0"/>
+                                <site name="left_j1_b4_site2" class="bellows_site" pos="0.059999999999999998 0 0"/>
+                                <site name="left_j1_b4_site3" class="bellows_site" pos="-0.059999999999999998 0 0"/>
                                 <body name="left_link1" pos="0 0 -0.091111111111111115" euler="0 0 -45">
                                   <inertial pos="0 0 0" mass="3.4740000000000002" diaginertia="0.050000000000000003 0.050000000000000003 0.017000000000000001"/>
                                   <geom name="left_link1" type="cylinder" size="0.10000000000000001 0.080000000000000002" rgba="0 0 0 1"/>
@@ -10307,46 +10323,46 @@
                                   <body name="left_2_B0" childclass="small_joint" pos="0 0 -0.091111111111111115" euler="0 0 45">
                                     <geom name="left_2_G0" class="small_joint"/>
                                     <inertial pos="0 0 0" mass="0.26519999999999999" diaginertia="0.00043523358024691365 0.00043523358024691365 0.00084864000000000001"/>
-                                    <site name="left_2_xsite0" class="bellows_site" pos="0.040000000000000001 0 0"/>
-                                    <site name="left_2_-xsite0" class="bellows_site" pos="-0.040000000000000001 0 0"/>
-                                    <site name="left_2_ysite0" class="bellows_site" pos="0 0.040000000000000001 0"/>
-                                    <site name="left_2_-ysite0" class="bellows_site" pos="0 -0.040000000000000001 0"/>
+                                    <site name="left_j2_b0_site0" class="bellows_site" pos="0 0.040000000000000001 0"/>
+                                    <site name="left_j2_b0_site1" class="bellows_site" pos="0 -0.040000000000000001 0"/>
+                                    <site name="left_j2_b0_site2" class="bellows_site" pos="0.040000000000000001 0 0"/>
+                                    <site name="left_j2_b0_site3" class="bellows_site" pos="-0.040000000000000001 0 0"/>
                                     <body name="left_2_B1" childclass="small_joint" pos="0 0 -0.044444444444444446">
                                       <geom name="left_2_G1" class="small_joint"/>
                                       <inertial pos="0 0 0" mass="0.26519999999999999" diaginertia="0.00043523358024691365 0.00043523358024691365 0.00084864000000000001"/>
                                       <joint name="left_2_Jx_0" class="small_joint" axis="1 0 0"/>
                                       <joint name="left_2_Jy_0" class="small_joint" axis="0 1 0"/>
-                                      <site name="left_2_xsite1" class="bellows_site" pos="0.040000000000000001 0 0"/>
-                                      <site name="left_2_-xsite1" class="bellows_site" pos="-0.040000000000000001 0 0"/>
-                                      <site name="left_2_ysite1" class="bellows_site" pos="0 0.040000000000000001 0"/>
-                                      <site name="left_2_-ysite1" class="bellows_site" pos="0 -0.040000000000000001 0"/>
+                                      <site name="left_j2_b1_site0" class="bellows_site" pos="0 0.040000000000000001 0"/>
+                                      <site name="left_j2_b1_site1" class="bellows_site" pos="0 -0.040000000000000001 0"/>
+                                      <site name="left_j2_b1_site2" class="bellows_site" pos="0.040000000000000001 0 0"/>
+                                      <site name="left_j2_b1_site3" class="bellows_site" pos="-0.040000000000000001 0 0"/>
                                       <body name="left_2_B2" childclass="small_joint" pos="0 0 -0.044444444444444446">
                                         <geom name="left_2_G2" class="small_joint"/>
                                         <inertial pos="0 0 0" mass="0.26519999999999999" diaginertia="0.00043523358024691365 0.00043523358024691365 0.00084864000000000001"/>
                                         <joint name="left_2_Jx_1" class="small_joint" axis="1 0 0"/>
                                         <joint name="left_2_Jy_1" class="small_joint" axis="0 1 0"/>
-                                        <site name="left_2_xsite2" class="bellows_site" pos="0.040000000000000001 0 0"/>
-                                        <site name="left_2_-xsite2" class="bellows_site" pos="-0.040000000000000001 0 0"/>
-                                        <site name="left_2_ysite2" class="bellows_site" pos="0 0.040000000000000001 0"/>
-                                        <site name="left_2_-ysite2" class="bellows_site" pos="0 -0.040000000000000001 0"/>
+                                        <site name="left_j2_b2_site0" class="bellows_site" pos="0 0.040000000000000001 0"/>
+                                        <site name="left_j2_b2_site1" class="bellows_site" pos="0 -0.040000000000000001 0"/>
+                                        <site name="left_j2_b2_site2" class="bellows_site" pos="0.040000000000000001 0 0"/>
+                                        <site name="left_j2_b2_site3" class="bellows_site" pos="-0.040000000000000001 0 0"/>
                                         <body name="left_2_B3" childclass="small_joint" pos="0 0 -0.044444444444444446">
                                           <geom name="left_2_G3" class="small_joint"/>
                                           <inertial pos="0 0 0" mass="0.26519999999999999" diaginertia="0.00043523358024691365 0.00043523358024691365 0.00084864000000000001"/>
                                           <joint name="left_2_Jx_2" class="small_joint" axis="1 0 0"/>
                                           <joint name="left_2_Jy_2" class="small_joint" axis="0 1 0"/>
-                                          <site name="left_2_xsite3" class="bellows_site" pos="0.040000000000000001 0 0"/>
-                                          <site name="left_2_-xsite3" class="bellows_site" pos="-0.040000000000000001 0 0"/>
-                                          <site name="left_2_ysite3" class="bellows_site" pos="0 0.040000000000000001 0"/>
-                                          <site name="left_2_-ysite3" class="bellows_site" pos="0 -0.040000000000000001 0"/>
+                                          <site name="left_j2_b3_site0" class="bellows_site" pos="0 0.040000000000000001 0"/>
+                                          <site name="left_j2_b3_site1" class="bellows_site" pos="0 -0.040000000000000001 0"/>
+                                          <site name="left_j2_b3_site2" class="bellows_site" pos="0.040000000000000001 0 0"/>
+                                          <site name="left_j2_b3_site3" class="bellows_site" pos="-0.040000000000000001 0 0"/>
                                           <body name="left_2_B4" childclass="small_joint" pos="0 0 -0.044444444444444446">
                                             <geom name="left_2_G4" class="small_joint"/>
                                             <inertial pos="0 0 0" mass="0.26519999999999999" diaginertia="0.00043523358024691365 0.00043523358024691365 0.00084864000000000001"/>
                                             <joint name="left_2_Jx_3" class="small_joint" axis="1 0 0"/>
                                             <joint name="left_2_Jy_3" class="small_joint" axis="0 1 0"/>
-                                            <site name="left_2_xsite4" class="bellows_site" pos="0.040000000000000001 0 0"/>
-                                            <site name="left_2_-xsite4" class="bellows_site" pos="-0.040000000000000001 0 0"/>
-                                            <site name="left_2_ysite4" class="bellows_site" pos="0 0.040000000000000001 0"/>
-                                            <site name="left_2_-ysite4" class="bellows_site" pos="0 -0.040000000000000001 0"/>
+                                            <site name="left_j2_b4_site0" class="bellows_site" pos="0 0.040000000000000001 0"/>
+                                            <site name="left_j2_b4_site1" class="bellows_site" pos="0 -0.040000000000000001 0"/>
+                                            <site name="left_j2_b4_site2" class="bellows_site" pos="0.040000000000000001 0 0"/>
+                                            <site name="left_j2_b4_site3" class="bellows_site" pos="-0.040000000000000001 0 0"/>
                                           </body>
                                         </body>
                                       </body>
@@ -10376,368 +10392,312 @@
   </contact>
   <tendon>
     <spatial name="right_0_bellows0" class="tendon" rgba="0 0 0 0">
-      <site site="right_0_ysite0"/>
-      <site site="right_0_ysite1"/>
-      <site site="right_0_ysite2"/>
-      <site site="right_0_ysite3"/>
-      <site site="right_0_ysite4"/>
+      <site site="right_j0_b0_site0"/>
+      <site site="right_j0_b1_site0"/>
+      <site site="right_j0_b2_site0"/>
+      <site site="right_j0_b3_site0"/>
+      <site site="right_j0_b4_site0"/>
     </spatial>
     <spatial name="right_0_bellows1" class="tendon" rgba="0 0 0 0">
-      <site site="right_0_-ysite0"/>
-      <site site="right_0_-ysite1"/>
-      <site site="right_0_-ysite2"/>
-      <site site="right_0_-ysite3"/>
-      <site site="right_0_-ysite4"/>
+      <site site="right_j0_b0_site1"/>
+      <site site="right_j0_b1_site1"/>
+      <site site="right_j0_b2_site1"/>
+      <site site="right_j0_b3_site1"/>
+      <site site="right_j0_b4_site1"/>
     </spatial>
     <spatial name="right_0_bellows2" class="tendon" rgba="0 0 0 0">
-      <site site="right_0_-xsite0"/>
-      <site site="right_0_-xsite1"/>
-      <site site="right_0_-xsite2"/>
-      <site site="right_0_-xsite3"/>
-      <site site="right_0_-xsite4"/>
+      <site site="right_j0_b0_site2"/>
+      <site site="right_j0_b1_site2"/>
+      <site site="right_j0_b2_site2"/>
+      <site site="right_j0_b3_site2"/>
+      <site site="right_j0_b4_site2"/>
     </spatial>
     <spatial name="right_0_bellows3" class="tendon" rgba="0 0 0 0">
-      <site site="right_0_xsite0"/>
-      <site site="right_0_xsite1"/>
-      <site site="right_0_xsite2"/>
-      <site site="right_0_xsite3"/>
-      <site site="right_0_xsite4"/>
+      <site site="right_j0_b0_site3"/>
+      <site site="right_j0_b1_site3"/>
+      <site site="right_j0_b2_site3"/>
+      <site site="right_j0_b3_site3"/>
+      <site site="right_j0_b4_site3"/>
     </spatial>
-    <spatial name="right_0_bellows0_viz1" class="tendon">
-      <site site="right_0_ysite1_plus30"/>
-      <site site="right_0_ysite2_plus30"/>
-      <site site="right_0_ysite3_plus30"/>
-      <site site="right_0_ysite4_plus30"/>
+    <spatial name="right_0_bellows0_A" class="tendon">
+      <site site="right_j0_b0_site0_A"/>
+      <site site="right_j0_b1_site0_A"/>
+      <site site="right_j0_b2_site0_A"/>
+      <site site="right_j0_b3_site0_A"/>
+      <site site="right_j0_b4_site0_A"/>
     </spatial>
-    <spatial name="right_0_bellows0_viz2" class="tendon">
-      <site site="right_0_ysite1_minus30"/>
-      <site site="right_0_ysite2_minus30"/>
-      <site site="right_0_ysite3_minus30"/>
-      <site site="right_0_ysite4_minus30"/>
+    <spatial name="right_0_bellows0_B" class="tendon">
+      <site site="right_j0_b0_site0_B"/>
+      <site site="right_j0_b1_site0_B"/>
+      <site site="right_j0_b2_site0_B"/>
+      <site site="right_j0_b3_site0_B"/>
+      <site site="right_j0_b4_site0_B"/>
     </spatial>
-    <spatial name="right_0_bellows1_viz1" class="tendon">
-      <site site="right_0_-ysite1_plus30"/>
-      <site site="right_0_-ysite2_plus30"/>
-      <site site="right_0_-ysite3_plus30"/>
-      <site site="right_0_-ysite4_plus30"/>
+    <spatial name="right_0_bellows1_A" class="tendon">
+      <site site="right_j0_b0_site1_A"/>
+      <site site="right_j0_b1_site1_A"/>
+      <site site="right_j0_b2_site1_A"/>
+      <site site="right_j0_b3_site1_A"/>
+      <site site="right_j0_b4_site1_A"/>
     </spatial>
-    <spatial name="right_0_bellows1_viz2" class="tendon">
-      <site site="right_0_-ysite1_minus30"/>
-      <site site="right_0_-ysite2_minus30"/>
-      <site site="right_0_-ysite3_minus30"/>
-      <site site="right_0_-ysite4_minus30"/>
+    <spatial name="right_0_bellows1_B" class="tendon">
+      <site site="right_j0_b0_site1_B"/>
+      <site site="right_j0_b1_site1_B"/>
+      <site site="right_j0_b2_site1_B"/>
+      <site site="right_j0_b3_site1_B"/>
+      <site site="right_j0_b4_site1_B"/>
     </spatial>
-    <spatial name="right_0_bellows2_viz1" class="tendon">
-      <site site="right_0_-xsite1_plus30"/>
-      <site site="right_0_-xsite2_plus30"/>
-      <site site="right_0_-xsite3_plus30"/>
-      <site site="right_0_-xsite4_plus30"/>
+    <spatial name="right_0_bellows2_A" class="tendon">
+      <site site="right_j0_b0_site2_A"/>
+      <site site="right_j0_b1_site2_A"/>
+      <site site="right_j0_b2_site2_A"/>
+      <site site="right_j0_b3_site2_A"/>
+      <site site="right_j0_b4_site2_A"/>
     </spatial>
-    <spatial name="right_0_bellows2_viz2" class="tendon">
-      <site site="right_0_-xsite1_minus30"/>
-      <site site="right_0_-xsite2_minus30"/>
-      <site site="right_0_-xsite3_minus30"/>
-      <site site="right_0_-xsite4_minus30"/>
+    <spatial name="right_0_bellows2_B" class="tendon">
+      <site site="right_j0_b0_site2_B"/>
+      <site site="right_j0_b1_site2_B"/>
+      <site site="right_j0_b2_site2_B"/>
+      <site site="right_j0_b3_site2_B"/>
+      <site site="right_j0_b4_site2_B"/>
     </spatial>
-    <spatial name="right_0_bellows3_viz1" class="tendon">
-      <site site="right_0_xsite1_plus30"/>
-      <site site="right_0_xsite2_plus30"/>
-      <site site="right_0_xsite3_plus30"/>
-      <site site="right_0_xsite4_plus30"/>
+    <spatial name="right_0_bellows3_A" class="tendon">
+      <site site="right_j0_b0_site3_A"/>
+      <site site="right_j0_b1_site3_A"/>
+      <site site="right_j0_b2_site3_A"/>
+      <site site="right_j0_b3_site3_A"/>
+      <site site="right_j0_b4_site3_A"/>
     </spatial>
-    <spatial name="right_0_bellows3_viz2" class="tendon">
-      <site site="right_0_xsite1_minus30"/>
-      <site site="right_0_xsite2_minus30"/>
-      <site site="right_0_xsite3_minus30"/>
-      <site site="right_0_xsite4_minus30"/>
+    <spatial name="right_0_bellows3_B" class="tendon">
+      <site site="right_j0_b0_site3_B"/>
+      <site site="right_j0_b1_site3_B"/>
+      <site site="right_j0_b2_site3_B"/>
+      <site site="right_j0_b3_site3_B"/>
+      <site site="right_j0_b4_site3_B"/>
     </spatial>
     <spatial name="right_1_bellows0" class="tendon">
-      <site site="right_1_ysite0"/>
-      <site site="right_1_ysite1"/>
-      <site site="right_1_ysite2"/>
-      <site site="right_1_ysite3"/>
-      <site site="right_1_ysite4"/>
+      <site site="right_j1_b0_site0"/>
+      <site site="right_j1_b1_site0"/>
+      <site site="right_j1_b2_site0"/>
+      <site site="right_j1_b3_site0"/>
+      <site site="right_j1_b4_site0"/>
     </spatial>
     <spatial name="right_1_bellows1" class="tendon">
-      <site site="right_1_-ysite0"/>
-      <site site="right_1_-ysite1"/>
-      <site site="right_1_-ysite2"/>
-      <site site="right_1_-ysite3"/>
-      <site site="right_1_-ysite4"/>
+      <site site="right_j1_b0_site1"/>
+      <site site="right_j1_b1_site1"/>
+      <site site="right_j1_b2_site1"/>
+      <site site="right_j1_b3_site1"/>
+      <site site="right_j1_b4_site1"/>
     </spatial>
     <spatial name="right_1_bellows2" class="tendon">
-      <site site="right_1_-xsite0"/>
-      <site site="right_1_-xsite1"/>
-      <site site="right_1_-xsite2"/>
-      <site site="right_1_-xsite3"/>
-      <site site="right_1_-xsite4"/>
+      <site site="right_j1_b0_site2"/>
+      <site site="right_j1_b1_site2"/>
+      <site site="right_j1_b2_site2"/>
+      <site site="right_j1_b3_site2"/>
+      <site site="right_j1_b4_site2"/>
     </spatial>
     <spatial name="right_1_bellows3" class="tendon">
-      <site site="right_1_xsite0"/>
-      <site site="right_1_xsite1"/>
-      <site site="right_1_xsite2"/>
-      <site site="right_1_xsite3"/>
-      <site site="right_1_xsite4"/>
+      <site site="right_j1_b0_site3"/>
+      <site site="right_j1_b1_site3"/>
+      <site site="right_j1_b2_site3"/>
+      <site site="right_j1_b3_site3"/>
+      <site site="right_j1_b4_site3"/>
     </spatial>
     <spatial name="right_2_bellows0" class="tendon">
-      <site site="right_2_ysite0"/>
-      <site site="right_2_ysite1"/>
-      <site site="right_2_ysite2"/>
-      <site site="right_2_ysite3"/>
-      <site site="right_2_ysite4"/>
+      <site site="right_j2_b0_site0"/>
+      <site site="right_j2_b1_site0"/>
+      <site site="right_j2_b2_site0"/>
+      <site site="right_j2_b3_site0"/>
+      <site site="right_j2_b4_site0"/>
     </spatial>
     <spatial name="right_2_bellows1" class="tendon">
-      <site site="right_2_-ysite0"/>
-      <site site="right_2_-ysite1"/>
-      <site site="right_2_-ysite2"/>
-      <site site="right_2_-ysite3"/>
-      <site site="right_2_-ysite4"/>
+      <site site="right_j2_b0_site1"/>
+      <site site="right_j2_b1_site1"/>
+      <site site="right_j2_b2_site1"/>
+      <site site="right_j2_b3_site1"/>
+      <site site="right_j2_b4_site1"/>
     </spatial>
     <spatial name="right_2_bellows2" class="tendon">
-      <site site="right_2_-xsite0"/>
-      <site site="right_2_-xsite1"/>
-      <site site="right_2_-xsite2"/>
-      <site site="right_2_-xsite3"/>
-      <site site="right_2_-xsite4"/>
+      <site site="right_j2_b0_site2"/>
+      <site site="right_j2_b1_site2"/>
+      <site site="right_j2_b2_site2"/>
+      <site site="right_j2_b3_site2"/>
+      <site site="right_j2_b4_site2"/>
     </spatial>
     <spatial name="right_2_bellows3" class="tendon">
-      <site site="right_2_xsite0"/>
-      <site site="right_2_xsite1"/>
-      <site site="right_2_xsite2"/>
-      <site site="right_2_xsite3"/>
-      <site site="right_2_xsite4"/>
+      <site site="right_j2_b0_site3"/>
+      <site site="right_j2_b1_site3"/>
+      <site site="right_j2_b2_site3"/>
+      <site site="right_j2_b3_site3"/>
+      <site site="right_j2_b4_site3"/>
     </spatial>
-    <fixed name="right_x0" class="/">
-      <joint joint="right_0_Jx_0" coef="1"/>
-      <joint joint="right_0_Jx_1" coef="1"/>
-      <joint joint="right_0_Jx_2" coef="1"/>
-      <joint joint="right_0_Jx_3" coef="1"/>
-    </fixed>
-    <fixed name="right_y0" class="/">
-      <joint joint="right_0_Jy_0" coef="1"/>
-      <joint joint="right_0_Jy_1" coef="1"/>
-      <joint joint="right_0_Jy_2" coef="1"/>
-      <joint joint="right_0_Jy_3" coef="1"/>
-    </fixed>
-    <fixed name="right_x1" class="/">
-      <joint joint="right_1_Jx_0" coef="1"/>
-      <joint joint="right_1_Jx_1" coef="1"/>
-      <joint joint="right_1_Jx_2" coef="1"/>
-      <joint joint="right_1_Jx_3" coef="1"/>
-    </fixed>
-    <fixed name="right_y1" class="/">
-      <joint joint="right_1_Jy_0" coef="1"/>
-      <joint joint="right_1_Jy_1" coef="1"/>
-      <joint joint="right_1_Jy_2" coef="1"/>
-      <joint joint="right_1_Jy_3" coef="1"/>
-    </fixed>
-    <fixed name="right_x2" class="/">
-      <joint joint="right_2_Jx_0" coef="1"/>
-      <joint joint="right_2_Jx_1" coef="1"/>
-      <joint joint="right_2_Jx_2" coef="1"/>
-      <joint joint="right_2_Jx_3" coef="1"/>
-    </fixed>
-    <fixed name="right_y2" class="/">
-      <joint joint="right_2_Jy_0" coef="1"/>
-      <joint joint="right_2_Jy_1" coef="1"/>
-      <joint joint="right_2_Jy_2" coef="1"/>
-      <joint joint="right_2_Jy_3" coef="1"/>
-    </fixed>
     <spatial name="left_0_bellows0" class="tendon" rgba="0 0 0 0">
-      <site site="left_0_ysite0"/>
-      <site site="left_0_ysite1"/>
-      <site site="left_0_ysite2"/>
-      <site site="left_0_ysite3"/>
-      <site site="left_0_ysite4"/>
+      <site site="left_j0_b0_site0"/>
+      <site site="left_j0_b1_site0"/>
+      <site site="left_j0_b2_site0"/>
+      <site site="left_j0_b3_site0"/>
+      <site site="left_j0_b4_site0"/>
     </spatial>
     <spatial name="left_0_bellows1" class="tendon" rgba="0 0 0 0">
-      <site site="left_0_-ysite0"/>
-      <site site="left_0_-ysite1"/>
-      <site site="left_0_-ysite2"/>
-      <site site="left_0_-ysite3"/>
-      <site site="left_0_-ysite4"/>
+      <site site="left_j0_b0_site1"/>
+      <site site="left_j0_b1_site1"/>
+      <site site="left_j0_b2_site1"/>
+      <site site="left_j0_b3_site1"/>
+      <site site="left_j0_b4_site1"/>
     </spatial>
     <spatial name="left_0_bellows2" class="tendon" rgba="0 0 0 0">
-      <site site="left_0_-xsite0"/>
-      <site site="left_0_-xsite1"/>
-      <site site="left_0_-xsite2"/>
-      <site site="left_0_-xsite3"/>
-      <site site="left_0_-xsite4"/>
+      <site site="left_j0_b0_site2"/>
+      <site site="left_j0_b1_site2"/>
+      <site site="left_j0_b2_site2"/>
+      <site site="left_j0_b3_site2"/>
+      <site site="left_j0_b4_site2"/>
     </spatial>
     <spatial name="left_0_bellows3" class="tendon" rgba="0 0 0 0">
-      <site site="left_0_xsite0"/>
-      <site site="left_0_xsite1"/>
-      <site site="left_0_xsite2"/>
-      <site site="left_0_xsite3"/>
-      <site site="left_0_xsite4"/>
+      <site site="left_j0_b0_site3"/>
+      <site site="left_j0_b1_site3"/>
+      <site site="left_j0_b2_site3"/>
+      <site site="left_j0_b3_site3"/>
+      <site site="left_j0_b4_site3"/>
     </spatial>
-    <spatial name="left_0_bellows0_viz1" class="tendon">
-      <site site="left_0_ysite1_plus30"/>
-      <site site="left_0_ysite2_plus30"/>
-      <site site="left_0_ysite3_plus30"/>
-      <site site="left_0_ysite4_plus30"/>
+    <spatial name="left_0_bellows0_A" class="tendon">
+      <site site="left_j0_b0_site0_A"/>
+      <site site="left_j0_b1_site0_A"/>
+      <site site="left_j0_b2_site0_A"/>
+      <site site="left_j0_b3_site0_A"/>
+      <site site="left_j0_b4_site0_A"/>
     </spatial>
-    <spatial name="left_0_bellows0_viz2" class="tendon">
-      <site site="left_0_ysite1_minus30"/>
-      <site site="left_0_ysite2_minus30"/>
-      <site site="left_0_ysite3_minus30"/>
-      <site site="left_0_ysite4_minus30"/>
+    <spatial name="left_0_bellows0_B" class="tendon">
+      <site site="left_j0_b0_site0_B"/>
+      <site site="left_j0_b1_site0_B"/>
+      <site site="left_j0_b2_site0_B"/>
+      <site site="left_j0_b3_site0_B"/>
+      <site site="left_j0_b4_site0_B"/>
     </spatial>
-    <spatial name="left_0_bellows1_viz1" class="tendon">
-      <site site="left_0_-ysite1_plus30"/>
-      <site site="left_0_-ysite2_plus30"/>
-      <site site="left_0_-ysite3_plus30"/>
-      <site site="left_0_-ysite4_plus30"/>
+    <spatial name="left_0_bellows1_A" class="tendon">
+      <site site="left_j0_b0_site1_A"/>
+      <site site="left_j0_b1_site1_A"/>
+      <site site="left_j0_b2_site1_A"/>
+      <site site="left_j0_b3_site1_A"/>
+      <site site="left_j0_b4_site1_A"/>
     </spatial>
-    <spatial name="left_0_bellows1_viz2" class="tendon">
-      <site site="left_0_-ysite1_minus30"/>
-      <site site="left_0_-ysite2_minus30"/>
-      <site site="left_0_-ysite3_minus30"/>
-      <site site="left_0_-ysite4_minus30"/>
+    <spatial name="left_0_bellows1_B" class="tendon">
+      <site site="left_j0_b0_site1_B"/>
+      <site site="left_j0_b1_site1_B"/>
+      <site site="left_j0_b2_site1_B"/>
+      <site site="left_j0_b3_site1_B"/>
+      <site site="left_j0_b4_site1_B"/>
     </spatial>
-    <spatial name="left_0_bellows2_viz1" class="tendon">
-      <site site="left_0_-xsite1_plus30"/>
-      <site site="left_0_-xsite2_plus30"/>
-      <site site="left_0_-xsite3_plus30"/>
-      <site site="left_0_-xsite4_plus30"/>
+    <spatial name="left_0_bellows2_A" class="tendon">
+      <site site="left_j0_b0_site2_A"/>
+      <site site="left_j0_b1_site2_A"/>
+      <site site="left_j0_b2_site2_A"/>
+      <site site="left_j0_b3_site2_A"/>
+      <site site="left_j0_b4_site2_A"/>
     </spatial>
-    <spatial name="left_0_bellows2_viz2" class="tendon">
-      <site site="left_0_-xsite1_minus30"/>
-      <site site="left_0_-xsite2_minus30"/>
-      <site site="left_0_-xsite3_minus30"/>
-      <site site="left_0_-xsite4_minus30"/>
+    <spatial name="left_0_bellows2_B" class="tendon">
+      <site site="left_j0_b0_site2_B"/>
+      <site site="left_j0_b1_site2_B"/>
+      <site site="left_j0_b2_site2_B"/>
+      <site site="left_j0_b3_site2_B"/>
+      <site site="left_j0_b4_site2_B"/>
     </spatial>
-    <spatial name="left_0_bellows3_viz1" class="tendon">
-      <site site="left_0_xsite1_plus30"/>
-      <site site="left_0_xsite2_plus30"/>
-      <site site="left_0_xsite3_plus30"/>
-      <site site="left_0_xsite4_plus30"/>
+    <spatial name="left_0_bellows3_A" class="tendon">
+      <site site="left_j0_b0_site3_A"/>
+      <site site="left_j0_b1_site3_A"/>
+      <site site="left_j0_b2_site3_A"/>
+      <site site="left_j0_b3_site3_A"/>
+      <site site="left_j0_b4_site3_A"/>
     </spatial>
-    <spatial name="left_0_bellows3_viz2" class="tendon">
-      <site site="left_0_xsite1_minus30"/>
-      <site site="left_0_xsite2_minus30"/>
-      <site site="left_0_xsite3_minus30"/>
-      <site site="left_0_xsite4_minus30"/>
+    <spatial name="left_0_bellows3_B" class="tendon">
+      <site site="left_j0_b0_site3_B"/>
+      <site site="left_j0_b1_site3_B"/>
+      <site site="left_j0_b2_site3_B"/>
+      <site site="left_j0_b3_site3_B"/>
+      <site site="left_j0_b4_site3_B"/>
     </spatial>
     <spatial name="left_1_bellows0" class="tendon">
-      <site site="left_1_ysite0"/>
-      <site site="left_1_ysite1"/>
-      <site site="left_1_ysite2"/>
-      <site site="left_1_ysite3"/>
-      <site site="left_1_ysite4"/>
+      <site site="left_j1_b0_site0"/>
+      <site site="left_j1_b1_site0"/>
+      <site site="left_j1_b2_site0"/>
+      <site site="left_j1_b3_site0"/>
+      <site site="left_j1_b4_site0"/>
     </spatial>
     <spatial name="left_1_bellows1" class="tendon">
-      <site site="left_1_-ysite0"/>
-      <site site="left_1_-ysite1"/>
-      <site site="left_1_-ysite2"/>
-      <site site="left_1_-ysite3"/>
-      <site site="left_1_-ysite4"/>
+      <site site="left_j1_b0_site1"/>
+      <site site="left_j1_b1_site1"/>
+      <site site="left_j1_b2_site1"/>
+      <site site="left_j1_b3_site1"/>
+      <site site="left_j1_b4_site1"/>
     </spatial>
     <spatial name="left_1_bellows2" class="tendon">
-      <site site="left_1_-xsite0"/>
-      <site site="left_1_-xsite1"/>
-      <site site="left_1_-xsite2"/>
-      <site site="left_1_-xsite3"/>
-      <site site="left_1_-xsite4"/>
+      <site site="left_j1_b0_site2"/>
+      <site site="left_j1_b1_site2"/>
+      <site site="left_j1_b2_site2"/>
+      <site site="left_j1_b3_site2"/>
+      <site site="left_j1_b4_site2"/>
     </spatial>
     <spatial name="left_1_bellows3" class="tendon">
-      <site site="left_1_xsite0"/>
-      <site site="left_1_xsite1"/>
-      <site site="left_1_xsite2"/>
-      <site site="left_1_xsite3"/>
-      <site site="left_1_xsite4"/>
+      <site site="left_j1_b0_site3"/>
+      <site site="left_j1_b1_site3"/>
+      <site site="left_j1_b2_site3"/>
+      <site site="left_j1_b3_site3"/>
+      <site site="left_j1_b4_site3"/>
     </spatial>
     <spatial name="left_2_bellows0" class="tendon">
-      <site site="left_2_ysite0"/>
-      <site site="left_2_ysite1"/>
-      <site site="left_2_ysite2"/>
-      <site site="left_2_ysite3"/>
-      <site site="left_2_ysite4"/>
+      <site site="left_j2_b0_site0"/>
+      <site site="left_j2_b1_site0"/>
+      <site site="left_j2_b2_site0"/>
+      <site site="left_j2_b3_site0"/>
+      <site site="left_j2_b4_site0"/>
     </spatial>
     <spatial name="left_2_bellows1" class="tendon">
-      <site site="left_2_-ysite0"/>
-      <site site="left_2_-ysite1"/>
-      <site site="left_2_-ysite2"/>
-      <site site="left_2_-ysite3"/>
-      <site site="left_2_-ysite4"/>
+      <site site="left_j2_b0_site1"/>
+      <site site="left_j2_b1_site1"/>
+      <site site="left_j2_b2_site1"/>
+      <site site="left_j2_b3_site1"/>
+      <site site="left_j2_b4_site1"/>
     </spatial>
     <spatial name="left_2_bellows2" class="tendon">
-      <site site="left_2_-xsite0"/>
-      <site site="left_2_-xsite1"/>
-      <site site="left_2_-xsite2"/>
-      <site site="left_2_-xsite3"/>
-      <site site="left_2_-xsite4"/>
+      <site site="left_j2_b0_site2"/>
+      <site site="left_j2_b1_site2"/>
+      <site site="left_j2_b2_site2"/>
+      <site site="left_j2_b3_site2"/>
+      <site site="left_j2_b4_site2"/>
     </spatial>
     <spatial name="left_2_bellows3" class="tendon">
-      <site site="left_2_xsite0"/>
-      <site site="left_2_xsite1"/>
-      <site site="left_2_xsite2"/>
-      <site site="left_2_xsite3"/>
-      <site site="left_2_xsite4"/>
+      <site site="left_j2_b0_site3"/>
+      <site site="left_j2_b1_site3"/>
+      <site site="left_j2_b2_site3"/>
+      <site site="left_j2_b3_site3"/>
+      <site site="left_j2_b4_site3"/>
     </spatial>
-    <fixed name="left_x0" class="/">
-      <joint joint="left_0_Jx_0" coef="1"/>
-      <joint joint="left_0_Jx_1" coef="1"/>
-      <joint joint="left_0_Jx_2" coef="1"/>
-      <joint joint="left_0_Jx_3" coef="1"/>
-    </fixed>
-    <fixed name="left_y0" class="/">
-      <joint joint="left_0_Jy_0" coef="1"/>
-      <joint joint="left_0_Jy_1" coef="1"/>
-      <joint joint="left_0_Jy_2" coef="1"/>
-      <joint joint="left_0_Jy_3" coef="1"/>
-    </fixed>
-    <fixed name="left_x1" class="/">
-      <joint joint="left_1_Jx_0" coef="1"/>
-      <joint joint="left_1_Jx_1" coef="1"/>
-      <joint joint="left_1_Jx_2" coef="1"/>
-      <joint joint="left_1_Jx_3" coef="1"/>
-    </fixed>
-    <fixed name="left_y1" class="/">
-      <joint joint="left_1_Jy_0" coef="1"/>
-      <joint joint="left_1_Jy_1" coef="1"/>
-      <joint joint="left_1_Jy_2" coef="1"/>
-      <joint joint="left_1_Jy_3" coef="1"/>
-    </fixed>
-    <fixed name="left_x2" class="/">
-      <joint joint="left_2_Jx_0" coef="1"/>
-      <joint joint="left_2_Jx_1" coef="1"/>
-      <joint joint="left_2_Jx_2" coef="1"/>
-      <joint joint="left_2_Jx_3" coef="1"/>
-    </fixed>
-    <fixed name="left_y2" class="/">
-      <joint joint="left_2_Jy_0" coef="1"/>
-      <joint joint="left_2_Jy_1" coef="1"/>
-      <joint joint="left_2_Jy_2" coef="1"/>
-      <joint joint="left_2_Jy_3" coef="1"/>
-    </fixed>
   </tendon>
   <actuator>
     <position name="elevator" class="/" ctrllimited="true" ctrlrange="-1 0" joint="linear_actuator" kp="1000"/>
-    <cylinder name="right_j0_p0" class="/" ctrllimited="true" ctrlrange="0 275.79999999999995" gear="100" tendon="right_x0" timeconst="0.20000000000000001" diameter="0.070710678118654766"/>
-    <cylinder name="right_j0_p1" class="/" ctrllimited="true" ctrlrange="0 275.79999999999995" gear="-100" tendon="right_x0" timeconst="0.20000000000000001" diameter="0.070710678118654766"/>
-    <cylinder name="right_j0_p2" class="/" ctrllimited="true" ctrlrange="0 275.79999999999995" gear="100" tendon="right_y0" timeconst="0.20000000000000001" diameter="0.070710678118654766"/>
-    <cylinder name="right_j0_p3" class="/" ctrllimited="true" ctrlrange="0 275.79999999999995" gear="-100" tendon="right_y0" timeconst="0.20000000000000001" diameter="0.070710678118654766"/>
-    <cylinder name="right_j1_p0" class="/" ctrllimited="true" ctrlrange="0 275.79999999999995" gear="50" tendon="right_x1" timeconst="0.5" diameter="0.050000000000000003"/>
-    <cylinder name="right_j1_p1" class="/" ctrllimited="true" ctrlrange="0 275.79999999999995" gear="-50" tendon="right_x1" timeconst="0.5" diameter="0.050000000000000003"/>
-    <cylinder name="right_j1_p2" class="/" ctrllimited="true" ctrlrange="0 275.79999999999995" gear="50" tendon="right_y1" timeconst="0.5" diameter="0.050000000000000003"/>
-    <cylinder name="right_j1_p3" class="/" ctrllimited="true" ctrlrange="0 275.79999999999995" gear="-50" tendon="right_y1" timeconst="0.5" diameter="0.050000000000000003"/>
-    <cylinder name="right_j2_p0" class="/" ctrllimited="true" ctrlrange="0 275.79999999999995" gear="50" tendon="right_x2" timeconst="0.80000000000000004" diameter="0.050000000000000003"/>
-    <cylinder name="right_j2_p1" class="/" ctrllimited="true" ctrlrange="0 275.79999999999995" gear="-50" tendon="right_x2" timeconst="0.80000000000000004" diameter="0.050000000000000003"/>
-    <cylinder name="right_j2_p2" class="/" ctrllimited="true" ctrlrange="0 275.79999999999995" gear="50" tendon="right_y2" timeconst="0.80000000000000004" diameter="0.050000000000000003"/>
-    <cylinder name="right_j2_p3" class="/" ctrllimited="true" ctrlrange="0 275.79999999999995" gear="-50" tendon="right_y2" timeconst="0.80000000000000004" diameter="0.050000000000000003"/>
-    <cylinder name="left_j0_p0" class="/" ctrllimited="true" ctrlrange="0 275.79999999999995" gear="100" tendon="left_x0" timeconst="0.20000000000000001" diameter="0.070710678118654766"/>
-    <cylinder name="left_j0_p1" class="/" ctrllimited="true" ctrlrange="0 275.79999999999995" gear="-100" tendon="left_x0" timeconst="0.20000000000000001" diameter="0.070710678118654766"/>
-    <cylinder name="left_j0_p2" class="/" ctrllimited="true" ctrlrange="0 275.79999999999995" gear="100" tendon="left_y0" timeconst="0.20000000000000001" diameter="0.070710678118654766"/>
-    <cylinder name="left_j0_p3" class="/" ctrllimited="true" ctrlrange="0 275.79999999999995" gear="-100" tendon="left_y0" timeconst="0.20000000000000001" diameter="0.070710678118654766"/>
-    <cylinder name="left_j1_p0" class="/" ctrllimited="true" ctrlrange="0 275.79999999999995" gear="50" tendon="left_x1" timeconst="0.5" diameter="0.050000000000000003"/>
-    <cylinder name="left_j1_p1" class="/" ctrllimited="true" ctrlrange="0 275.79999999999995" gear="-50" tendon="left_x1" timeconst="0.5" diameter="0.050000000000000003"/>
-    <cylinder name="left_j1_p2" class="/" ctrllimited="true" ctrlrange="0 275.79999999999995" gear="50" tendon="left_y1" timeconst="0.5" diameter="0.050000000000000003"/>
-    <cylinder name="left_j1_p3" class="/" ctrllimited="true" ctrlrange="0 275.79999999999995" gear="-50" tendon="left_y1" timeconst="0.5" diameter="0.050000000000000003"/>
-    <cylinder name="left_j2_p0" class="/" ctrllimited="true" ctrlrange="0 275.79999999999995" gear="50" tendon="left_x2" timeconst="0.80000000000000004" diameter="0.050000000000000003"/>
-    <cylinder name="left_j2_p1" class="/" ctrllimited="true" ctrlrange="0 275.79999999999995" gear="-50" tendon="left_x2" timeconst="0.80000000000000004" diameter="0.050000000000000003"/>
-    <cylinder name="left_j2_p2" class="/" ctrllimited="true" ctrlrange="0 275.79999999999995" gear="50" tendon="left_y2" timeconst="0.80000000000000004" diameter="0.050000000000000003"/>
-    <cylinder name="left_j2_p3" class="/" ctrllimited="true" ctrlrange="0 275.79999999999995" gear="-50" tendon="left_y2" timeconst="0.80000000000000004" diameter="0.050000000000000003"/>
+    <cylinder name="right_0_p0" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="right_0_bellows0" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="right_0_p1" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="right_0_bellows1" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="right_0_p2" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="right_0_bellows2" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="right_0_p3" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="right_0_bellows3" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="right_1_p0" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="right_1_bellows0" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="right_1_p1" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="right_1_bellows1" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="right_1_p2" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="right_1_bellows2" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="right_1_p3" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="right_1_bellows3" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="right_2_p0" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="right_2_bellows0" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="right_2_p1" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="right_2_bellows1" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="right_2_p2" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="right_2_bellows2" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="right_2_p3" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="right_2_bellows3" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="left_0_p0" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="left_0_bellows0" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="left_0_p1" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="left_0_bellows1" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="left_0_p2" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="left_0_bellows2" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="left_0_p3" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="left_0_bellows3" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="left_1_p0" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="left_1_bellows0" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="left_1_p1" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="left_1_bellows1" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="left_1_p2" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="left_1_bellows2" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="left_1_p3" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="left_1_bellows3" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="left_2_p0" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="left_2_bellows0" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="left_2_p1" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="left_2_bellows1" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="left_2_p2" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="left_2_bellows2" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="left_2_p3" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="left_2_bellows3" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
   </actuator>
   <sensor>
     <touch name="chest_0_0_touch" site="chest_0_0"/>
@@ -15685,29 +15645,5 @@
     <touch name="left_link1_63_13_touch" site="left_link1_63_13"/>
     <touch name="left_link1_63_14_touch" site="left_link1_63_14"/>
     <touch name="left_link1_63_15_touch" site="left_link1_63_15"/>
-    <tendonpos name="left_qx0" tendon="left_x0"/>
-    <tendonpos name="left_qy0" tendon="left_y0"/>
-    <tendonpos name="left_qx1" tendon="left_x1"/>
-    <tendonpos name="left_qy1" tendon="left_y1"/>
-    <tendonpos name="left_qx2" tendon="left_x2"/>
-    <tendonpos name="left_qy2" tendon="left_y2"/>
-    <tendonpos name="right_qx0" tendon="right_x0"/>
-    <tendonpos name="right_qy0" tendon="right_y0"/>
-    <tendonpos name="right_qx1" tendon="right_x1"/>
-    <tendonpos name="right_qy1" tendon="right_y1"/>
-    <tendonpos name="right_qx2" tendon="right_x2"/>
-    <tendonpos name="right_qy2" tendon="right_y2"/>
-    <tendonvel name="left_qxd0" tendon="left_x0"/>
-    <tendonvel name="left_qyd0" tendon="left_y0"/>
-    <tendonvel name="left_qxd1" tendon="left_x1"/>
-    <tendonvel name="left_qyd1" tendon="left_y1"/>
-    <tendonvel name="left_qxd2" tendon="left_x2"/>
-    <tendonvel name="left_qyd2" tendon="left_y2"/>
-    <tendonvel name="right_qxd0" tendon="right_x0"/>
-    <tendonvel name="right_qyd0" tendon="right_y0"/>
-    <tendonvel name="right_qxd1" tendon="right_x1"/>
-    <tendonvel name="right_qyd1" tendon="right_y1"/>
-    <tendonvel name="right_qxd2" tendon="right_x2"/>
-    <tendonvel name="right_vd2" tendon="right_y2"/>
   </sensor>
 </mujoco>

@@ -28,21 +28,19 @@ class Baloo:
         chest = self.createChest(linear_actuator)
         right_shoulder, left_shoulder = self.createShoulders(chest)
 
-        right_last_disk = self.createLargeJoint(right_shoulder, "right")
+        right_last_disk = self._buildLargeJoint(right_shoulder, "right")
         right_link0 = self.addLink0(right_last_disk, "right")
         last_disk = self._buildMediumJoint(right_link0, "right")
         right_link1 = self.addLink1(last_disk, "right")
         last_disk = self._buildSmallJoint(right_link1, "right")
-        self.createActuators("right")
 
-        left_last_disk = self.createLargeJoint(left_shoulder, "left")
+        left_last_disk = self._buildLargeJoint(left_shoulder, "left")
         left_link0 = self.addLink0(left_last_disk, "left")
         last_disk = self._buildMediumJoint(left_link0, "left")
         left_link1 = self.addLink1(last_disk, "left")
         last_disk = self._buildSmallJoint(left_link1, "left")
-        self.createActuators("left")
 
-        self.createSensors()
+        # self.createSensors()
 
     def _setupModel(self, num_disks):
 
@@ -205,81 +203,66 @@ class Baloo:
             body2="right_link1",
         )
 
-    def createActuators(self, side):
-        # I use fixed tendons to be able to actuate all the little disk joints together.
-        time_consts = [0.2, 0.5, 0.8]  # based on size of valve mostly
-        gears = [
-            0.1 * 1000,
-            0.05 * 1000,
-            0.05 * 1000,
-        ]  # distance from center of joint to center of bellows, moment arms
-        diameters = [
-            0.05 * np.sqrt(2),
-            0.05,
-            0.05,
-        ]  # sqrt(2) doubles area for big joint
+    def _addActuators(self, side, joint_num):
 
-        Psrc = 40  # psi
-        maxP = Psrc * 6.895  # kpa
+        for i in range(4):
+            if joint_num == 0:
+                #large joint so these need to be invisible
+                bellows = self.mjcf_model.tendon.add(
+                    "spatial",
+                    name=f"{side}_{joint_num}_bellows{i}",
+                    dclass="tendon",
+                    rgba=[0, 0, 0, 0])
+            else:
+                #add the bellows to the model
+                bellows = self.mjcf_model.tendon.add(
+                    "spatial",
+                    name=f"{side}_{joint_num}_bellows{i}",
+                    dclass="tendon")
 
-        for j in range(3):
-            # create both x and y tendons
-            xtendon = self.mjcf_model.tendon.add("fixed", name=f"{side}_x{j}")
-            ytendon = self.mjcf_model.tendon.add("fixed", name=f"{side}_y{j}")
+            #add all sites along the disks for the bellows to attach to
+            for j in range(self.num_disks):
+                site = self.mjcf_model.find(
+                    'site', f"{side}_j{joint_num}_b{j}_site{i}")
+                bellows.add("site", site=site)
 
-            # add actuators along tendons
-            # ====== X AXIS =========
-            # bellows that creates positive rotation
-            self.mjcf_model.actuator.add(
-                "cylinder",
-                name=f"{side}_j{j}_p0",
-                tendon=f"{side}_x{j}",
-                diameter=diameters[j],  # m, bellows are 50 mm diameter
-                ctrllimited=True,
-                ctrlrange=[0, maxP],  # pascals
-                gear=[gears[j]],
-                timeconst=time_consts[j],
-            )
-            # bellows that creates negative rotation, switched using gear
-            self.mjcf_model.actuator.add(
-                "cylinder",
-                name=f"{side}_j{j}_p1",
-                tendon=f"{side}_x{j}",
-                diameter=diameters[j],  # m, bellows are 50 mm diameter
-                ctrllimited=True,
-                ctrlrange=[0, maxP],  # pascals
-                gear=[-gears[j]],
-                timeconst=time_consts[j],
-            )
+        #add actuator to each built tendon
+        self.mjcf_model.actuator.add("cylinder",
+                                     name=f"{side}_{joint_num}_p0",
+                                     tendon=f"{side}_{joint_num}_bellows0",
+                                     diameter=0.05,
+                                     ctrllimited=True,
+                                     ctrlrange=[0, 1000],
+                                     gear=[0.5 * 1000],
+                                     timeconst=0.2)
 
-            # ========= Y AXIS ===========
-            self.mjcf_model.actuator.add(
-                "cylinder",
-                name=f"{side}_j{j}_p2",
-                tendon=f"{side}_y{j}",
-                diameter=diameters[j],  # m, bellows are 50 mm diameter
-                ctrllimited=True,
-                ctrlrange=[0, maxP],  # pascals
-                gear=[gears[j]],
-                timeconst=time_consts[j],
-            )
-            # bellows that creates negative rotation, switched using gear
-            self.mjcf_model.actuator.add(
-                "cylinder",
-                name=f"{side}_j{j}_p3",
-                tendon=f"{side}_y{j}",
-                diameter=diameters[j],  # m, bellows are 50 mm diameter
-                ctrllimited=True,
-                ctrlrange=[0, maxP],  # pascals
-                gear=[-gears[j]],
-                timeconst=time_consts[j],
-            )
+        #add actuator to side_tendon
+        self.mjcf_model.actuator.add("cylinder",
+                                     name=f"{side}_{joint_num}_p1",
+                                     tendon=f"{side}_{joint_num}_bellows1",
+                                     diameter=0.05,
+                                     ctrllimited=True,
+                                     ctrlrange=[0, 1000],
+                                     gear=[0.5 * 1000],
+                                     timeconst=0.2)
 
-            # tendon length is the sum of joint angles between each disk. (i.e. q_lumped)
-            # num_disks - 1 b.c. there are num_disks - 1 spaces between disks
-            for n in range(0, self.num_disks - 1):
-                xtendon.add("joint", joint=f"{side}_{j}_Jx_{n}", coef=1)
-                ytendon.add("joint", joint=f"{side}_{j}_Jy_{n}", coef=1)
+        self.mjcf_model.actuator.add("cylinder",
+                                     name=f"{side}_{joint_num}_p2",
+                                     tendon=f"{side}_{joint_num}_bellows2",
+                                     diameter=0.05,
+                                     ctrllimited=True,
+                                     ctrlrange=[0, 1000],
+                                     gear=[0.5 * 1000],
+                                     timeconst=0.2)
+
+        self.mjcf_model.actuator.add("cylinder",
+                                     name=f"{side}_{joint_num}_p3",
+                                     tendon=f"{side}_{joint_num}_bellows3",
+                                     diameter=0.05,
+                                     ctrllimited=True,
+                                     ctrlrange=[0, 1000],
+                                     gear=[0.5 * 1000],
+                                     timeconst=0.2)
 
     def createSensors(self):
         # the values for these sensors are in mjData/sensordata, which is stored as an array of nsensordata x 1
@@ -468,81 +451,18 @@ class Baloo:
 
         return link
 
-    def createLargeJoint(self, parent_body, side):
+    def _buildLargeJoint(self, parent_body, side):
         Rplus30 = R.from_euler('z', 22.5, degrees=True)
         Rminus30 = R.from_euler('z', -22.5, degrees=True)
         # break joint specs in to disk specs
         # total joint -> [disk,space,disk,....,space,disk]
         disk_mass = self.large_joint_mass / self.num_disks
-        # get moment of inertia of each disk (thin cylinder technically). (https://shorturl.at/fsuNO)
+        # get moment of inertia of each disk (thin cylinder technically).
         Ixy = (disk_mass *
                (3 * self.large_joint_radius**2 + self.disk_height**2)) / 12
         Iz = (disk_mass * self.large_joint_radius**2) / 2
 
         joint_num = 0
-        #create four spatial tendons representing the bellows
-        bellows0 = self.mjcf_model.tendon.add(
-            "spatial",
-            name=f"{side}_{joint_num}_bellows0",
-            dclass="tendon",
-            rgba=[0, 0, 0, 0])
-        bellows1 = self.mjcf_model.tendon.add(
-            "spatial",
-            name=f"{side}_{joint_num}_bellows1",
-            dclass="tendon",
-            rgba=[0, 0, 0, 0])
-        bellows2 = self.mjcf_model.tendon.add(
-            "spatial",
-            name=f"{side}_{joint_num}_bellows2",
-            dclass="tendon",
-            rgba=[0, 0, 0, 0])
-        bellows3 = self.mjcf_model.tendon.add(
-            "spatial",
-            name=f"{side}_{joint_num}_bellows3",
-            dclass="tendon",
-            rgba=[0, 0, 0, 0])
-
-        bellows0viz1 = self.mjcf_model.tendon.add(
-            "spatial",
-            name=f"{side}_{joint_num}_bellows0_viz1",
-            dclass="tendon",
-        )
-        bellows0viz2 = self.mjcf_model.tendon.add(
-            "spatial",
-            name=f"{side}_{joint_num}_bellows0_viz2",
-            dclass="tendon",
-        )
-        bellows1viz1 = self.mjcf_model.tendon.add(
-            "spatial",
-            name=f"{side}_{joint_num}_bellows1_viz1",
-            dclass="tendon",
-        )
-        bellows1viz2 = self.mjcf_model.tendon.add(
-            "spatial",
-            name=f"{side}_{joint_num}_bellows1_viz2",
-            dclass="tendon",
-        )
-        bellows2viz1 = self.mjcf_model.tendon.add(
-            "spatial",
-            name=f"{side}_{joint_num}_bellows2_viz1",
-            dclass="tendon",
-        )
-        bellows2viz2 = self.mjcf_model.tendon.add(
-            "spatial",
-            name=f"{side}_{joint_num}_bellows2_viz2",
-            dclass="tendon",
-        )
-        bellows3viz1 = self.mjcf_model.tendon.add(
-            "spatial",
-            name=f"{side}_{joint_num}_bellows3_viz1",
-            dclass="tendon",
-        )
-        bellows3viz2 = self.mjcf_model.tendon.add(
-            "spatial",
-            name=f"{side}_{joint_num}_bellows3_viz2",
-            dclass="tendon",
-        )
-
 
         # create first body, whose frame is offset
         first_disk = parent_body.add(
@@ -563,41 +483,8 @@ class Baloo:
                        diaginertia=[Ixy, Ixy, Iz],
                        pos=[0, 0, 0])
 
-        first_disk.add(
-            "site",
-            name=f"{side}_{joint_num}_xsite{0}",
-            pos=[self.large_joint_bellows_radius, 0, 0],
-            dclass="bellows_site",
-        )
-        #positive x site corresponds to bellows 3
-        bellows3.add("site", site=f"{side}_{joint_num}_xsite{0}")
-
-        first_disk.add(
-            "site",
-            name=f"{side}_{joint_num}_-xsite{0}",
-            pos=[-self.large_joint_bellows_radius, 0, 0],
-            dclass="bellows_site",
-        )
-        #negative x site corresponds to bellows 2
-        bellows2.add("site", site=f"{side}_{joint_num}_-xsite{0}")
-
-        first_disk.add(
-            "site",
-            name=f"{side}_{joint_num}_ysite{0}",
-            pos=[0, self.large_joint_bellows_radius, 0],
-            dclass="bellows_site",
-        )
-        #positive y site corresponds to bellows 0
-        bellows0.add("site", site=f"{side}_{joint_num}_ysite{0}")
-
-        first_disk.add(
-            "site",
-            name=f"{side}_{joint_num}_-ysite{0}",
-            pos=[0, -self.large_joint_bellows_radius, 0],
-            dclass="bellows_site",
-        )
-        #negative y site corresponds to bellows 1
-        bellows1.add("site", site=f"{side}_{joint_num}_-ysite{0}")
+        self._addFourSitesToDisk(first_disk, side, joint_num, 0, "large")
+        self._addEightSitesToDisk(first_disk, side, joint_num, 0)
 
         # for self.num_disks (+1 bc I already made first disk above): create body, add inertial, add geom
         prev_body = first_disk
@@ -625,139 +512,64 @@ class Baloo:
                      name=f"{side}_{joint_num}_Jy_{i-1}",
                      dclass="large_joint",
                      axis=self.Y)
-            site = body.add(
-                "site",
-                name=f"{side}_{joint_num}_xsite{i}",
-                pos=[self.large_joint_bellows_radius, 0, 0],
-                dclass="bellows_site",
-            )
-            bellows3.add("site", site=f"{side}_{joint_num}_xsite{i}")
 
-            #rotate pos by +30 and -30 degres to get 2 sites to either side of axis for visual tendons
-            pos_plus30 = Rplus30.apply(site.pos)
-            pos_minus30 = Rminus30.apply(site.pos)
-            body.add(
-                "site",
-                name=f"{side}_{joint_num}_xsite{i}_plus30",
-                pos=pos_plus30,
-                rgba=[1, 1, 1, 1],
-                group=1,
-            )
-            bellows3viz1.add("site", site=f"{side}_{joint_num}_xsite{i}_plus30")
-            body.add(
-                "site",
-                name=f"{side}_{joint_num}_xsite{i}_minus30",
-                pos=pos_minus30,
-                rgba=[1, 1, 1, 1],
-                group=1,
-            )
-            bellows3viz2.add("site", site=f"{side}_{joint_num}_xsite{i}_minus30")
-
-            site = body.add(
-                "site",
-                name=f"{side}_{joint_num}_-xsite{i}",
-                pos=[-self.large_joint_bellows_radius, 0, 0],
-                dclass="bellows_site",
-            )
-            bellows2.add("site", site=f"{side}_{joint_num}_-xsite{i}")
-            #rotate pos by +30 and -30 degres to get 2 sites to either side of axis for visual tendons
-            pos_plus30 = Rplus30.apply(site.pos)
-            pos_minus30 = Rminus30.apply(site.pos)
-            body.add(
-                "site",
-                name=f"{side}_{joint_num}_-xsite{i}_plus30",
-                pos=pos_plus30,
-                rgba=[1, 1, 1, 1],
-                group=1,
-            )
-            bellows2viz1.add("site", site=f"{side}_{joint_num}_-xsite{i}_plus30")
-            body.add(
-                "site",
-                name=f"{side}_{joint_num}_-xsite{i}_minus30",
-                pos=pos_minus30,
-                rgba=[1, 1, 1, 1],
-                group=1,
-            )
-            bellows2viz2.add("site", site=f"{side}_{joint_num}_-xsite{i}_minus30")
-
-            site = body.add(
-                "site",
-                name=f"{side}_{joint_num}_ysite{i}",
-                pos=[0, self.large_joint_bellows_radius, 0],
-                dclass="bellows_site",
-            )
-            bellows0.add("site", site=f"{side}_{joint_num}_ysite{i}")
-            #rotate pos by +30 and -30 degres to get 2 sites to either side of axis for visual tendons
-            pos_plus30 = Rplus30.apply(site.pos)
-            pos_minus30 = Rminus30.apply(site.pos)
-            body.add(
-                "site",
-                name=f"{side}_{joint_num}_ysite{i}_plus30",
-                pos=pos_plus30,
-                rgba=[1, 1, 1, 1],
-                group=1,
-            )
-            bellows0viz1.add("site", site=f"{side}_{joint_num}_ysite{i}_plus30")
-            body.add(
-                "site",
-                name=f"{side}_{joint_num}_ysite{i}_minus30",
-                pos=pos_minus30,
-                rgba=[1, 1, 1, 1],
-                group=1,
-            )
-            bellows0viz2.add("site", site=f"{side}_{joint_num}_ysite{i}_minus30")
-
-            site = body.add(
-                "site",
-                name=f"{side}_{joint_num}_-ysite{i}",
-                pos=[0, -self.large_joint_bellows_radius, 0],
-                dclass="bellows_site",
-            )
-            bellows1.add("site", site=f"{side}_{joint_num}_-ysite{i}")
-            #rotate pos by +30 and -30 degres to get 2 sites to either side of axis for visual tendons
-            pos_plus30 = Rplus30.apply(site.pos)
-            pos_minus30 = Rminus30.apply(site.pos)
-            body.add(
-                "site",
-                name=f"{side}_{joint_num}_-ysite{i}_plus30",
-                pos=pos_plus30,
-                rgba=[1, 1, 1, 1],
-                group=1,
-            )
-            bellows1viz1.add("site", site=f"{side}_{joint_num}_-ysite{i}_plus30")
-            body.add(
-                "site",
-                name=f"{side}_{joint_num}_-ysite{i}_minus30",
-                pos=pos_minus30,
-                rgba=[1, 1, 1, 1],
-                group=1,
-            )
-            bellows1viz2.add("site", site=f"{side}_{joint_num}_-ysite{i}_minus30")
+            self._addFourSitesToDisk(body, side, joint_num, i, "large")
+            self._addEightSitesToDisk(body, side, joint_num, i)
             prev_body = body
 
-        # self._add_visual_tendons(side, joint_num)
-
+        self._addActuators(side, joint_num)
+        self._addEightVizTendons(side)
         return body
 
-    def _add_visual_tendons(self, side, joint_num):
+    def _addEightSitesToDisk(self, disk, side, joint_num, disk_num):
+        Rplus = R.from_euler('z', 22.5, degrees=True)
+        Rminus = R.from_euler('z', -22.5, degrees=True)
+        #this is only applicable to the 8 bellows
+
         for i in range(4):
-            tendon_plus30 = self.mjcf_model.tendon.add(
-                "spatial",
-                name=f"{side}_{joint_num}_bellows{i}_plus30",
-                dclass="tendon",
+            site = self.mjcf_model.find(
+                'site', f"{side}_j{joint_num}_b{disk_num}_site{i}")
+            pos = np.array(site.pos)
+            pos_plus = Rplus.apply(pos)
+            pos_minus = Rminus.apply(pos)
+
+            disk.add(
+                "site",
+                name=f"{side}_j{joint_num}_b{disk_num}_site{i}_A",
+                pos=pos_plus,
+                rgba=[1, 1, 1, 1],
             )
 
-            tendon_minus30 = self.mjcf_model.tendon.add(
+            disk.add(
+                "site",
+                name=f"{side}_j{joint_num}_b{disk_num}_site{i}_B",
+                pos=pos_minus,
+                rgba=[1, 1, 1, 1],
+                group=1,
+            )
+
+    def _addEightVizTendons(self, side):
+        joint_num = 0
+        for i in range(4):
+            bellowsA = self.mjcf_model.tendon.add(
                 "spatial",
-                name=f"{side}_{joint_num}_bellows{i}_minus30",
+                name=f"{side}_{joint_num}_bellows{i}_A",
+                dclass="tendon",
+            )
+            bellowsB = self.mjcf_model.tendon.add(
+                "spatial",
+                name=f"{side}_{joint_num}_bellows{i}_B",
                 dclass="tendon",
             )
 
             for j in range(self.num_disks):
-                tendon_plus30.add("site",
-                                  site=f"{side}_{joint_num}_xsite{j}_plus30")
-                tendon_minus30.add("site",
-                                   site=f"{side}_{joint_num}_xsite{j}_minus30")
+                siteA = self.mjcf_model.find(
+                    'site', f"{side}_j{joint_num}_b{j}_site{i}_A")
+                bellowsA.add("site", site=siteA)
+
+                siteB = self.mjcf_model.find(
+                    'site', f"{side}_j{joint_num}_b{j}_site{i}_B")
+                bellowsB.add("site", site=siteB)
 
     def _buildMediumJoint(self, body, side):
         # break joint specs in to disk specs
@@ -769,15 +581,6 @@ class Baloo:
         Iz = (disk_mass * self.medium_joint_radius**2) / 2
 
         joint_num = 1
-        #create four spatial tendons representing the bellows
-        bellows0 = self.mjcf_model.tendon.add(
-            "spatial", name=f"{side}_{joint_num}_bellows0", dclass="tendon")
-        bellows1 = self.mjcf_model.tendon.add(
-            "spatial", name=f"{side}_{joint_num}_bellows1", dclass="tendon")
-        bellows2 = self.mjcf_model.tendon.add(
-            "spatial", name=f"{side}_{joint_num}_bellows2", dclass="tendon")
-        bellows3 = self.mjcf_model.tendon.add(
-            "spatial", name=f"{side}_{joint_num}_bellows3", dclass="tendon")
 
         # create first body, whose frame is offset
         first_disk = body.add(
@@ -797,41 +600,7 @@ class Baloo:
                        diaginertia=[Ixy, Ixy, Iz],
                        pos=[0, 0, 0])
 
-        first_disk.add(
-            "site",
-            name=f"{side}_{joint_num}_xsite{0}",
-            pos=[self.medium_joint_bellows_radius, 0, 0],
-            dclass="bellows_site",
-        )
-        #positive x site corresponds to bellows 3
-        bellows3.add("site", site=f"{side}_{joint_num}_xsite{0}")
-
-        first_disk.add(
-            "site",
-            name=f"{side}_{joint_num}_-xsite{0}",
-            pos=[-self.medium_joint_bellows_radius, 0, 0],
-            dclass="bellows_site",
-        )
-        #negative x site corresponds to bellows 2
-        bellows2.add("site", site=f"{side}_{joint_num}_-xsite{0}")
-
-        first_disk.add(
-            "site",
-            name=f"{side}_{joint_num}_ysite{0}",
-            pos=[0, self.medium_joint_bellows_radius, 0],
-            dclass="bellows_site",
-        )
-        #positive y site corresponds to bellows 0
-        bellows0.add("site", site=f"{side}_{joint_num}_ysite{0}")
-
-        first_disk.add(
-            "site",
-            name=f"{side}_{joint_num}_-ysite{0}",
-            pos=[0, -self.medium_joint_bellows_radius, 0],
-            dclass="bellows_site",
-        )
-        #negative y site corresponds to bellows 1
-        bellows1.add("site", site=f"{side}_{joint_num}_-ysite{0}")
+        self._addFourSitesToDisk(first_disk, side, joint_num, 0, "medium")
 
         # for self.num_disks (+1 bc I already made first disk above): create body, add inertial, add geom, add joints
         prev_body = first_disk
@@ -861,40 +630,48 @@ class Baloo:
                      axis=self.Y,
                      dclass='medium_joint')
 
-            body.add(
-                "site",
-                name=f"{side}_{joint_num}_xsite{i}",
-                pos=[self.medium_joint_bellows_radius, 0, 0],
-                dclass="bellows_site",
-            )
-            bellows3.add("site", site=f"{side}_{joint_num}_xsite{i}")
-
-            body.add(
-                "site",
-                name=f"{side}_{joint_num}_-xsite{i}",
-                pos=[-self.medium_joint_bellows_radius, 0, 0],
-                dclass="bellows_site",
-            )
-            bellows2.add("site", site=f"{side}_{joint_num}_-xsite{i}")
-
-            body.add(
-                "site",
-                name=f"{side}_{joint_num}_ysite{i}",
-                pos=[0, self.medium_joint_bellows_radius, 0],
-                dclass="bellows_site",
-            )
-            bellows0.add("site", site=f"{side}_{joint_num}_ysite{i}")
-
-            body.add(
-                "site",
-                name=f"{side}_{joint_num}_-ysite{i}",
-                pos=[0, -self.medium_joint_bellows_radius, 0],
-                dclass="bellows_site",
-            )
-            bellows1.add("site", site=f"{side}_{joint_num}_-ysite{i}")
+            self._addFourSitesToDisk(body, side, joint_num, i, "medium")
             prev_body = body
 
+        self._addActuators(side, joint_num)
         return body
+
+    def _addFourSitesToDisk(self, disk, side, joint_num, disk_num, size):
+        if size == "large":
+            loc = self.large_joint_bellows_radius
+        elif size == "medium":
+            loc = self.medium_joint_bellows_radius
+        else:
+            loc = self.small_joint_bellows_radius
+
+        # chamber 0 is +y
+        disk.add(
+            "site",
+            name=f"{side}_j{joint_num}_b{disk_num}_site{0}",
+            pos=[0, loc, 0],
+            dclass="bellows_site",
+        )
+        disk.add(
+            "site",
+            name=f"{side}_j{joint_num}_b{disk_num}_site{1}",
+            pos=[0, -loc, 0],
+            dclass="bellows_site",
+        )
+        # chamber 2 is +x
+        disk.add(
+            "site",
+            name=f"{side}_j{joint_num}_b{disk_num}_site{2}",
+            pos=[loc, 0, 0],
+            dclass="bellows_site",
+        )
+
+        # chamber 3 is -x
+        disk.add(
+            "site",
+            name=f"{side}_j{joint_num}_b{disk_num}_site{3}",
+            pos=[-loc, 0, 0],
+            dclass="bellows_site",
+        )
 
     def _buildSmallJoint(self, body, side):
         # break joint specs in to disk specs
@@ -906,16 +683,6 @@ class Baloo:
         Iz = (disk_mass * self.small_joint_radius**2) / 2
         # create first body, whose frame is offset
         joint_num = 2
-
-        #create four spatial tendons representing the bellows
-        bellows0 = self.mjcf_model.tendon.add(
-            "spatial", name=f"{side}_{joint_num}_bellows0", dclass="tendon")
-        bellows1 = self.mjcf_model.tendon.add(
-            "spatial", name=f"{side}_{joint_num}_bellows1", dclass="tendon")
-        bellows2 = self.mjcf_model.tendon.add(
-            "spatial", name=f"{side}_{joint_num}_bellows2", dclass="tendon")
-        bellows3 = self.mjcf_model.tendon.add(
-            "spatial", name=f"{side}_{joint_num}_bellows3", dclass="tendon")
 
         first_disk = body.add(
             "body",
@@ -932,42 +699,11 @@ class Baloo:
                        diaginertia=[Ixy, Ixy, Iz],
                        pos=[0, 0, 0])
 
-        first_disk.add(
-            "site",
-            name=f"{side}_{joint_num}_xsite{0}",
-            pos=[self.small_joint_bellows_radius, 0, 0],
-            dclass="bellows_site",
-        )
-
-        #positive x site corresponds to bellows 3
-        bellows3.add("site", site=f"{side}_{joint_num}_xsite{0}")
-
-        first_disk.add(
-            "site",
-            name=f"{side}_{joint_num}_-xsite{0}",
-            pos=[-self.small_joint_bellows_radius, 0, 0],
-            dclass="bellows_site",
-        )
-        #negative x site corresponds to bellows 2
-        bellows2.add("site", site=f"{side}_{joint_num}_-xsite{0}")
-
-        first_disk.add(
-            "site",
-            name=f"{side}_{joint_num}_ysite{0}",
-            pos=[0, self.small_joint_bellows_radius, 0],
-            dclass="bellows_site",
-        )
-        #positive y site corresponds to bellows 0
-        bellows0.add("site", site=f"{side}_{joint_num}_ysite{0}")
-
-        first_disk.add(
-            "site",
-            name=f"{side}_{joint_num}_-ysite{0}",
-            pos=[0, -self.small_joint_bellows_radius, 0],
-            dclass="bellows_site",
-        )
-        #negative y site corresponds to bellows 1
-        bellows1.add("site", site=f"{side}_{joint_num}_-ysite{0}")
+        self._addFourSitesToDisk(first_disk,
+                                 side,
+                                 joint_num,
+                                 disk_num=0,
+                                 size="small")
 
         # for self.num_disks (+1 bc I already made first disk above): create body, add inertial, add geom
         prev_body = first_disk
@@ -995,40 +731,11 @@ class Baloo:
                      dclass='small_joint',
                      axis=self.Y)
 
-            body.add(
-                "site",
-                name=f"{side}_{joint_num}_xsite{i}",
-                pos=[self.small_joint_bellows_radius, 0, 0],
-                dclass="bellows_site",
-            )
-            bellows3.add("site", site=f"{side}_{joint_num}_xsite{i}")
-
-            body.add(
-                "site",
-                name=f"{side}_{joint_num}_-xsite{i}",
-                pos=[-self.small_joint_bellows_radius, 0, 0],
-                dclass="bellows_site",
-            )
-            bellows2.add("site", site=f"{side}_{joint_num}_-xsite{i}")
-
-            body.add(
-                "site",
-                name=f"{side}_{joint_num}_ysite{i}",
-                pos=[0, self.small_joint_bellows_radius, 0],
-                dclass="bellows_site",
-            )
-            bellows0.add("site", site=f"{side}_{joint_num}_ysite{i}")
-
-            body.add(
-                "site",
-                name=f"{side}_{joint_num}_-ysite{i}",
-                pos=[0, -self.small_joint_bellows_radius, 0],
-                dclass="bellows_site",
-            )
-            bellows1.add("site", site=f"{side}_{joint_num}_-ysite{i}")
+            self._addFourSitesToDisk(body, side, joint_num, i, "small")
 
             prev_body = body
 
+        self._addActuators(side, joint_num)
         return body
 
     def _createBase(self, body):
@@ -1476,7 +1183,7 @@ class Baloo:
         large_class.geom.set_attributes(
             type="cylinder",
             rgba=self.GRAY,
-            size=[self.large_joint_radius, self.disk_half_height],
+            size=[self.large_joint_radius, self.disk_half_height * 0.5],
         )
         large_class.joint.set_attributes(
             type="hinge",
