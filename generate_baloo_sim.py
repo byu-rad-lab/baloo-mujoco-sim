@@ -265,85 +265,7 @@ class Baloo:
                                      timeconst=0.2)
 
     def createSensors(self):
-        # the values for these sensors are in mjData/sensordata, which is stored as an array of nsensordata x 1
-        self.mjcf_model.sensor.add("tendonpos",
-                                   name="left_qx0",
-                                   tendon="left_x0")
-        self.mjcf_model.sensor.add("tendonpos",
-                                   name="left_qy0",
-                                   tendon="left_y0")
-        self.mjcf_model.sensor.add("tendonpos",
-                                   name="left_qx1",
-                                   tendon="left_x1")
-        self.mjcf_model.sensor.add("tendonpos",
-                                   name="left_qy1",
-                                   tendon="left_y1")
-        self.mjcf_model.sensor.add("tendonpos",
-                                   name="left_qx2",
-                                   tendon="left_x2")
-        self.mjcf_model.sensor.add("tendonpos",
-                                   name="left_qy2",
-                                   tendon="left_y2")
-
-        self.mjcf_model.sensor.add("tendonpos",
-                                   name="right_qx0",
-                                   tendon="right_x0")
-        self.mjcf_model.sensor.add("tendonpos",
-                                   name="right_qy0",
-                                   tendon="right_y0")
-        self.mjcf_model.sensor.add("tendonpos",
-                                   name="right_qx1",
-                                   tendon="right_x1")
-        self.mjcf_model.sensor.add("tendonpos",
-                                   name="right_qy1",
-                                   tendon="right_y1")
-        self.mjcf_model.sensor.add("tendonpos",
-                                   name="right_qx2",
-                                   tendon="right_x2")
-        self.mjcf_model.sensor.add("tendonpos",
-                                   name="right_qy2",
-                                   tendon="right_y2")
-        #
-
-        self.mjcf_model.sensor.add("tendonvel",
-                                   name="left_qxd0",
-                                   tendon="left_x0")
-        self.mjcf_model.sensor.add("tendonvel",
-                                   name="left_qyd0",
-                                   tendon="left_y0")
-        self.mjcf_model.sensor.add("tendonvel",
-                                   name="left_qxd1",
-                                   tendon="left_x1")
-        self.mjcf_model.sensor.add("tendonvel",
-                                   name="left_qyd1",
-                                   tendon="left_y1")
-        self.mjcf_model.sensor.add("tendonvel",
-                                   name="left_qxd2",
-                                   tendon="left_x2")
-        self.mjcf_model.sensor.add("tendonvel",
-                                   name="left_qyd2",
-                                   tendon="left_y2")
-
-        self.mjcf_model.sensor.add("tendonvel",
-                                   name="right_qxd0",
-                                   tendon="right_x0")
-        self.mjcf_model.sensor.add("tendonvel",
-                                   name="right_qyd0",
-                                   tendon="right_y0")
-        self.mjcf_model.sensor.add("tendonvel",
-                                   name="right_qxd1",
-                                   tendon="right_x1")
-        self.mjcf_model.sensor.add("tendonvel",
-                                   name="right_qyd1",
-                                   tendon="right_y1")
-        self.mjcf_model.sensor.add("tendonvel",
-                                   name="right_qxd2",
-                                   tendon="right_x2")
-        self.mjcf_model.sensor.add("tendonvel",
-                                   name="right_vd2",
-                                   tendon="right_y2")
-
-        # self.mjcf_model.sensor.add("actuatorfrc", name="act_force", actuator="p0_j0")
+        pass
 
     def addLink0(self, body, side):
         link = body.add(
@@ -1061,7 +983,7 @@ class Baloo:
 
     def _setOptions(self):
         self.mjcf_model.option.set_attributes(
-            timestep=0.01,
+            timestep=0.005,
             integrator='implicitfast',  #recommended by mujoco docs as best
             solver="Newton",
             jacobian="sparse",
