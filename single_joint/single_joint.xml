@@ -1,4 +1,4 @@
-<mujoco model="baloo_torso">
+<mujoco model="SmallJoint">
   <compiler angle="degree"/>
   <option timestep="0.01" integrator="implicitfast" cone="elliptic" jacobian="sparse" solver="Newton">
     <flag gravity="enable"/>
@@ -10,17 +10,15 @@
   </visual>
   <default>
     <default class="/">
-      <default class="large_joint">
-        <joint group="3" type="hinge" pos="0 0 0.022222222222222223" limited="true" stiffness="680" range="-18 18" damping="37.5"/>
-        <geom type="cylinder" size="0.125 0.0088888888888888889" rgba="0.47058823529411764 0.47058823529411764 0.47058823529411764 0.69999999999999996"/>
-      </default>
-      <default class="medium_joint">
-        <joint group="3" type="hinge" pos="0 0 0.022222222222222223" limited="true" stiffness="135" range="-22 22" damping="10"/>
-        <geom type="cylinder" size="0.080000000000000002 0.0088888888888888889" rgba="0.47058823529411764 0.47058823529411764 0.47058823529411764 0.69999999999999996"/>
-      </default>
       <default class="small_joint">
-        <joint group="3" type="hinge" pos="0 0 0.022222222222222223" limited="true" stiffness="135" range="-22 22" damping="10"/>
-        <geom type="cylinder" size="0.080000000000000002 0.0088888888888888889" rgba="0.47058823529411764 0.47058823529411764 0.47058823529411764 0.69999999999999996"/>
+        <joint group="3" type="hinge" pos="0 0 0.010526315789473684" limited="false" damping="67.5"/>
+        <geom type="cylinder" size="0.080000000000000002 0.005263157894736842" rgba="0.47058823529411764 0.47058823529411764 0.47058823529411764 0.69999999999999996"/>
+      </default>
+      <default class="bellows_site">
+        <site rgba="0 1 0 1"/>
+      </default>
+      <default class="tendon">
+        <tendon limited="true" range="1 10" width="0.029999999999999999" stiffness="108"/>
       </default>
     </default>
   </default>
@@ -28,92 +26,109 @@
     <plugin plugin="mujoco.sensor.joint_angle_estimator"/>
   </extension>
   <custom>
-    <numeric name="num_disks" size="1" data="5"/>
+    <numeric name="num_disks" size="1" data="10"/>
   </custom>
   <asset>
     <texture name="texplane" type="2d" builtin="checker" mark="cross" width="512" height="512"/>
     <material name="matplane" class="/" texture="texplane" texuniform="true"/>
-    <mesh name="SimpleChestMesh" class="/" file="/home/curtis/curtis_ws/src/curtis_sandbox/src/mujoco/models/baloo/meshes/SimpleChestMesh.stl"/>
-    <mesh name="RightFrontWheelMesh" class="/" file="/home/curtis/curtis_ws/src/curtis_sandbox/src/mujoco/models/baloo/meshes/RightFrontWheelMesh.stl"/>
-    <mesh name="EstopPlugMesh" class="/" file="/home/curtis/curtis_ws/src/curtis_sandbox/src/mujoco/models/baloo/meshes/EstopPlugMesh.stl"/>
-    <mesh name="LeftBackWheelMesh" class="/" file="/home/curtis/curtis_ws/src/curtis_sandbox/src/mujoco/models/baloo/meshes/LeftBackWheelMesh.stl"/>
-    <mesh name="PowerButtonMesh" class="/" file="/home/curtis/curtis_ws/src/curtis_sandbox/src/mujoco/models/baloo/meshes/PowerButtonMesh.stl"/>
-    <mesh name="EthernetJackMesh" class="/" file="/home/curtis/curtis_ws/src/curtis_sandbox/src/mujoco/models/baloo/meshes/EthernetJackMesh.stl"/>
-    <mesh name="StepperMesh" class="/" file="/home/curtis/curtis_ws/src/curtis_sandbox/src/mujoco/models/baloo/meshes/StepperMesh.stl"/>
-    <mesh name="LinearActuatorMesh" class="/" file="/home/curtis/curtis_ws/src/curtis_sandbox/src/mujoco/models/baloo/meshes/LinearActuatorMesh.stl"/>
-    <mesh name="RightBackWheelMesh" class="/" file="/home/curtis/curtis_ws/src/curtis_sandbox/src/mujoco/models/baloo/meshes/RightBackWheelMesh.stl"/>
-    <mesh name="PneumaticInletMesh" class="/" file="/home/curtis/curtis_ws/src/curtis_sandbox/src/mujoco/models/baloo/meshes/PneumaticInletMesh.stl"/>
-    <mesh name="ControlBoxMesh" class="/" file="/home/curtis/curtis_ws/src/curtis_sandbox/src/mujoco/models/baloo/meshes/ControlBoxMesh.stl"/>
-    <mesh name="LeftBackWheelFootMesh" class="/" file="/home/curtis/curtis_ws/src/curtis_sandbox/src/mujoco/models/baloo/meshes/LeftBackWheelFootMesh.stl"/>
-    <mesh name="meshed_cube" class="/" file="/home/curtis/curtis_ws/src/curtis_sandbox/src/mujoco/models/baloo/meshes/meshed_cube.stl"/>
-    <mesh name="LeftBaseMesh" class="/" file="/home/curtis/curtis_ws/src/curtis_sandbox/src/mujoco/models/baloo/meshes/LeftBaseMesh.stl"/>
-    <mesh name="BaseFrameMesh" class="/" file="/home/curtis/curtis_ws/src/curtis_sandbox/src/mujoco/models/baloo/meshes/BaseFrameMesh.stl"/>
-    <mesh name="SimpleShoulderMesh" class="/" file="/home/curtis/curtis_ws/src/curtis_sandbox/src/mujoco/models/baloo/meshes/SimpleShoulderMesh.stl"/>
-    <mesh name="LeftFrontWheelMesh" class="/" file="/home/curtis/curtis_ws/src/curtis_sandbox/src/mujoco/models/baloo/meshes/LeftFrontWheelMesh.stl"/>
-    <mesh name="RightFrontWheelFootMesh" class="/" file="/home/curtis/curtis_ws/src/curtis_sandbox/src/mujoco/models/baloo/meshes/RightFrontWheelFootMesh.stl"/>
-    <mesh name="LeftFrontWheelFootMesh" class="/" file="/home/curtis/curtis_ws/src/curtis_sandbox/src/mujoco/models/baloo/meshes/LeftFrontWheelFootMesh.stl"/>
-    <mesh name="LCDScreenMesh" class="/" file="/home/curtis/curtis_ws/src/curtis_sandbox/src/mujoco/models/baloo/meshes/LCDScreenMesh.stl"/>
-    <mesh name="RightBaseMesh" class="/" file="/home/curtis/curtis_ws/src/curtis_sandbox/src/mujoco/models/baloo/meshes/RightBaseMesh.stl"/>
-    <mesh name="RightBackWheelFootMesh" class="/" file="/home/curtis/curtis_ws/src/curtis_sandbox/src/mujoco/models/baloo/meshes/RightBackWheelFootMesh.stl"/>
-    <material name="vention_blue" class="/" reflectance="1" rgba="0 0.15686274509803921 0.31372549019607843 1"/>
-    <material name="matte_black" class="/" reflectance="0.20000000000000001" rgba="0 0 0 1"/>
-    <material name="cream" class="/" reflectance="0.20000000000000001" rgba="0.90000000000000002 0.90000000000000002 0.90000000000000002 1"/>
-    <material name="silver" class="/" reflectance="0.80000000000000004" rgba="0.80000000000000004 0.80000000000000004 0.80000000000000004 1"/>
-    <material name="red" class="/" reflectance="0.80000000000000004" rgba="0.80000000000000004 0.20000000000000001 0.20000000000000001 1"/>
-    <material name="lcd_blue" class="/" reflectance="0.80000000000000004" rgba="0.20000000000000001 0.20000000000000001 0.80000000000000004 1"/>
-    <material name="green" class="/" reflectance="0.80000000000000004" rgba="0.20000000000000001 0.80000000000000004 0.20000000000000001 1"/>
   </asset>
   <worldbody>
     <geom name="world" class="/" type="plane" condim="1" size="0 0 1" material="matplane"/>
     <light name="//unnamed_light_0" class="/" directional="true" pos="0 0 4" dir="0 0 -1" diffuse="0.59999999999999998 0.59999999999999998 0.59999999999999998" specular="0.20000000000000001 0.20000000000000001 0.20000000000000001"/>
     <camera name="fixedcam" class="/" pos="-1.357 2.722 2.4470000000000001" xyaxes="-0.88200000000000001 -0.47199999999999998 0 0.23799999999999999 -0.44600000000000001 0.86299999999999999"/>
-    <body name="left_0_B0" childclass="small_joint" pos="0 0 0.011111111111111112" euler="0 0 0">
-      <geom name="left_0_G0"/>
-      <inertial pos="0 0 0" mass="0.26519999999999999" diaginertia="0.00043523358024691365 0.00043523358024691365 0.00084864000000000001"/>
-      <site name="xsite0" rgba="0 1 0 1" pos="0.040000000000000001 0 0"/>
-      <site name="-xsite0" rgba="0 1 0 1" pos="-0.040000000000000001 0 0"/>
-      <site name="ysite0" rgba="0 1 0 1" pos="0 0.040000000000000001 0"/>
-      <site name="-ysite0" rgba="0 1 0 1" pos="0 -0.040000000000000001 0"/>
-      <body name="left_0_B1" pos="0 0 0.044444444444444446">
+    <body name="left_0_B0" childclass="small_joint" pos="0 0 0.005263157894736842" euler="0 0 0">
+      <geom name="left_0_G0" class="small_joint"/>
+      <inertial pos="0 0 0" mass="0.1326" diaginertia="0.00021338437673130195 0.00021338437673130195 0.00042432"/>
+      <site name="left_0_xsite0" class="bellows_site" pos="0.040000000000000001 0 0"/>
+      <site name="left_0_-xsite0" class="bellows_site" pos="-0.040000000000000001 0 0"/>
+      <site name="left_0_ysite0" class="bellows_site" pos="0 0.040000000000000001 0"/>
+      <site name="left_0_-ysite0" class="bellows_site" pos="0 -0.040000000000000001 0"/>
+      <body name="left_0_B1" pos="0 0 0.021052631578947368">
         <geom name="left_0_G1"/>
-        <inertial pos="0 0 0" mass="0.26519999999999999" diaginertia="0.00043523358024691365 0.00043523358024691365 0.00084864000000000001"/>
-        <joint name="left_0_Jx_0" pos="0 0 -0.022222222222222223" axis="1 0 0"/>
-        <joint name="left_0_Jy_0" pos="0 0 -0.022222222222222223" axis="0 1 0"/>
-        <site name="rotation_center1" rgba="1 0 0 1" pos="0 0 -0.022222222222222223"/>
-        <site name="xsite1" rgba="0 1 0 1" pos="0.040000000000000001 0 0"/>
-        <site name="-xsite1" rgba="0 1 0 1" pos="-0.040000000000000001 0 0"/>
-        <site name="ysite1" rgba="0 1 0 1" pos="0 0.040000000000000001 0"/>
-        <site name="-ysite1" rgba="0 1 0 1" pos="0 -0.040000000000000001 0"/>
-        <body name="left_0_B2" pos="0 0 0.044444444444444446">
+        <inertial pos="0 0 0" mass="0.1326" diaginertia="0.00021338437673130195 0.00021338437673130195 0.00042432"/>
+        <joint name="left_0_Jx_0" pos="0 0 -0.010526315789473684" axis="1 0 0"/>
+        <joint name="left_0_Jy_0" pos="0 0 -0.010526315789473684" axis="0 1 0"/>
+        <site name="left_0_xsite1" class="bellows_site" pos="0.040000000000000001 0 0"/>
+        <site name="left_0_-xsite1" class="bellows_site" pos="-0.040000000000000001 0 0"/>
+        <site name="left_0_ysite1" class="bellows_site" pos="0 0.040000000000000001 0"/>
+        <site name="left_0_-ysite1" class="bellows_site" pos="0 -0.040000000000000001 0"/>
+        <body name="left_0_B2" pos="0 0 0.021052631578947368">
           <geom name="left_0_G2"/>
-          <inertial pos="0 0 0" mass="0.26519999999999999" diaginertia="0.00043523358024691365 0.00043523358024691365 0.00084864000000000001"/>
-          <joint name="left_0_Jx_1" pos="0 0 -0.022222222222222223" axis="1 0 0"/>
-          <joint name="left_0_Jy_1" pos="0 0 -0.022222222222222223" axis="0 1 0"/>
-          <site name="rotation_center2" rgba="1 0 0 1" pos="0 0 -0.022222222222222223"/>
-          <site name="xsite2" rgba="0 1 0 1" pos="0.040000000000000001 0 0"/>
-          <site name="-xsite2" rgba="0 1 0 1" pos="-0.040000000000000001 0 0"/>
-          <site name="ysite2" rgba="0 1 0 1" pos="0 0.040000000000000001 0"/>
-          <site name="-ysite2" rgba="0 1 0 1" pos="0 -0.040000000000000001 0"/>
-          <body name="left_0_B3" pos="0 0 0.044444444444444446">
+          <inertial pos="0 0 0" mass="0.1326" diaginertia="0.00021338437673130195 0.00021338437673130195 0.00042432"/>
+          <joint name="left_0_Jx_1" pos="0 0 -0.010526315789473684" axis="1 0 0"/>
+          <joint name="left_0_Jy_1" pos="0 0 -0.010526315789473684" axis="0 1 0"/>
+          <site name="left_0_xsite2" class="bellows_site" pos="0.040000000000000001 0 0"/>
+          <site name="left_0_-xsite2" class="bellows_site" pos="-0.040000000000000001 0 0"/>
+          <site name="left_0_ysite2" class="bellows_site" pos="0 0.040000000000000001 0"/>
+          <site name="left_0_-ysite2" class="bellows_site" pos="0 -0.040000000000000001 0"/>
+          <body name="left_0_B3" pos="0 0 0.021052631578947368">
             <geom name="left_0_G3"/>
-            <inertial pos="0 0 0" mass="0.26519999999999999" diaginertia="0.00043523358024691365 0.00043523358024691365 0.00084864000000000001"/>
-            <joint name="left_0_Jx_2" pos="0 0 -0.022222222222222223" axis="1 0 0"/>
-            <joint name="left_0_Jy_2" pos="0 0 -0.022222222222222223" axis="0 1 0"/>
-            <site name="rotation_center3" rgba="1 0 0 1" pos="0 0 -0.022222222222222223"/>
-            <site name="xsite3" rgba="0 1 0 1" pos="0.040000000000000001 0 0"/>
-            <site name="-xsite3" rgba="0 1 0 1" pos="-0.040000000000000001 0 0"/>
-            <site name="ysite3" rgba="0 1 0 1" pos="0 0.040000000000000001 0"/>
-            <site name="-ysite3" rgba="0 1 0 1" pos="0 -0.040000000000000001 0"/>
-            <body name="left_0_B4" pos="0 0 0.044444444444444446">
+            <inertial pos="0 0 0" mass="0.1326" diaginertia="0.00021338437673130195 0.00021338437673130195 0.00042432"/>
+            <joint name="left_0_Jx_2" pos="0 0 -0.010526315789473684" axis="1 0 0"/>
+            <joint name="left_0_Jy_2" pos="0 0 -0.010526315789473684" axis="0 1 0"/>
+            <site name="left_0_xsite3" class="bellows_site" pos="0.040000000000000001 0 0"/>
+            <site name="left_0_-xsite3" class="bellows_site" pos="-0.040000000000000001 0 0"/>
+            <site name="left_0_ysite3" class="bellows_site" pos="0 0.040000000000000001 0"/>
+            <site name="left_0_-ysite3" class="bellows_site" pos="0 -0.040000000000000001 0"/>
+            <body name="left_0_B4" pos="0 0 0.021052631578947368">
               <geom name="left_0_G4"/>
-              <inertial pos="0 0 0" mass="0.26519999999999999" diaginertia="0.00043523358024691365 0.00043523358024691365 0.00084864000000000001"/>
-              <joint name="left_0_Jx_3" pos="0 0 -0.022222222222222223" axis="1 0 0"/>
-              <joint name="left_0_Jy_3" pos="0 0 -0.022222222222222223" axis="0 1 0"/>
-              <site name="rotation_center4" rgba="1 0 0 1" pos="0 0 -0.022222222222222223"/>
-              <site name="xsite4" rgba="0 1 0 1" pos="0.040000000000000001 0 0"/>
-              <site name="-xsite4" rgba="0 1 0 1" pos="-0.040000000000000001 0 0"/>
-              <site name="ysite4" rgba="0 1 0 1" pos="0 0.040000000000000001 0"/>
-              <site name="-ysite4" rgba="0 1 0 1" pos="0 -0.040000000000000001 0"/>
+              <inertial pos="0 0 0" mass="0.1326" diaginertia="0.00021338437673130195 0.00021338437673130195 0.00042432"/>
+              <joint name="left_0_Jx_3" pos="0 0 -0.010526315789473684" axis="1 0 0"/>
+              <joint name="left_0_Jy_3" pos="0 0 -0.010526315789473684" axis="0 1 0"/>
+              <site name="left_0_xsite4" class="bellows_site" pos="0.040000000000000001 0 0"/>
+              <site name="left_0_-xsite4" class="bellows_site" pos="-0.040000000000000001 0 0"/>
+              <site name="left_0_ysite4" class="bellows_site" pos="0 0.040000000000000001 0"/>
+              <site name="left_0_-ysite4" class="bellows_site" pos="0 -0.040000000000000001 0"/>
+              <body name="left_0_B5" pos="0 0 0.021052631578947368">
+                <geom name="left_0_G5"/>
+                <inertial pos="0 0 0" mass="0.1326" diaginertia="0.00021338437673130195 0.00021338437673130195 0.00042432"/>
+                <joint name="left_0_Jx_4" pos="0 0 -0.010526315789473684" axis="1 0 0"/>
+                <joint name="left_0_Jy_4" pos="0 0 -0.010526315789473684" axis="0 1 0"/>
+                <site name="left_0_xsite5" class="bellows_site" pos="0.040000000000000001 0 0"/>
+                <site name="left_0_-xsite5" class="bellows_site" pos="-0.040000000000000001 0 0"/>
+                <site name="left_0_ysite5" class="bellows_site" pos="0 0.040000000000000001 0"/>
+                <site name="left_0_-ysite5" class="bellows_site" pos="0 -0.040000000000000001 0"/>
+                <body name="left_0_B6" pos="0 0 0.021052631578947368">
+                  <geom name="left_0_G6"/>
+                  <inertial pos="0 0 0" mass="0.1326" diaginertia="0.00021338437673130195 0.00021338437673130195 0.00042432"/>
+                  <joint name="left_0_Jx_5" pos="0 0 -0.010526315789473684" axis="1 0 0"/>
+                  <joint name="left_0_Jy_5" pos="0 0 -0.010526315789473684" axis="0 1 0"/>
+                  <site name="left_0_xsite6" class="bellows_site" pos="0.040000000000000001 0 0"/>
+                  <site name="left_0_-xsite6" class="bellows_site" pos="-0.040000000000000001 0 0"/>
+                  <site name="left_0_ysite6" class="bellows_site" pos="0 0.040000000000000001 0"/>
+                  <site name="left_0_-ysite6" class="bellows_site" pos="0 -0.040000000000000001 0"/>
+                  <body name="left_0_B7" pos="0 0 0.021052631578947368">
+                    <geom name="left_0_G7"/>
+                    <inertial pos="0 0 0" mass="0.1326" diaginertia="0.00021338437673130195 0.00021338437673130195 0.00042432"/>
+                    <joint name="left_0_Jx_6" pos="0 0 -0.010526315789473684" axis="1 0 0"/>
+                    <joint name="left_0_Jy_6" pos="0 0 -0.010526315789473684" axis="0 1 0"/>
+                    <site name="left_0_xsite7" class="bellows_site" pos="0.040000000000000001 0 0"/>
+                    <site name="left_0_-xsite7" class="bellows_site" pos="-0.040000000000000001 0 0"/>
+                    <site name="left_0_ysite7" class="bellows_site" pos="0 0.040000000000000001 0"/>
+                    <site name="left_0_-ysite7" class="bellows_site" pos="0 -0.040000000000000001 0"/>
+                    <body name="left_0_B8" pos="0 0 0.021052631578947368">
+                      <geom name="left_0_G8"/>
+                      <inertial pos="0 0 0" mass="0.1326" diaginertia="0.00021338437673130195 0.00021338437673130195 0.00042432"/>
+                      <joint name="left_0_Jx_7" pos="0 0 -0.010526315789473684" axis="1 0 0"/>
+                      <joint name="left_0_Jy_7" pos="0 0 -0.010526315789473684" axis="0 1 0"/>
+                      <site name="left_0_xsite8" class="bellows_site" pos="0.040000000000000001 0 0"/>
+                      <site name="left_0_-xsite8" class="bellows_site" pos="-0.040000000000000001 0 0"/>
+                      <site name="left_0_ysite8" class="bellows_site" pos="0 0.040000000000000001 0"/>
+                      <site name="left_0_-ysite8" class="bellows_site" pos="0 -0.040000000000000001 0"/>
+                      <body name="left_0_B9" pos="0 0 0.021052631578947368">
+                        <geom name="left_0_G9"/>
+                        <inertial pos="0 0 0" mass="0.1326" diaginertia="0.00021338437673130195 0.00021338437673130195 0.00042432"/>
+                        <joint name="left_0_Jx_8" pos="0 0 -0.010526315789473684" axis="1 0 0"/>
+                        <joint name="left_0_Jy_8" pos="0 0 -0.010526315789473684" axis="0 1 0"/>
+                        <site name="left_0_xsite9" class="bellows_site" pos="0.040000000000000001 0 0"/>
+                        <site name="left_0_-xsite9" class="bellows_site" pos="-0.040000000000000001 0 0"/>
+                        <site name="left_0_ysite9" class="bellows_site" pos="0 0.040000000000000001 0"/>
+                        <site name="left_0_-ysite9" class="bellows_site" pos="0 -0.040000000000000001 0"/>
+                      </body>
+                    </body>
+                  </body>
+                </body>
+              </body>
             </body>
           </body>
         </body>
@@ -121,45 +136,65 @@
     </body>
   </worldbody>
   <tendon>
-    <spatial name="xtest" class="/" width="0.029999999999999999">
-      <site site="xsite0"/>
-      <site site="xsite1"/>
-      <site site="xsite2"/>
-      <site site="xsite3"/>
-      <site site="xsite4"/>
+    <spatial name="bellows0" class="tendon">
+      <site site="left_0_ysite0"/>
+      <site site="left_0_ysite1"/>
+      <site site="left_0_ysite2"/>
+      <site site="left_0_ysite3"/>
+      <site site="left_0_ysite4"/>
+      <site site="left_0_ysite5"/>
+      <site site="left_0_ysite6"/>
+      <site site="left_0_ysite7"/>
+      <site site="left_0_ysite8"/>
+      <site site="left_0_ysite9"/>
     </spatial>
-    <spatial name="-xtest" class="/" width="0.029999999999999999">
-      <site site="-xsite0"/>
-      <site site="-xsite1"/>
-      <site site="-xsite2"/>
-      <site site="-xsite3"/>
-      <site site="-xsite4"/>
+    <spatial name="bellows1" class="tendon">
+      <site site="left_0_-ysite0"/>
+      <site site="left_0_-ysite1"/>
+      <site site="left_0_-ysite2"/>
+      <site site="left_0_-ysite3"/>
+      <site site="left_0_-ysite4"/>
+      <site site="left_0_-ysite5"/>
+      <site site="left_0_-ysite6"/>
+      <site site="left_0_-ysite7"/>
+      <site site="left_0_-ysite8"/>
+      <site site="left_0_-ysite9"/>
     </spatial>
-    <spatial name="ytest" class="/" width="0.029999999999999999">
-      <site site="ysite0"/>
-      <site site="ysite1"/>
-      <site site="ysite2"/>
-      <site site="ysite3"/>
-      <site site="ysite4"/>
+    <spatial name="bellows2" class="tendon">
+      <site site="left_0_-xsite0"/>
+      <site site="left_0_xsite1"/>
+      <site site="left_0_xsite2"/>
+      <site site="left_0_xsite3"/>
+      <site site="left_0_xsite4"/>
+      <site site="left_0_xsite5"/>
+      <site site="left_0_xsite6"/>
+      <site site="left_0_xsite7"/>
+      <site site="left_0_xsite8"/>
+      <site site="left_0_xsite9"/>
     </spatial>
-    <spatial name="-ytest" class="/" width="0.029999999999999999">
-      <site site="-ysite0"/>
-      <site site="-ysite1"/>
-      <site site="-ysite2"/>
-      <site site="-ysite3"/>
-      <site site="-ysite4"/>
+    <spatial name="bellows3" class="tendon">
+      <site site="left_0_xsite0"/>
+      <site site="left_0_-xsite1"/>
+      <site site="left_0_-xsite2"/>
+      <site site="left_0_-xsite3"/>
+      <site site="left_0_-xsite4"/>
+      <site site="left_0_-xsite5"/>
+      <site site="left_0_-xsite6"/>
+      <site site="left_0_-xsite7"/>
+      <site site="left_0_-xsite8"/>
+      <site site="left_0_-xsite9"/>
     </spatial>
   </tendon>
   <actuator>
-    <cylinder name="p0" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="xtest" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
-    <cylinder name="p1" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="-xtest" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
-    <cylinder name="p2" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="ytest" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
-    <cylinder name="p3" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="-ytest" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="p0" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="bellows0" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="p1" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="bellows1" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="p2" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="bellows2" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="p3" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="bellows3" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
   </actuator>
   <sensor>
     <framequat name="left_0_B0_framequat" objtype="body" objname="left_0_B0"/>
-    <framequat name="left_0_B4_framequat" objtype="body" objname="left_0_B4"/>
-    <frameangvel name="left_0_B4_frameangvel" objtype="body" objname="left_0_B4" reftype="body" refname="left_0_B0"/>
+    <framequat name="left_0_B9_framequat" objtype="body" objname="left_0_B9"/>
+    <frameangvel name="left_0_B9_frameangvel" objtype="body" objname="left_0_B9" reftype="body" refname="left_0_B0"/>
     <plugin name="left_0" plugin="mujoco.sensor.joint_angle_estimator"/>
   </sensor>
 </mujoco>
