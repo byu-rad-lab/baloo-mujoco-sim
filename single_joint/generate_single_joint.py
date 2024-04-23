@@ -189,7 +189,7 @@ class SmallJoint:
                 pos=[self.bellows_radius, 0, 0],
                 dclass="bellows_site",
             )
-            bellows2.add("site", site=f"{side}_{joint_num}_xsite{i}")
+            bellows3.add("site", site=f"{side}_{joint_num}_xsite{i}")
 
             body.add(
                 "site",
@@ -197,7 +197,7 @@ class SmallJoint:
                 pos=[-self.bellows_radius, 0, 0],
                 dclass="bellows_site",
             )
-            bellows3.add("site", site=f"{side}_{joint_num}_-xsite{i}")
+            bellows2.add("site", site=f"{side}_{joint_num}_-xsite{i}")
 
             body.add(
                 "site",
@@ -380,8 +380,7 @@ class SmallJoint:
         # damping uniformly distributed over each disk
         # dampers in series, so d_lumped = d_disk/num_joints
         # stiffness is lumped over all bellows
-        num_chambers = 4
-        four_stiffness = self.joint_stiffness * num_chambers
+        four_stiffness = self.joint_stiffness * self.num_joints
         four_damping = self.joint_damping * self.num_joints
 
         small_disk_class = self.mjcf_model.default.add("default",
@@ -389,7 +388,7 @@ class SmallJoint:
         small_disk_class.geom.set_attributes(
             type="cylinder",
             rgba=self.GRAY,
-            size=[self.joint_radius, self.disk_half_height * 1],
+            size=[self.joint_radius, self.disk_half_height * 0.5],
         )
         small_disk_class.joint.set_attributes(
             type="hinge",
@@ -397,6 +396,7 @@ class SmallJoint:
             damping=four_damping,
             pos=[0, 0, self.disk_height],
             limited="false",
+            stiffness=four_stiffness,
         )
 
         bellows_site_class = self.mjcf_model.default.add("default",
@@ -405,17 +405,14 @@ class SmallJoint:
 
         tendon_class = self.mjcf_model.default.add("default", dclass="tendon")
 
-        tendon_class.tendon.set_attributes(limited="True",
-                                           range=[1, 10],
-                                           width=0.03,
-                                           stiffness=four_stiffness)
+        tendon_class.tendon.set_attributes(width=0.03, )
 
 
 if __name__ == "__main__":
     np.set_printoptions(precision=3, suppress=True)
     torso = SmallJoint(
         "SmallJoint",
-        10,
+        5,
     )
 
     # print(torso.mjcf_model)
@@ -460,27 +457,9 @@ if __name__ == "__main__":
             # a policy and applies a control signal before stepping the physics.
             mujoco.mj_step(model, data)
 
-            # print(data.sensor('vive_tracker').data)
-            # print(data.sensor('0_B0_framequat').id)
-            # print(data.sensordata[:4])
-            # print(f"First Disk Quat: {data.sensor('0_B0_framequat').data}")
-
-            # print(data.sensor("0_B4_framequat").id)
-            # print(data.sensordata[4:8])
-            # print(f"Last Disk Quat: {data.sensor('0_B4_framequat').data}")
-
-            # #conjugate and multiply
-            # # R = mujoco.mju_quat2Mat(data.sensor('0_B4_framequat').data)
-
-            # print(data.sensordata[8:11])
-            # print(f"Last Disk Vel: {data.sensor('0_B4_frameangvel').data}")
-
-            # print(data.sensordata[-4:])
-            # print(f"Vive Tracker: {data.sensor('vive_tracker').data}")
-
             # Pick up changes to the physics state, apply perturbations, update options from GUI.
             viewer.sync()
-            plotter.update(model, data)
+            # plotter.update(model, data)
 
             # Rudimentary time keeping, will drift relative to wall clock.
             # print(time.time() - step_start)
