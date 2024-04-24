@@ -58,21 +58,21 @@ The plugin includes initialization, destruction, reset, compute, and visualizati
 ## Installation
 Clone this repository and build using CMAKE with the following commands:
     
-    ```bash
-    git clone <THIS_REPO>
-    cd joint_angle_estimator
-    mkdir build
-    cd build
-    cmake -DMUJOCO_ROOT_DIR=<PATH_TO_MUJOCO_INSTALLATION> ..
-    make
-    ```
+  ```bash
+  git clone <THIS_REPO>
+  cd joint_angle_estimator
+  mkdir build
+  cd build
+  cmake -DMUJOCO_ROOT_DIR=<PATH_TO_MUJOCO_INSTALLATION> ..
+  make
+  ```
 
 <PATH_TO_MUJOCO_INSTALLATION> for me is /home/curtis/.local/lib/python3.8/site-packages/mujoco since I installed mujoco using pip. If you downloaded the mujoco code elsewhere, you need to change the path accordingly.
 
 Then you need to install the plugin where mujoco can find it. It looks in the plugin folder of the mujoco installation. You can do this by running the following command:
 
-    ```bash
-    make install
-    ```
+  ```bash
+  make install
+  ```
 
 !! IMPORTANT NOTE: Plugins must be built with the same version of mujoco that will be simulating it.
