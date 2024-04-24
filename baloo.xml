@@ -30,8 +30,11 @@
       </default>
     </default>
   </default>
+  <extension>
+    <plugin plugin="mujoco.sensor.joint_angle_estimator"/>
+  </extension>
   <custom>
-    <numeric name="num_joint_disks" size="1" data="5"/>
+    <numeric name="num_disks" size="1" data="5"/>
   </custom>
   <asset>
     <texture name="texplane" type="2d" builtin="checker" mark="cross" width="512" height="512"/>
@@ -13597,6 +13600,18 @@
     <touch name="right_link1_63_13_touch" site="right_link1_63_13"/>
     <touch name="right_link1_63_14_touch" site="right_link1_63_14"/>
     <touch name="right_link1_63_15_touch" site="right_link1_63_15"/>
+    <framequat name="right_0_B0_framequat" objtype="body" objname="right_0_B0"/>
+    <framequat name="right_0_B4_framequat" objtype="body" objname="right_0_B4"/>
+    <frameangvel name="right_0_B4_frameangvel" objtype="body" objname="right_0_B4" reftype="body" refname="right_0_B0"/>
+    <plugin name="right_0" plugin="mujoco.sensor.joint_angle_estimator"/>
+    <framequat name="right_1_B0_framequat" objtype="body" objname="right_1_B0"/>
+    <framequat name="right_1_B4_framequat" objtype="body" objname="right_1_B4"/>
+    <frameangvel name="right_1_B4_frameangvel" objtype="body" objname="right_1_B4" reftype="body" refname="right_1_B0"/>
+    <plugin name="right_1" plugin="mujoco.sensor.joint_angle_estimator"/>
+    <framequat name="right_2_B0_framequat" objtype="body" objname="right_2_B0"/>
+    <framequat name="right_2_B4_framequat" objtype="body" objname="right_2_B4"/>
+    <frameangvel name="right_2_B4_frameangvel" objtype="body" objname="right_2_B4" reftype="body" refname="right_2_B0"/>
+    <plugin name="right_2" plugin="mujoco.sensor.joint_angle_estimator"/>
     <touch name="left_link0_0_0_touch" site="left_link0_0_0"/>
     <touch name="left_link0_0_1_touch" site="left_link0_0_1"/>
     <touch name="left_link0_0_2_touch" site="left_link0_0_2"/>
@@ -15645,5 +15660,17 @@
     <touch name="left_link1_63_13_touch" site="left_link1_63_13"/>
     <touch name="left_link1_63_14_touch" site="left_link1_63_14"/>
     <touch name="left_link1_63_15_touch" site="left_link1_63_15"/>
+    <framequat name="left_0_B0_framequat" objtype="body" objname="left_0_B0"/>
+    <framequat name="left_0_B4_framequat" objtype="body" objname="left_0_B4"/>
+    <frameangvel name="left_0_B4_frameangvel" objtype="body" objname="left_0_B4" reftype="body" refname="left_0_B0"/>
+    <plugin name="left_0" plugin="mujoco.sensor.joint_angle_estimator"/>
+    <framequat name="left_1_B0_framequat" objtype="body" objname="left_1_B0"/>
+    <framequat name="left_1_B4_framequat" objtype="body" objname="left_1_B4"/>
+    <frameangvel name="left_1_B4_frameangvel" objtype="body" objname="left_1_B4" reftype="body" refname="left_1_B0"/>
+    <plugin name="left_1" plugin="mujoco.sensor.joint_angle_estimator"/>
+    <framequat name="left_2_B0_framequat" objtype="body" objname="left_2_B0"/>
+    <framequat name="left_2_B4_framequat" objtype="body" objname="left_2_B4"/>
+    <frameangvel name="left_2_B4_frameangvel" objtype="body" objname="left_2_B4" reftype="body" refname="left_2_B0"/>
+    <plugin name="left_2" plugin="mujoco.sensor.joint_angle_estimator"/>
   </sensor>
 </mujoco>

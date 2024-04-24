@@ -15,10 +15,6 @@ from scipy.spatial.transform import Rotation as R
 
 class Baloo:
     def __init__(self, name, num_disks) -> None:
-
-        print(
-            "Remember to build all plugins with current version of mujoco before running this script."
-        )
         # set default options and visual things.
         self.mjcf_model = mjcf.RootElement(model=name)
         self._setupModel(num_disks)
@@ -33,14 +29,23 @@ class Baloo:
         last_disk = self._buildMediumJoint(right_link0, "right")
         right_link1 = self.addLink1(last_disk, "right")
         last_disk = self._buildSmallJoint(right_link1, "right")
+        self._addSensors('right')
 
         left_last_disk = self._buildLargeJoint(left_shoulder, "left")
         left_link0 = self.addLink0(left_last_disk, "left")
         last_disk = self._buildMediumJoint(left_link0, "left")
         left_link1 = self.addLink1(last_disk, "left")
         last_disk = self._buildSmallJoint(left_link1, "left")
+        self._addSensors('left')
 
-        # self.createSensors()
+    def _loadPlugins(self):
+        print(
+            "Remember to build all plugins with current version of mujoco before running this script."
+        )
+        plugin = self.mjcf_model.extension.add(
+            "plugin",
+            plugin="mujoco.sensor.joint_angle_estimator",
+        )
 
     def _setupModel(self, num_disks):
 
@@ -87,6 +92,7 @@ class Baloo:
             pos=[-1.357, 2.722, 2.447],
             xyaxes=[-0.882, -0.472, 0.000, 0.238, -0.446, 0.863],
         )
+        self._loadPlugins()
 
     def _loadParams(self, num_disks):
         with open(os.path.join(os.path.dirname(__file__), "params.yaml")) as f:
@@ -171,7 +177,7 @@ class Baloo:
     def _setCustomData(self):
         self.mjcf_model.custom.add(
             "numeric",
-            name="num_joint_disks",
+            name="num_disks",
             size=1,
             data=[self.num_disks],
         )
@@ -264,8 +270,39 @@ class Baloo:
                                      gear=[0.5 * 1000],
                                      timeconst=0.2)
 
-    def createSensors(self):
-        pass
+    def _addSensors(self, side):
+        # add framequat relative to world frame on base and tip of each joint
+        for joint_num in range(3):
+            ##### BASE #####
+            self.mjcf_model.sensor.add(
+                "framequat",
+                name=f"{side}_{joint_num}_B0_framequat",
+                objtype="body",
+                objname=f"{side}_{joint_num}_B0",
+            )
+
+            #### TIP ####
+            self.mjcf_model.sensor.add(
+                "framequat",
+                name=f"{side}_{joint_num}_B{self.num_disks-1}_framequat",
+                objtype="body",
+                objname=f"{side}_{joint_num}_B{self.num_disks-1}",
+            )
+
+            #add frameangvel to tip, ref to base frame
+            self.mjcf_model.sensor.add(
+                "frameangvel",
+                name=f"{side}_{joint_num}_B{self.num_disks-1}_frameangvel",
+                objtype="body",
+                objname=f"{side}_{joint_num}_B{self.num_disks-1}",
+                reftype="body",
+                refname=f"{side}_{joint_num}_B0",
+            )
+
+            self.mjcf_model.sensor.add(
+                "plugin",
+                plugin="mujoco.sensor.joint_angle_estimator",
+                name=f'{side}_{joint_num}')
 
     def addLink0(self, body, side):
         link = body.add(
@@ -1229,6 +1266,8 @@ if __name__ == "__main__":
 
             # Pick up changes to the physics state, apply perturbations, update options from GUI.
             viewer.sync()
+
+            print(data.sensor('left_0').data)
 
             # if detect_box_touch(model, data):
             # print("box touched at time: ", data.time)
