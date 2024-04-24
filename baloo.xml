@@ -11,11 +11,11 @@
   <default>
     <default class="/">
       <default class="large_joint">
-        <joint group="3" type="hinge" pos="0 0 0.022222222222222223" stiffness="540" damping="30"/>
+        <joint group="3" type="hinge" pos="0 0 0.022222222222222223" stiffness="540" damping="40"/>
         <geom type="cylinder" size="0.125 0.0055555555555555558" rgba="0.47058823529411764 0.47058823529411764 0.47058823529411764 0.69999999999999996"/>
       </default>
       <default class="medium_joint">
-        <joint group="3" type="hinge" pos="0 0 0.022222222222222223" stiffness="120" damping="60"/>
+        <joint group="3" type="hinge" pos="0 0 0.022222222222222223" stiffness="200" damping="30"/>
         <geom type="cylinder" size="0.10000000000000001 0.011111111111111112" rgba="0.47058823529411764 0.47058823529411764 0.47058823529411764 0.69999999999999996"/>
       </default>
       <default class="small_joint">
@@ -27,6 +27,9 @@
       </default>
       <default class="tendon">
         <tendon width="0.029999999999999999"/>
+      </default>
+      <default class="cylinder">
+        <cylinder ctrllimited="true" ctrlrange="0 400"/>
       </default>
     </default>
   </default>
@@ -10677,30 +10680,30 @@
   </tendon>
   <actuator>
     <position name="elevator" class="/" ctrllimited="true" ctrlrange="-1 0" joint="linear_actuator" kp="1000"/>
-    <cylinder name="right_0_p0" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="right_0_bellows0" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
-    <cylinder name="right_0_p1" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="right_0_bellows1" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
-    <cylinder name="right_0_p2" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="right_0_bellows2" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
-    <cylinder name="right_0_p3" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="right_0_bellows3" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
-    <cylinder name="right_1_p0" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="right_1_bellows0" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
-    <cylinder name="right_1_p1" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="right_1_bellows1" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
-    <cylinder name="right_1_p2" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="right_1_bellows2" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
-    <cylinder name="right_1_p3" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="right_1_bellows3" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
-    <cylinder name="right_2_p0" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="right_2_bellows0" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
-    <cylinder name="right_2_p1" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="right_2_bellows1" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
-    <cylinder name="right_2_p2" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="right_2_bellows2" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
-    <cylinder name="right_2_p3" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="right_2_bellows3" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
-    <cylinder name="left_0_p0" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="left_0_bellows0" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
-    <cylinder name="left_0_p1" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="left_0_bellows1" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
-    <cylinder name="left_0_p2" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="left_0_bellows2" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
-    <cylinder name="left_0_p3" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="left_0_bellows3" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
-    <cylinder name="left_1_p0" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="left_1_bellows0" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
-    <cylinder name="left_1_p1" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="left_1_bellows1" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
-    <cylinder name="left_1_p2" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="left_1_bellows2" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
-    <cylinder name="left_1_p3" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="left_1_bellows3" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
-    <cylinder name="left_2_p0" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="left_2_bellows0" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
-    <cylinder name="left_2_p1" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="left_2_bellows1" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
-    <cylinder name="left_2_p2" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="left_2_bellows2" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
-    <cylinder name="left_2_p3" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="left_2_bellows3" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="right_0_p0" class="cylinder" tendon="right_0_bellows0" timeconst="0.080000000000000002" area="4"/>
+    <cylinder name="right_0_p1" class="cylinder" tendon="right_0_bellows1" timeconst="0.080000000000000002" area="4"/>
+    <cylinder name="right_0_p2" class="cylinder" tendon="right_0_bellows2" timeconst="0.080000000000000002" area="4"/>
+    <cylinder name="right_0_p3" class="cylinder" tendon="right_0_bellows3" timeconst="0.080000000000000002" area="4"/>
+    <cylinder name="right_1_p0" class="cylinder" tendon="right_1_bellows0" timeconst="0.10000000000000001" area="2"/>
+    <cylinder name="right_1_p1" class="cylinder" tendon="right_1_bellows1" timeconst="0.10000000000000001" area="2"/>
+    <cylinder name="right_1_p2" class="cylinder" tendon="right_1_bellows2" timeconst="0.10000000000000001" area="2"/>
+    <cylinder name="right_1_p3" class="cylinder" tendon="right_1_bellows3" timeconst="0.10000000000000001" area="2"/>
+    <cylinder name="right_2_p0" class="cylinder" tendon="right_2_bellows0" timeconst="0.20000000000000001" area="2"/>
+    <cylinder name="right_2_p1" class="cylinder" tendon="right_2_bellows1" timeconst="0.20000000000000001" area="2"/>
+    <cylinder name="right_2_p2" class="cylinder" tendon="right_2_bellows2" timeconst="0.20000000000000001" area="2"/>
+    <cylinder name="right_2_p3" class="cylinder" tendon="right_2_bellows3" timeconst="0.20000000000000001" area="2"/>
+    <cylinder name="left_0_p0" class="cylinder" tendon="left_0_bellows0" timeconst="0.080000000000000002" area="4"/>
+    <cylinder name="left_0_p1" class="cylinder" tendon="left_0_bellows1" timeconst="0.080000000000000002" area="4"/>
+    <cylinder name="left_0_p2" class="cylinder" tendon="left_0_bellows2" timeconst="0.080000000000000002" area="4"/>
+    <cylinder name="left_0_p3" class="cylinder" tendon="left_0_bellows3" timeconst="0.080000000000000002" area="4"/>
+    <cylinder name="left_1_p0" class="cylinder" tendon="left_1_bellows0" timeconst="0.10000000000000001" area="2"/>
+    <cylinder name="left_1_p1" class="cylinder" tendon="left_1_bellows1" timeconst="0.10000000000000001" area="2"/>
+    <cylinder name="left_1_p2" class="cylinder" tendon="left_1_bellows2" timeconst="0.10000000000000001" area="2"/>
+    <cylinder name="left_1_p3" class="cylinder" tendon="left_1_bellows3" timeconst="0.10000000000000001" area="2"/>
+    <cylinder name="left_2_p0" class="cylinder" tendon="left_2_bellows0" timeconst="0.20000000000000001" area="2"/>
+    <cylinder name="left_2_p1" class="cylinder" tendon="left_2_bellows1" timeconst="0.20000000000000001" area="2"/>
+    <cylinder name="left_2_p2" class="cylinder" tendon="left_2_bellows2" timeconst="0.20000000000000001" area="2"/>
+    <cylinder name="left_2_p3" class="cylinder" tendon="left_2_bellows3" timeconst="0.20000000000000001" area="2"/>
   </actuator>
   <sensor>
     <touch name="chest_0_0_touch" site="chest_0_0"/>
@@ -13604,14 +13607,26 @@
     <framequat name="right_0_B4_framequat" objtype="body" objname="right_0_B4"/>
     <frameangvel name="right_0_B4_frameangvel" objtype="body" objname="right_0_B4" reftype="body" refname="right_0_B0"/>
     <plugin name="right_0" plugin="mujoco.sensor.joint_angle_estimator"/>
+    <tendonpos name="right_0_bellows0" tendon="right_0_bellows0"/>
+    <tendonpos name="right_0_bellows1" tendon="right_0_bellows1"/>
+    <tendonpos name="right_0_bellows2" tendon="right_0_bellows2"/>
+    <tendonpos name="right_0_bellows3" tendon="right_0_bellows3"/>
     <framequat name="right_1_B0_framequat" objtype="body" objname="right_1_B0"/>
     <framequat name="right_1_B4_framequat" objtype="body" objname="right_1_B4"/>
     <frameangvel name="right_1_B4_frameangvel" objtype="body" objname="right_1_B4" reftype="body" refname="right_1_B0"/>
     <plugin name="right_1" plugin="mujoco.sensor.joint_angle_estimator"/>
+    <tendonpos name="right_1_bellows0" tendon="right_1_bellows0"/>
+    <tendonpos name="right_1_bellows1" tendon="right_1_bellows1"/>
+    <tendonpos name="right_1_bellows2" tendon="right_1_bellows2"/>
+    <tendonpos name="right_1_bellows3" tendon="right_1_bellows3"/>
     <framequat name="right_2_B0_framequat" objtype="body" objname="right_2_B0"/>
     <framequat name="right_2_B4_framequat" objtype="body" objname="right_2_B4"/>
     <frameangvel name="right_2_B4_frameangvel" objtype="body" objname="right_2_B4" reftype="body" refname="right_2_B0"/>
     <plugin name="right_2" plugin="mujoco.sensor.joint_angle_estimator"/>
+    <tendonpos name="right_2_bellows0" tendon="right_2_bellows0"/>
+    <tendonpos name="right_2_bellows1" tendon="right_2_bellows1"/>
+    <tendonpos name="right_2_bellows2" tendon="right_2_bellows2"/>
+    <tendonpos name="right_2_bellows3" tendon="right_2_bellows3"/>
     <touch name="left_link0_0_0_touch" site="left_link0_0_0"/>
     <touch name="left_link0_0_1_touch" site="left_link0_0_1"/>
     <touch name="left_link0_0_2_touch" site="left_link0_0_2"/>
@@ -15664,13 +15679,25 @@
     <framequat name="left_0_B4_framequat" objtype="body" objname="left_0_B4"/>
     <frameangvel name="left_0_B4_frameangvel" objtype="body" objname="left_0_B4" reftype="body" refname="left_0_B0"/>
     <plugin name="left_0" plugin="mujoco.sensor.joint_angle_estimator"/>
+    <tendonpos name="left_0_bellows0" tendon="left_0_bellows0"/>
+    <tendonpos name="left_0_bellows1" tendon="left_0_bellows1"/>
+    <tendonpos name="left_0_bellows2" tendon="left_0_bellows2"/>
+    <tendonpos name="left_0_bellows3" tendon="left_0_bellows3"/>
     <framequat name="left_1_B0_framequat" objtype="body" objname="left_1_B0"/>
     <framequat name="left_1_B4_framequat" objtype="body" objname="left_1_B4"/>
     <frameangvel name="left_1_B4_frameangvel" objtype="body" objname="left_1_B4" reftype="body" refname="left_1_B0"/>
     <plugin name="left_1" plugin="mujoco.sensor.joint_angle_estimator"/>
+    <tendonpos name="left_1_bellows0" tendon="left_1_bellows0"/>
+    <tendonpos name="left_1_bellows1" tendon="left_1_bellows1"/>
+    <tendonpos name="left_1_bellows2" tendon="left_1_bellows2"/>
+    <tendonpos name="left_1_bellows3" tendon="left_1_bellows3"/>
     <framequat name="left_2_B0_framequat" objtype="body" objname="left_2_B0"/>
     <framequat name="left_2_B4_framequat" objtype="body" objname="left_2_B4"/>
     <frameangvel name="left_2_B4_frameangvel" objtype="body" objname="left_2_B4" reftype="body" refname="left_2_B0"/>
     <plugin name="left_2" plugin="mujoco.sensor.joint_angle_estimator"/>
+    <tendonpos name="left_2_bellows0" tendon="left_2_bellows0"/>
+    <tendonpos name="left_2_bellows1" tendon="left_2_bellows1"/>
+    <tendonpos name="left_2_bellows2" tendon="left_2_bellows2"/>
+    <tendonpos name="left_2_bellows3" tendon="left_2_bellows3"/>
   </sensor>
 </mujoco>

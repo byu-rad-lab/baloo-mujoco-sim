@@ -1,26 +1,33 @@
-small_joint:
-  mass: 1.326 # mass in kg
-  height: 0.2 # height in meters
-  radius: 0.08 # radius of joint in meters
-  bellows_radius: 0.04 # radius to center of bellows in meters
-  bend_limit: 110 # bend limit in degrees, probably needs to be lengths of tendons
-  lumped_stiffness: 30 # lumped stiffness of the joint in Nm/rad, is divided evenly between bellows
-  lumped_damping: 7.5 # lumped damping of the joint in Nm/(rad/s), is divided evenly between universal joint in series
-
-medium_joint:
-  mass: 1.326 # mass in kg
-  height: 0.2 # height in meters
-  radius: 0.1 # radius of joint in meters
-  bellows_radius: 0.06 # radius to center of bellows in meters
-  bend_limit: 110 # bend limit in degrees, probably needs to be lengths of tendons
-  lumped_stiffness: 30 # lumped stiffness of the joint in Nm/rad, is divided evenly between bellows
-  lumped_damping: 15 # lumped damping of the joint in Nm/(rad/s), is divided evenly between universal joint in series
+general:
+  joint_height: 0.2 # height in meters
+  max_pressure: 400000 # maximum pressure in Pascals
 
 large_joint:
   mass: 2.653 # mass in kg
-  height: 0.2 # height in meters
   radius: 0.125 # radius of joint in meters
   bellows_radius: 0.075 # radius to center of bellows in meters
+  bellows_effective_area: .004 # effective area of bellows in meters^2 from P = F/A
   bend_limit: 90 # bend limit in degrees, probably needs to be lengths of tendons
   lumped_stiffness: 135 # lumped stiffness of the joint in Nm/rad, is divided evenly between bellows
+  lumped_damping: 10 # lumped damping of the joint in Nm/(rad/s), is divided evenly between universal joint in series
+  pressure_time_constant: 0.08 # time constant of pressure in seconds
+
+medium_joint:
+  mass: 1.326 # mass in kg
+  radius: 0.1 # radius of joint in meters
+  bellows_radius: 0.06 # radius to center of bellows in meters
+  bellows_effective_area: .002 # effective area of bellows in meters^2 from P = F/A
+  bend_limit: 110 # bend limit in degrees, probably needs to be lengths of tendons
+  lumped_stiffness: 50 # lumped stiffness of the joint in Nm/rad, is divided evenly between bellows
   lumped_damping: 7.5 # lumped damping of the joint in Nm/(rad/s), is divided evenly between universal joint in series
+  pressure_time_constant: 0.1 # time constant of pressure in seconds
+
+small_joint:
+  mass: 1.326 # mass in kg
+  radius: 0.08 # radius of joint in meters
+  bellows_radius: 0.04 # radius to center of bellows in meters
+  bellows_effective_area: .002 # effective area of bellows in meters^2 from P = F/A
+  bend_limit: 110 # bend limit in degrees, probably needs to be lengths of tendons
+  lumped_stiffness: 30 # lumped stiffness of the joint in Nm/rad, is divided evenly between bellows
+  lumped_damping: 7.5 # lumped damping of the joint in Nm/(rad/s), is divided evenly between universal joint in series
+  pressure_time_constant: 0.2 # time constant of pressure in seconds, mostly function of valve size

@@ -1,4 +1,4 @@
-# Joint Angle Estimator Plugin for MuJoCo
+# Continuum Joint Angle Estimator Plugin for MuJoCo
 
 Curtis Johnson April 2024
 

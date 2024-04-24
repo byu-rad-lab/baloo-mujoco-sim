@@ -98,7 +98,6 @@ class Baloo:
         with open(os.path.join(os.path.dirname(__file__), "params.yaml")) as f:
             params = yaml.safe_load(f)
 
-        self.small_joint_height = params["small_joint"]["height"]
         self.small_joint_radius = params["small_joint"]["radius"]
         self.small_joint_mass = params["small_joint"]["mass"]
         self.small_joint_bellows_radius = params["small_joint"][
@@ -108,8 +107,8 @@ class Baloo:
             "lumped_stiffness"]
         self.small_joint_lumped_damping = params["small_joint"][
             "lumped_damping"]
+        self.small_joint_area = params["small_joint"]["bellows_effective_area"]
 
-        self.medium_joint_height = params["medium_joint"]["height"]
         self.medium_joint_radius = params["medium_joint"]["radius"]
         self.medium_joint_mass = params["medium_joint"]["mass"]
         self.medium_joint_bellows_radius = params["medium_joint"][
@@ -119,8 +118,9 @@ class Baloo:
             "lumped_stiffness"]
         self.medium_joint_lumped_damping = params["medium_joint"][
             "lumped_damping"]
+        self.medium_joint_area = params["medium_joint"][
+            "bellows_effective_area"]
 
-        self.large_joint_height = params["large_joint"]["height"]
         self.large_joint_radius = params["large_joint"]["radius"]
         self.large_joint_mass = params["large_joint"]["mass"]
         self.large_joint_bellows_radius = params["large_joint"][
@@ -130,10 +130,22 @@ class Baloo:
             "lumped_stiffness"]
         self.large_joint_lumped_damping = params["large_joint"][
             "lumped_damping"]
+        self.large_joint_area = params["large_joint"]["bellows_effective_area"]
 
         # some joint measurements common (hopefully) among all joints
-        assert self.large_joint_height == self.medium_joint_height == self.small_joint_height
-        self.joint_height = self.large_joint_height
+        self.joint_height = params["general"]["joint_height"]
+        self.pmax = params["general"]["max_pressure"]
+
+        self.bellows_areas = [
+            self.large_joint_area, self.medium_joint_area,
+            self.small_joint_area
+        ]
+
+        self.pressure_time_consts = [
+            params["large_joint"]["pressure_time_constant"],
+            params["medium_joint"]["pressure_time_constant"],
+            params["small_joint"]["pressure_time_constant"]
+        ]
 
         self.num_disks = num_disks
         num_spaces = self.num_disks - 1
@@ -233,42 +245,42 @@ class Baloo:
                 bellows.add("site", site=site)
 
         #add actuator to each built tendon
-        self.mjcf_model.actuator.add("cylinder",
-                                     name=f"{side}_{joint_num}_p0",
-                                     tendon=f"{side}_{joint_num}_bellows0",
-                                     diameter=0.05,
-                                     ctrllimited=True,
-                                     ctrlrange=[0, 1000],
-                                     gear=[0.5 * 1000],
-                                     timeconst=0.2)
+        self.mjcf_model.actuator.add(
+            "cylinder",
+            name=f"{side}_{joint_num}_p0",
+            tendon=f"{side}_{joint_num}_bellows0",
+            area=self.bellows_areas[joint_num] *
+            1000,  # 1000 since inputs are in kPa
+            dclass="cylinder",
+            timeconst=self.pressure_time_consts[joint_num])
 
         #add actuator to side_tendon
-        self.mjcf_model.actuator.add("cylinder",
-                                     name=f"{side}_{joint_num}_p1",
-                                     tendon=f"{side}_{joint_num}_bellows1",
-                                     diameter=0.05,
-                                     ctrllimited=True,
-                                     ctrlrange=[0, 1000],
-                                     gear=[0.5 * 1000],
-                                     timeconst=0.2)
+        self.mjcf_model.actuator.add(
+            "cylinder",
+            name=f"{side}_{joint_num}_p1",
+            tendon=f"{side}_{joint_num}_bellows1",
+            area=self.bellows_areas[joint_num] *
+            1000,  # 1000 since inputs are in kPa
+            dclass='cylinder',
+            timeconst=self.pressure_time_consts[joint_num])
 
-        self.mjcf_model.actuator.add("cylinder",
-                                     name=f"{side}_{joint_num}_p2",
-                                     tendon=f"{side}_{joint_num}_bellows2",
-                                     diameter=0.05,
-                                     ctrllimited=True,
-                                     ctrlrange=[0, 1000],
-                                     gear=[0.5 * 1000],
-                                     timeconst=0.2)
+        self.mjcf_model.actuator.add(
+            "cylinder",
+            name=f"{side}_{joint_num}_p2",
+            tendon=f"{side}_{joint_num}_bellows2",
+            area=self.bellows_areas[joint_num] *
+            1000,  # 1000 since inputs are in kPa
+            dclass='cylinder',
+            timeconst=self.pressure_time_consts[joint_num])
 
-        self.mjcf_model.actuator.add("cylinder",
-                                     name=f"{side}_{joint_num}_p3",
-                                     tendon=f"{side}_{joint_num}_bellows3",
-                                     diameter=0.05,
-                                     ctrllimited=True,
-                                     ctrlrange=[0, 1000],
-                                     gear=[0.5 * 1000],
-                                     timeconst=0.2)
+        self.mjcf_model.actuator.add(
+            "cylinder",
+            name=f"{side}_{joint_num}_p3",
+            tendon=f"{side}_{joint_num}_bellows3",
+            area=self.bellows_areas[joint_num] *
+            1000,  # 1000 since inputs are in kPa
+            dclass='cylinder',
+            timeconst=self.pressure_time_consts[joint_num])
 
     def _addSensors(self, side):
         # add framequat relative to world frame on base and tip of each joint
@@ -303,6 +315,14 @@ class Baloo:
                 "plugin",
                 plugin="mujoco.sensor.joint_angle_estimator",
                 name=f'{side}_{joint_num}')
+
+            #add tendon length sensors to all joints to see what they are at
+            for i in range(4):
+                self.mjcf_model.sensor.add(
+                    "tendonpos",
+                    name=f"{side}_{joint_num}_bellows{i}",
+                    tendon=f"{side}_{joint_num}_bellows{i}",
+                )
 
     def addLink0(self, body, side):
         link = body.add(
@@ -1196,6 +1216,14 @@ class Baloo:
         tendon_class = self.mjcf_model.default.add("default", dclass="tendon")
 
         tendon_class.tendon.set_attributes(width=0.03)
+
+        cylinder_class = self.mjcf_model.default.add("default",
+                                                     dclass="cylinder")
+
+        cylinder_class.cylinder.set_attributes(
+            ctrllimited="true",
+            ctrlrange=[0, self.pmax / 1000],  #kpa
+        )
 
 
 if __name__ == "__main__":
