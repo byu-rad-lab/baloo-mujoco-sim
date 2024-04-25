@@ -1,6 +1,7 @@
 general:
   joint_height: 0.2 # height in meters
   max_pressure: 400000 # maximum pressure in Pascals
+  arm_angle: 67.5 # angle of arm in degrees, pick from 0, 22.5, 45, 67.5, 90
 
 large_joint:
   mass: 2.653 # mass in kg

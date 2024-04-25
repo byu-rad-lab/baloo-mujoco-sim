@@ -147,6 +147,8 @@ class Baloo:
             params["small_joint"]["pressure_time_constant"]
         ]
 
+        self.arm_angle = params["general"]["arm_angle"]
+
         self.num_disks = num_disks
         num_spaces = self.num_disks - 1
         self.num_universal_joints = num_spaces
@@ -846,7 +848,7 @@ class Baloo:
     def createChest(self, linear_actuator):
         chest = linear_actuator.add("body",
                                     name="chest",
-                                    pos=[0, 0.1945, 1.4],
+                                    pos=[0, 194.5e-3, 1553.5e-3],
                                     euler=[0, 0, 0])
 
         # add geom
@@ -955,19 +957,9 @@ class Baloo:
         right_shoulder = chest.add(
             "body",
             name="right_shoulder",
-            pos=[0.250 + 0.254 / 2 + 0.02, 0, 0],
-            euler=[22.5 * 3, 0, 0],
+            pos=[424.7e-3, 0, 0],
+            euler=[self.arm_angle, 0, 0],
         )
-
-        # add geom
-        # right_shoulder.add(
-        #     "geom",
-        #     name="right_shoulder",
-        #     pos=[0, 0, 0],
-        #     type="box",
-        #     size=[0.254 / 2, 0.254 / 2, 0.254 / 2],
-        #     rgba=self.BLACK,
-        # )
 
         right_shoulder.add(
             "geom",
@@ -995,19 +987,9 @@ class Baloo:
         left_shoulder = chest.add(
             "body",
             name="left_shoulder",
-            pos=[-(0.250 + 0.254 / 2 + 0.02), 0, 0],
-            euler=[22.5 * 3, 0, 0],
+            pos=[-424.7e-3, 0, 0],
+            euler=[self.arm_angle, 0, 0],
         )
-
-        # add geom
-        # left_shoulder.add(
-        #     "geom",
-        #     name="left_shoulder",
-        #     pos=[0, 0, 0],
-        #     type="box",
-        #     size=[0.254 / 2, 0.254 / 2, 0.254 / 2],
-        #     rgba=self.BLACK,
-        # )
 
         left_shoulder.add(
             "geom",
