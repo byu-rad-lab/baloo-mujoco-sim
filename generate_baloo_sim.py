@@ -64,7 +64,7 @@ class Baloo:
         self._setSimSize()
         self._setVisual()
         self._addAssets()
-        self._setContacts()
+        # self._setContacts()
         self._loadParams(num_disks)
         self._setCustomData()
         self._setDefaults()
@@ -330,7 +330,7 @@ class Baloo:
         link = body.add(
             "body",
             name=f"{side}_link0",
-            pos=[0, 0, -(self.disk_half_height + 0.1)],
+            pos=[0, 0, (self.disk_half_height + 0.1)],
             euler=[0, 0, -45],
         )
         link.add("inertial",
@@ -406,7 +406,7 @@ class Baloo:
         link = body.add(
             "body",
             name=f"{side}_link1",
-            pos=[0, 0, -(self.disk_half_height + 0.08)],
+            pos=[0, 0, (self.disk_half_height + 0.08)],
             euler=[0, 0, -45],
         )
         link.add(
@@ -451,7 +451,7 @@ class Baloo:
             name=f"{side}_{joint_num}_B0",
             childclass="large_joint",
             pos=[0, 0, -(0.254 / 2 + self.disk_half_height)],
-            euler=[0, 0, 45],
+            euler=[180, 0, -45],
         )
         first_disk.add(
             "geom",
@@ -473,7 +473,7 @@ class Baloo:
             body = prev_body.add(
                 "body",
                 name=f"{side}_{joint_num}_B{i}",
-                pos=[0, 0, -(2 * self.disk_height)],
+                pos=[0, 0, (2 * self.disk_height)],
                 childclass="large_joint",
             )
             body.add(
@@ -568,7 +568,7 @@ class Baloo:
             "body",
             name=f"{side}_{joint_num}_B0",
             childclass="medium_joint",
-            pos=[0, 0, -(0.1 + self.disk_half_height)],  # from pneubotics
+            pos=[0, 0, (0.1 + self.disk_half_height)],  # from pneubotics
             euler=[0, 0, 45],
         )
         first_disk.add(
@@ -589,7 +589,7 @@ class Baloo:
             body = prev_body.add(
                 "body",
                 name=f"{side}_{joint_num}_B{i}",
-                pos=[0, 0, -(2 * self.disk_height)],
+                pos=[0, 0, (2 * self.disk_height)],
             )
             body.add(
                 "geom",
@@ -638,19 +638,19 @@ class Baloo:
             pos=[0, -loc, 0],
             dclass="bellows_site",
         )
-        # chamber 2 is +x
+        # chamber 2 is -x
         disk.add(
             "site",
             name=f"{side}_j{joint_num}_b{disk_num}_site{2}",
-            pos=[loc, 0, 0],
+            pos=[-loc, 0, 0],
             dclass="bellows_site",
         )
 
-        # chamber 3 is -x
+        # chamber 3 is +x
         disk.add(
             "site",
             name=f"{side}_j{joint_num}_b{disk_num}_site{3}",
-            pos=[-loc, 0, 0],
+            pos=[loc, 0, 0],
             dclass="bellows_site",
         )
 
@@ -669,7 +669,7 @@ class Baloo:
             "body",
             name=f"{side}_{joint_num}_B0",
             childclass="small_joint",
-            pos=[0, 0, -(0.08 + self.disk_half_height)],  # from pneubotics
+            pos=[0, 0, (0.08 + self.disk_half_height)],  # from pneubotics
             euler=[0, 0, 45],
         )
         first_disk.add("geom",
@@ -692,7 +692,7 @@ class Baloo:
             body = prev_body.add(
                 "body",
                 name=f"{side}_{joint_num}_B{i}",
-                pos=[0, 0, -(2 * self.disk_height)],
+                pos=[0, 0, (2 * self.disk_height)],
                 childclass="small_joint",
             )
             body.add("geom",
@@ -1277,7 +1277,7 @@ if __name__ == "__main__":
             # Pick up changes to the physics state, apply perturbations, update options from GUI.
             viewer.sync()
 
-            print(data.sensor('left_0').data)
+            # print(data.sensor('left_0').data)
 
             # if detect_box_touch(model, data):
             # print("box touched at time: ", data.time)
