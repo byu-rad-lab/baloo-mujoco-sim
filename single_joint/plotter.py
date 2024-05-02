@@ -30,8 +30,10 @@ class JointAnglePlotter():
 
         # Create second plot and curves
         p2 = self.win.addPlot()
+        p2.setXLink(p1)  # Link the x-axis of the second plot to the first plot
         p2.addLegend()  # Add a legend to the plot
         p2.setLabel('left', 'Joint Velocity', units='rad/s')
+        p2.setLabel('bottom', 'Sim Time', units='s')
         p2.setYRange(-5, 5)
         p2.showGrid(x=True, y=True)
         curve2 = [
