@@ -72,7 +72,7 @@ class Baloo:
         self.mjcf_model.worldbody.add(
             "geom",
             condim=1,
-            material="matplane",
+            material="groundplane",
             name="world",
             size=[0, 0, 1],
             type="plane",
@@ -1065,9 +1065,10 @@ class Baloo:
 
         self.mjcf_model.asset.add(
             "material",
-            name="matplane",
+            name="groundplane",
             texture="texplane",
             texuniform="true",
+            # reflectance=0.1,
         )
 
         # add assets for all the meshes in the meshes directory

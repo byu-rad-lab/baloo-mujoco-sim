@@ -441,7 +441,7 @@ if __name__ == "__main__":
     data = mujoco.MjData(model)
     import time
     from plotter import JointAnglePlotter
-    plotter = JointAnglePlotter()
+    plotter = JointAnglePlotter(5, model.opt.timestep)
     plotter.show()
     with mujoco.viewer.launch_passive(model, data) as viewer:
         start = time.time()
@@ -459,13 +459,13 @@ if __name__ == "__main__":
 
             # Pick up changes to the physics state, apply perturbations, update options from GUI.
             viewer.sync()
-            # plotter.update(model, data)
+            plotter.update(model, data)
 
-            # Rudimentary time keeping, will drift relative to wall clock.
-            # print(time.time() - step_start)
-            time_until_next_step = model.opt.timestep - (time.time() -
-                                                         step_start)
-            if time_until_next_step > 0:
-                time.sleep(time_until_next_step)
+            # # Rudimentary time keeping, will drift relative to wall clock.
+            # # print(time.time() - step_start)
+            # time_until_next_step = model.opt.timestep - (time.time() -
+            #                                              step_start)
+            # if time_until_next_step > 0:
+            #     time.sleep(time_until_next_step)
 
         plotter.close()

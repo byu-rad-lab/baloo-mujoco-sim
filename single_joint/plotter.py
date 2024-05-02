@@ -1,71 +1,73 @@
 """
-Curtis Johnson - 4/22/24
+# Curtis Johnson - 4/22/24
 
 Simple maplotlib plotter to do live plotting from mujoco.
 
-This is pretty slow still, but Im not sure its worth the time to speed up.
-
-I looked into adding plotting directly into the mujoco gui, but this seemed somewhat difficult
-without writing my own viewer. I just want to keep the default, so here we are.
-
-I also looked at pyqtgraph since its faster, but the Qt has issues with all of the threads
-already running. 
-
 """
 
-import matplotlib.pyplot as plt
-from collections import deque
 import pyqtgraph as pg
+from pyqtgraph.Qt import QtGui, QtCore
+import numpy as np
+from collections import deque
 
 
-class JointAnglePlotter:
-    def __init__(self, max_len=500):
-        self.fig, self.ax = plt.subplots(2, 1,
-                                         sharex=True)  # Create 2x1 subplots
-        self.u_line, = self.ax[0].plot([], [], 'r-', label='u (rad)')
-        self.v_line, = self.ax[0].plot([], [], 'b-', label='v (rad)')
-        self.udot_line, = self.ax[1].plot([], [], 'r-', label='udot (rad/s)')
-        self.vdot_line, = self.ax[1].plot([], [], 'b-', label='vdot (rad/s)')
+class JointAnglePlotter():
+    def __init__(self, time_hist, sim_dt):
+        self.app = QtGui.QApplication([])
+        self.win = pg.GraphicsWindow(title="Joint angles")
 
-        self.x = deque(maxlen=max_len)
-        self.y_u = deque(maxlen=max_len)
-        self.y_v = deque(maxlen=max_len)
-        self.y_udot = deque(maxlen=max_len)
-        self.y_vdot = deque(maxlen=max_len)
+        # Create first plot and curves
+        p1 = self.win.addPlot()
+        p1.addLegend()  # Add a legend to the plot
+        p1.setLabel('left', 'Joint Angle', units='rad')
+        p1.setYRange(-np.pi, np.pi)
+        p1.showGrid(x=True, y=True)
+        curve1 = [
+            p1.plot(pen='y', name='u'),  # Add a unique name for the curve
+            p1.plot(pen='r', name='v')  # Add a unique name for the curve
+        ]
+        self.win.nextRow()
 
-        self.ax[0].set_ylim(-1.57, 1.57)
-        self.ax[1].set_ylim(-5, 5)
-        self.ax[1].set_xlabel('Sim Time (s)')
-        for ax in self.ax:
-            ax.grid(True)
-            ax.legend()
+        # Create second plot and curves
+        p2 = self.win.addPlot()
+        p2.addLegend()  # Add a legend to the plot
+        p2.setLabel('left', 'Joint Velocity', units='rad/s')
+        p2.setYRange(-5, 5)
+        p2.showGrid(x=True, y=True)
+        curve2 = [
+            p2.plot(pen='y', name='udot'),  # Add a unique name for the curve
+            p2.plot(pen='r', name='vdot')  # Add a unique name for the curve
+        ]
 
-    def update(self, model, data):
-        self.x.append(data.time)
-        #TODO: dynamically go into model to get desired sesnro values
-        self.y_u.append(data.sensor('left_0').data[0])
-        self.y_v.append(data.sensor('left_0').data[1])
-        self.y_udot.append(data.sensor('left_0').data[2])
-        self.y_vdot.append(data.sensor('left_0').data[3])
+        self.plots = [p1, p2]
+        self.curves = [curve1, curve2]
 
-        self.u_line.set_ydata(self.y_u)
-        self.u_line.set_xdata(self.x)
-        self.v_line.set_ydata(self.y_v)
-        self.v_line.set_xdata(self.x)
-        self.udot_line.set_ydata(self.y_udot)
-        self.udot_line.set_xdata(self.x)
-        self.vdot_line.set_ydata(self.y_vdot)
-        self.vdot_line.set_xdata(self.x)
+        max_len = int(time_hist / sim_dt)
+        self.udata = deque(maxlen=max_len)
+        self.vdata = deque(maxlen=max_len)
+        self.udotdata = deque(maxlen=max_len)
+        self.vdotdata = deque(maxlen=max_len)
+        self.timedata = deque(maxlen=max_len)
 
-        for ax in self.ax:
-            ax.relim()
-            ax.autoscale_view()
+    def update(self, mjmodel, mjdata):
+        # Update data
+        self.udata.append(mjdata.sensor("left_0").data[0])
+        self.vdata.append(mjdata.sensor("left_0").data[1])
+        self.udotdata.append(mjdata.sensor("left_0").data[2])
+        self.vdotdata.append(mjdata.sensor("left_0").data[3])
+        self.timedata.append(mjdata.time)
 
-        self.fig.canvas.draw()
-        self.fig.canvas.flush_events()
+        # Update plots
+        self.curves[0][0].setData(self.timedata, self.udata)
+        self.curves[0][1].setData(self.timedata, self.vdata)
+
+        self.curves[1][0].setData(self.timedata, self.udotdata)
+        self.curves[1][1].setData(self.timedata, self.vdotdata)
+
+        QtGui.QApplication.processEvents()  # you MUST process the plot now
 
     def show(self):
-        plt.show(block=False)
+        self.win.show()
 
     def close(self):
-        plt.close(self.fig)
+        self.win.close()

@@ -41,7 +41,7 @@
   </custom>
   <asset>
     <texture name="texplane" type="2d" builtin="checker" mark="cross" width="512" height="512"/>
-    <material name="matplane" class="/" texture="texplane" texuniform="true"/>
+    <material name="groundplane" class="/" texture="texplane" texuniform="true"/>
     <mesh name="SimpleChestMesh" class="/" file="/home/curtis/curtis_ws/src/curtis_sandbox/src/mujoco/models/baloo/meshes/SimpleChestMesh.stl"/>
     <mesh name="RightFrontWheelMesh" class="/" file="/home/curtis/curtis_ws/src/curtis_sandbox/src/mujoco/models/baloo/meshes/RightFrontWheelMesh.stl"/>
     <mesh name="EstopPlugMesh" class="/" file="/home/curtis/curtis_ws/src/curtis_sandbox/src/mujoco/models/baloo/meshes/EstopPlugMesh.stl"/>
@@ -73,7 +73,7 @@
     <material name="green" class="/" reflectance="0.80000000000000004" rgba="0.20000000000000001 0.80000000000000004 0.20000000000000001 1"/>
   </asset>
   <worldbody>
-    <geom name="world" class="/" type="plane" condim="1" size="0 0 1" material="matplane"/>
+    <geom name="world" class="/" type="plane" condim="1" size="0 0 1" material="groundplane"/>
     <light name="//unnamed_light_0" class="/" directional="true" pos="0 0 4" dir="0 0 -1" diffuse="0.59999999999999998 0.59999999999999998 0.59999999999999998" specular="0.20000000000000001 0.20000000000000001 0.20000000000000001"/>
     <camera name="fixedcam" class="/" pos="-1.357 2.722 2.4470000000000001" xyaxes="-0.88200000000000001 -0.47199999999999998 0 0.23799999999999999 -0.44600000000000001 0.86299999999999999"/>
     <body name="box" pos="0 0.5 0.375" euler="0 0 0">
