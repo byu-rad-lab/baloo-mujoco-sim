@@ -11,7 +11,7 @@
   <default>
     <default class="/">
       <default class="small_joint">
-        <joint group="3" type="hinge" pos="0 0 0.022222222222222223" limited="false" stiffness="120" damping="30"/>
+        <joint group="3" type="hinge" pos="0 0 0.022222222222222223" limited="false" stiffness="40" damping="0.20000000000000001"/>
         <geom type="cylinder" size="0.080000000000000002 0.0055555555555555558" rgba="0.47058823529411764 0.47058823529411764 0.47058823529411764 0.69999999999999996"/>
       </default>
       <default class="bellows_site">

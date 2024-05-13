@@ -11,7 +11,7 @@ if __name__ == "__main__":
     model = mujoco.MjModel.from_xml_path(f.name)
     data = mujoco.MjData(model)
 
-    pid = PID(5000, 1000, 1000, setpoint=.5)
+    pid = PID(120, 80, 3, setpoint=.5)
     pid.output_limits = (0, 400)
     pid.sample_time = model.opt.timestep
 
@@ -37,7 +37,7 @@ if __name__ == "__main__":
 
             # Pick up changes to the physics state, apply perturbations, update options from GUI.
             viewer.sync()
-            plotter.update(model, data)
+            plotter.update(model, data, {"u_cmd": pid.setpoint})
 
             # Rudimentary time keeping, will drift relative to wall clock.
             # print(time.time() - step_start)
