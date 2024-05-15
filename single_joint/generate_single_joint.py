@@ -225,7 +225,7 @@ class SmallJoint:
                                      tendon="bellows0",
                                      diameter=0.05,
                                      ctrllimited=True,
-                                     ctrlrange=[0, 1000],
+                                     ctrlrange=[0, 400],
                                      gear=[0.5 * 1000],
                                      timeconst=0.2)
 
@@ -235,7 +235,7 @@ class SmallJoint:
                                      tendon="bellows1",
                                      diameter=0.05,
                                      ctrllimited=True,
-                                     ctrlrange=[0, 1000],
+                                     ctrlrange=[0, 400],
                                      gear=[0.5 * 1000],
                                      timeconst=0.2)
 
@@ -244,7 +244,7 @@ class SmallJoint:
                                      tendon="bellows2",
                                      diameter=0.05,
                                      ctrllimited=True,
-                                     ctrlrange=[0, 1000],
+                                     ctrlrange=[0, 400],
                                      gear=[0.5 * 1000],
                                      timeconst=0.2)
 
@@ -253,10 +253,9 @@ class SmallJoint:
                                      tendon="bellows3",
                                      diameter=0.05,
                                      ctrllimited=True,
-                                     ctrlrange=[0, 1000],
+                                     ctrlrange=[0, 400],
                                      gear=[0.5 * 1000],
                                      timeconst=0.2)
-        
 
     def _loadParams(self, num_disks):
         # some joint measurements common (hopefully) among all joints
@@ -329,7 +328,7 @@ class SmallJoint:
 
     def _setOptions(self):
         self.mjcf_model.option.set_attributes(
-            timestep=0.01,
+            timestep=0.005,
             integrator='implicitfast',  #recommended by mujoco docs as best
             solver="Newton",
             jacobian="sparse",
@@ -460,7 +459,7 @@ if __name__ == "__main__":
 
             # Pick up changes to the physics state, apply perturbations, update options from GUI.
             viewer.sync()
-            plotter.update(model, data)
+            plotter.update(model, data, {"u_cmd": 0})
 
             # Rudimentary time keeping, will drift relative to wall clock.
             # print(time.time() - step_start)

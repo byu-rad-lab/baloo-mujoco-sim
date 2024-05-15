@@ -1,6 +1,6 @@
 <mujoco model="SmallJoint">
   <compiler angle="degree"/>
-  <option timestep="0.01" integrator="implicitfast" cone="elliptic" jacobian="sparse" solver="Newton">
+  <option timestep="0.0050000000000000001" integrator="implicitfast" cone="elliptic" jacobian="sparse" solver="Newton">
     <flag gravity="enable"/>
   </option>
   <size njmax="5000" nconmax="5000" nstack="5000000"/>
@@ -116,10 +116,10 @@
     </spatial>
   </tendon>
   <actuator>
-    <cylinder name="p0" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="bellows0" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
-    <cylinder name="p1" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="bellows1" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
-    <cylinder name="p2" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="bellows2" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
-    <cylinder name="p3" class="/" ctrllimited="true" ctrlrange="0 1000" gear="500" tendon="bellows3" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="p0" class="/" ctrllimited="true" ctrlrange="0 400" gear="500" tendon="bellows0" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="p1" class="/" ctrllimited="true" ctrlrange="0 400" gear="500" tendon="bellows1" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="p2" class="/" ctrllimited="true" ctrlrange="0 400" gear="500" tendon="bellows2" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
+    <cylinder name="p3" class="/" ctrllimited="true" ctrlrange="0 400" gear="500" tendon="bellows3" timeconst="0.20000000000000001" diameter="0.050000000000000003"/>
   </actuator>
   <sensor>
     <framequat name="left_0_B0_framequat" objtype="body" objname="left_0_B0"/>
