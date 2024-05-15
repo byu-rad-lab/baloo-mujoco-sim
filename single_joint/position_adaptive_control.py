@@ -176,7 +176,7 @@ class ManipulatorMRACRBF:
         qdot_ref, qddot_ref = self._calc_refs(q, qdot, q_des, qdot_des,
                                               qddot_des)
         Phi = self._calc_regressor(q, qdot, qdot_ref, qddot_ref)
-        s = q - qdot_ref
+        s = qdot - qdot_ref
 
         if adapt:
             self._update_weights(s, Phi)
@@ -202,12 +202,12 @@ if __name__ == "__main__":
         "/home/curtis/baloo_mujoco_sim/single_joint/single_joint.xml")
     data = mujoco.MjData(model)
 
-    Lambda = 75.0  # time constant of sliding surface
-    Gamma = 5  # adaptation rate
+    Lambda = 50.0  # time constant of sliding surface
+    Gamma = 2  # adaptation rate
     K = 0.1  # PD gain on s (Kd*Lambda = proportional term in control law, usually a low number 0<Kd<.5)
     RBFmins = np.array([-100] * 8) * 1.0
     RBFmaxes = -RBFmins
-    numRBFs = 200
+    numRBFs = 20
     controller = ManipulatorMRACRBF(
         2,
         numRBFs,
@@ -251,11 +251,13 @@ if __name__ == "__main__":
                 q = np.asarray(data.sensor("left_0").data[:2])
                 qdot = np.asarray(data.sensor("left_0").data[2:])
 
-                q_des = np.asarray([1.111, -1.111])
+                q_des = np.asarray([.5, -.5])
 
                 # start = time.time()
                 tau, s, theta_hat = controller.solve_for_next_u(q, qdot, q_des)
-                print(s)
+
+                print(q_des - q)
+                # print(s)
 
                 ctrl = tau / 2 * 50
                 p0, p1 = torque2pressures(ctrl[0])
@@ -287,3 +289,8 @@ if __name__ == "__main__":
                     time.sleep(time_until_next_step)
 
     plotter.close()
+'''
+Observations
+
+
+'''
