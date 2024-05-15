@@ -13,8 +13,8 @@ if __name__ == "__main__":
 
     pid = PID(200, 80, 1, setpoint=.5)
     pid2 = PID(200, 80, 1, setpoint=.5)
-    pid.output_limits = (0, 400)
-    pid2.output_limits = (0, 400)
+    pid.output_limits = (-200, 200)
+    pid2.output_limits = (-200, 200)
     pid.sample_time = model.opt.timestep
     pid2.sample_time = model.opt.timestep
 

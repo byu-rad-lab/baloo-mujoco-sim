@@ -15,14 +15,20 @@ np.set_printoptions(precision=3, suppress=True)
 class GrubPIDController:
     def __init__(self):
         self.pid = PID(
-            170, 25, 3, setpoint=-.0
+            170, 25, 3, setpoint=.5
         )  # tuned somewhat conservatively, since that's the best PID can do RN.
+        self.pid2 = PID(170, 25, 3, setpoint=-.5)
         self.kd = 0
         self.pid.output_limits = (-200, 200)
+        self.pid2.output_limits = (-200, 200)
         self.pid.sample_time = 1 / 650
+        self.pid2.sample_time = 1 / 650
         self.prev_position = 0
+        self.prev_position2 = 0
 
         self.prev_positions = deque(
+            maxlen=4)  # Buffer for the previous positions
+        self.prev_positions2 = deque(
             maxlen=4)  # Buffer for the previous positions
         self.fs = 1000.0  # Sample rate in Hz
         self.cutoff = 150.0  # Desired cutoff frequency in Hz
@@ -58,7 +64,7 @@ class GrubPIDController:
         self.p_hist = []
         self.i_hist = []
         self.d_hist = []
-        self.pavg = 100
+        self.pavg = 200
 
     def update_setpoint(self):
         # Get the current time
@@ -112,10 +118,12 @@ class GrubPIDController:
         # filtered_position = self.low_pass_filter(msg.position[0])
         # self.update_setpoint()
         ctrl = self.pid(msg.position[0])
+        ctrl2 = self.pid2(msg.position[1])
         # d_custom = self.kd * (msg.velocity[0])
         # ctrl -= d_custom
 
         p0, p1 = self.torque2pressures(ctrl)
+        p2, p3 = self.torque2pressures(ctrl2)
         p, i, d = self.pid.components
         # print(
         #     f"p: {p:.3f} i: {i:.3f} d: {d_custom:.3f}, error: {(self.pid.setpoint - msg.position[0]):.3f}"
@@ -132,7 +140,7 @@ class GrubPIDController:
 
         msg = PressureStamped()
         msg.header.stamp = rospy.Time.now()
-        msg.pressure = [p0, p1, 0, 0]
+        msg.pressure = [p0, p1, p2, p3]
 
         self.p_hist.append(p)
         self.i_hist.append(i)
