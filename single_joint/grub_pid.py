@@ -14,7 +14,9 @@ np.set_printoptions(precision=3, suppress=True)
 
 class GrubPIDController:
     def __init__(self):
-        self.pid = PID(120, 80, 3, setpoint=0)
+        self.pid = PID(
+            170, 25, 3, setpoint=-.0
+        )  # tuned somewhat conservatively, since that's the best PID can do RN.
         self.kd = 0
         self.pid.output_limits = (-200, 200)
         self.pid.sample_time = 1 / 650

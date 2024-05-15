@@ -156,7 +156,7 @@ if __name__ == "__main__":
     K = 0.05  # PD gain on s (Kd*Lambda = proportional term in control law, usually a low number 0<Kd<.5)
     RBFmins = (np.array([-np.pi, -np.pi, -np.pi, -np.pi]) * 1.0)
     RBFmaxes = -RBFmins
-    numRBFs = 10
+    numRBFs = 20
     controller = ManipulatorMRACRBF(1, RBFmins, RBFmaxes, numRBFs, Lambda,
                                     Gamma, K)
     # Load model for simulation
@@ -179,55 +179,64 @@ if __name__ == "__main__":
                        np.matmul(Ad_des - np.eye(Ad_des.shape[0]), Bdes))
     xdes = np.array([0, 0])
 
-    r = np.array([1.3])
+    r = np.array([0.5])
 
     plotter = JointAnglePlotter(30, model.opt.timestep)
     plotter.show()
 
-    with mujoco.viewer.launch_passive(model, data) as viewer:
+    paused = False
+
+    def key_callback(keycode):
+        if keycode == ord(' '):
+            global paused
+            paused = not paused
+
+    with mujoco.viewer.launch_passive(model, data,
+                                      key_callback=key_callback) as viewer:
         start = time.time()
 
         #disable pressure control sliders since user can't control them here.
 
         while viewer.is_running():
-            step_start = time.time()
+            if not paused:
+                step_start = time.time()
 
-            xdotdes = Ades.dot(xdes) + Bdes.dot(r)
-            xdes = Ad_des.dot(xdes) + Bd_des.dot(r)
+                xdotdes = Ades.dot(xdes) + Bdes.dot(r)
+                xdes = Ad_des.dot(xdes) + Bd_des.dot(r)
 
-            q = np.asarray([data.sensor("left_0").data[0]])
-            qdot = np.asarray([data.sensor("left_0").data[2]])
+                q = np.asarray([data.sensor("left_0").data[0]])
+                qdot = np.asarray([data.sensor("left_0").data[2]])
 
-            q_des = np.asarray([xdes[1]])
-            qd_des = np.asarray([xdotdes[1]])
-            qdd_des = np.asarray([xdotdes[0]])
+                q_des = np.asarray([xdes[1]])
+                qd_des = np.asarray([xdotdes[1]])
+                qdd_des = np.asarray([xdotdes[0]])
 
-            start = time.time()
-            tau, s, theta_hat = controller.solve_for_next_u(
-                q, qdot, q_des, qd_des, qdd_des)
-            print(time.time() - start)
+                # start = time.time()
+                tau, s, theta_hat = controller.solve_for_next_u(
+                    q, qdot, q_des, qd_des, qdd_des)
+                # print(time.time() - start)
 
-            ctrl = tau / 2 * 50
-            data.ctrl[0] = ctrl
-            # print(ctrl)
+                ctrl = tau / 2 * 50
+                data.ctrl[0] = ctrl
+                # print(ctrl)
 
-            # mj_step can be replaced with code that also evaluates
-            # a policy and applies a control signal before stepping the physics.
-            mujoco.mj_step(model, data)
+                # mj_step can be replaced with code that also evaluates
+                # a policy and applies a control signal before stepping the physics.
+                mujoco.mj_step(model, data)
 
-            # Pick up changes to the physics state, apply perturbations, update options from GUI.
-            viewer.sync()
-            plotter.update(model, data, {
-                "u_cmd": r[0],
-                "s": s.item(),
-                "theta_hat": theta_hat
-            })
+                # Pick up changes to the physics state, apply perturbations, update options from GUI.
+                viewer.sync()
+                plotter.update(model, data, {
+                    "u_cmd": r[0],
+                    "s": s.item(),
+                    "theta_hat": theta_hat
+                })
 
-            # Rudimentary time keeping, will drift relative to wall clock.
-            # print(time.time() - step_start)
-            time_until_next_step = model.opt.timestep - (time.time() -
-                                                         step_start)
-            if time_until_next_step > 0:
-                time.sleep(time_until_next_step)
+                # Rudimentary time keeping, will drift relative to wall clock.
+                # print(time.time() - step_start)
+                time_until_next_step = model.opt.timestep - (time.time() -
+                                                             step_start)
+                if time_until_next_step > 0:
+                    time.sleep(time_until_next_step)
 
     plotter.close()

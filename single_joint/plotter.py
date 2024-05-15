@@ -24,7 +24,8 @@ class JointAnglePlotter():
         p1.showGrid(x=True, y=True)
         curve1 = [
             p1.plot(pen='y', name='u'),  # Add a unique name for the curve
-            p1.plot(pen='r', name='v')  # Add a unique name for the curve
+            p1.plot(pen='r', name='v'),  # Add a unique name for the curve
+            p1.plot(pen='g', name='u_cmd')  # Add a unique name for the curve
         ]
         self.win.nextRow()
 
@@ -41,8 +42,21 @@ class JointAnglePlotter():
             p2.plot(pen='r', name='vdot')  # Add a unique name for the curve
         ]
 
-        self.plots = [p1, p2]
-        self.curves = [curve1, curve2]
+        # Create second plot and curves
+        p3 = self.win.addPlot()
+        p3.setXLink(p1)  # Link the x-axis of the second plot to the first plot
+        p3.addLegend()  # Add a legend to the plot
+        p3.setLabel('left', 'Stuff', units='error')
+        p3.setLabel('bottom', 'Sim Time', units='s')
+        p3.setYRange(-50, 50)
+        p3.showGrid(x=True, y=True)
+        curve3 = [
+            p3.plot(pen='y', name='s'),  # Add a unique name for the curve
+            # p2.plot(pen='r', name='vdot')  # Add a unique name for the curve
+        ]
+
+        self.plots = [p1, p2, p3]
+        self.curves = [curve1, curve2, curve3]
 
         max_len = int(time_hist / sim_dt)
         self.udata = deque(maxlen=max_len)
@@ -50,21 +64,28 @@ class JointAnglePlotter():
         self.udotdata = deque(maxlen=max_len)
         self.vdotdata = deque(maxlen=max_len)
         self.timedata = deque(maxlen=max_len)
+        self.ucmd_data = deque(maxlen=max_len)
+        self.s_data = deque(maxlen=max_len)
 
-    def update(self, mjmodel, mjdata):
+    def update(self, mjmodel, mjdata, custom_data: dict):
         # Update data
         self.udata.append(mjdata.sensor("left_0").data[0])
+        self.ucmd_data.append(custom_data['u_cmd'])
         self.vdata.append(mjdata.sensor("left_0").data[1])
         self.udotdata.append(mjdata.sensor("left_0").data[2])
         self.vdotdata.append(mjdata.sensor("left_0").data[3])
         self.timedata.append(mjdata.time)
+        self.s_data.append(custom_data['s'])
 
         # Update plots
         self.curves[0][0].setData(self.timedata, self.udata)
         self.curves[0][1].setData(self.timedata, self.vdata)
+        self.curves[0][2].setData(self.timedata, self.ucmd_data)
 
         self.curves[1][0].setData(self.timedata, self.udotdata)
         self.curves[1][1].setData(self.timedata, self.vdotdata)
+
+        self.curves[2][0].setData(self.timedata, self.s_data)
 
         QtGui.QApplication.processEvents()  # you MUST process the plot now
 

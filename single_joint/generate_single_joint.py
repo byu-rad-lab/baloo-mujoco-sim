@@ -256,6 +256,7 @@ class SmallJoint:
                                      ctrlrange=[0, 1000],
                                      gear=[0.5 * 1000],
                                      timeconst=0.2)
+        
 
     def _loadParams(self, num_disks):
         # some joint measurements common (hopefully) among all joints
