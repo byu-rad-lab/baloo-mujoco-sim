@@ -28,15 +28,17 @@ class Baloo:
         right_link0 = self.addLink0(right_last_disk, "right")
         last_disk = self._buildMediumJoint(right_link0, "right")
         right_link1 = self.addLink1(last_disk, "right")
-        last_disk = self._buildSmallJoint(right_link1, "right")
-        self._addSensors('right')
+        right_ee_disk = self._buildSmallJoint(right_link1, "right")
 
         left_last_disk = self._buildLargeJoint(left_shoulder, "left")
         left_link0 = self.addLink0(left_last_disk, "left")
         last_disk = self._buildMediumJoint(left_link0, "left")
         left_link1 = self.addLink1(last_disk, "left")
-        last_disk = self._buildSmallJoint(left_link1, "left")
-        self._addSensors('left')
+        left_ee_disk = self._buildSmallJoint(left_link1, "left")
+
+        # comment out if not whole arm is built (i.e. for testing)
+        self._addSensors("right")
+        self._addSensors("left")
 
     def _loadPlugins(self):
         print(
@@ -433,8 +435,6 @@ class Baloo:
         return link
 
     def _buildLargeJoint(self, parent_body, side):
-        Rplus30 = R.from_euler('z', 22.5, degrees=True)
-        Rminus30 = R.from_euler('z', -22.5, degrees=True)
         # break joint specs in to disk specs
         # total joint -> [disk,space,disk,....,space,disk]
         disk_mass = self.large_joint_mass / self.num_disks
@@ -526,7 +526,7 @@ class Baloo:
                 name=f"{side}_j{joint_num}_b{disk_num}_site{i}_B",
                 pos=pos_minus,
                 rgba=[1, 1, 1, 1],
-                group=1,
+                group=0,
             )
 
     def _addEightVizTendons(self, side):
@@ -669,7 +669,7 @@ class Baloo:
             "body",
             name=f"{side}_j{joint_num}_B0",
             childclass="small_joint",
-            pos=[0, 0, (0.08 + self.disk_half_height)],  # from pneubotics
+            pos=[0, 0, (.08+self.disk_half_height)],
             euler=[0, 0, 45],
         )
         first_disk.add("geom",
@@ -1145,14 +1145,14 @@ class Baloo:
         large_class.geom.set_attributes(
             type="cylinder",
             rgba=self.GRAY,
-            size=[self.large_joint_radius, self.disk_half_height * 0.5],
+            size=[self.large_joint_radius, self.disk_half_height],
         )
         large_class.joint.set_attributes(
             type="hinge",
-            group=3,
+            group=0,
             stiffness=large_stiffness,
             damping=large_damping,
-            pos=[0, 0, self.disk_height],
+            pos=[0, 0, -self.disk_height],
             # limited="true",
             # range=[-eight_limit, eight_limit], #todo: need limits? or just springs?
         )
@@ -1167,10 +1167,10 @@ class Baloo:
         )
         medium_class.joint.set_attributes(
             type="hinge",
-            group=3,
+            group=0,
             stiffness=medium_stiffness,
             damping=medium_damping,
-            pos=[0, 0, self.disk_height],
+            pos=[0, 0, -self.disk_height],
             # limited="true",
             # range=[-four_limit, four_limit],
         )
@@ -1184,10 +1184,10 @@ class Baloo:
         )
         small_class.joint.set_attributes(
             type="hinge",
-            group=3,
+            group=0,
             stiffness=small_stiffness,
             damping=small_damping,
-            pos=[0, 0, self.disk_height],
+            pos=[0, 0, -self.disk_height],
             # limited="true",
             # range=[-four_limit, four_limit],
         )
@@ -1213,7 +1213,7 @@ if __name__ == "__main__":
     np.set_printoptions(precision=3, suppress=True)
     torso = Baloo(
         "baloo_torso",
-        5,
+        10,
     )
 
     # print(torso.mjcf_model)
