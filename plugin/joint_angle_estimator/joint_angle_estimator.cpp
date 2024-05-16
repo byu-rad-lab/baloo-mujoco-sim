@@ -54,14 +54,14 @@ namespace mujoco::plugin::sensor {
             int nchannel = strtod(mj_getPluginConfig(m, instance, "nchannel"), nullptr);
             if (!nchannel) nchannel = 1;
             if (nchannel < 1 || nchannel > 6) {
-                mju_error("nchannel must be between 1 and 6");
+                mju_error("Joint Angle Estimator Plugin: nchannel must be between 1 and 6");
                 return nullptr;
             }
 
             return new JointAngleEstimator(m, d, instance, nchannel);
         }
         else {
-            mju_error("Invalid or missing parameters in blank sensor plugin");
+            mju_error("Joint Angle Estimator Plugin: Invalid or missing parameters in blank sensor plugin");
             return nullptr;
         }
     }
@@ -87,7 +87,7 @@ namespace mujoco::plugin::sensor {
         // need to find a way to map instance or id to joint number
         const char* name = mj_id2name(m, mjOBJ_SENSOR, id);
         std::string sensorName(name);
-        // mju_error("sensorName: %s", sensorName.c_str());
+        // mju_error("Joint Angle Estimator Plugin: "sensorName: %s", sensorName.c_str());
 
         // Clear sensordata
         mjtNum* mysensordata = d->sensordata + m->sensor_adr[id];
@@ -101,7 +101,7 @@ namespace mujoco::plugin::sensor {
         int numDisksId = mj_name2id(m, mjOBJ_NUMERIC, numDisksName.c_str());
         if (numDisksId == -1)
         {
-            mju_error("numDisksId is -1");
+            mju_error("Joint Angle Estimator Plugin: numDisksId is -1");
             return;
         }
         mjtNum* numDisks = m->numeric_data + numDisksId;
@@ -113,7 +113,7 @@ namespace mujoco::plugin::sensor {
 
         if (base_quat_id == -1)
         {
-            mju_error("base_quat_id is -1");
+            mju_error("Joint Angle Estimator Plugin: base_quat_id is -1");
             return;
         }
 
@@ -125,7 +125,7 @@ namespace mujoco::plugin::sensor {
         int tip_quat_id = mj_name2id(m, mjOBJ_SENSOR, tip_quat_name.c_str());
         if (tip_quat_id == -1)
         {
-            mju_error("tip_quat_id is -1");
+            mju_error("Joint Angle Estimator Plugin: tip_quat_id is -1");
             return;
         }
         int tip_quat_adr = m->sensor_adr[tip_quat_id];
@@ -168,7 +168,7 @@ namespace mujoco::plugin::sensor {
         int tip_angvel_id = mj_name2id(m, mjOBJ_SENSOR, tip_angvel_name.c_str());
         if (tip_angvel_id == -1)
         {
-            mju_error("tip_angvel_id is -1");
+            mju_error("Joint Angle Estimator Plugin: tip_angvel_id is - 1");
             return;
         }
 

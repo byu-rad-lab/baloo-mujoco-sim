@@ -230,14 +230,14 @@ class Baloo:
                 #large joint so these need to be invisible
                 bellows = self.mjcf_model.tendon.add(
                     "spatial",
-                    name=f"{side}_{joint_num}_bellows{i}",
+                    name=f"{side}_j{joint_num}_bellows{i}",
                     dclass="tendon",
                     rgba=[0, 0, 0, 0])
             else:
                 #add the bellows to the model
                 bellows = self.mjcf_model.tendon.add(
                     "spatial",
-                    name=f"{side}_{joint_num}_bellows{i}",
+                    name=f"{side}_j{joint_num}_bellows{i}",
                     dclass="tendon")
 
             #add all sites along the disks for the bellows to attach to
@@ -249,8 +249,8 @@ class Baloo:
         #add actuator to each built tendon
         self.mjcf_model.actuator.add(
             "cylinder",
-            name=f"{side}_{joint_num}_p0",
-            tendon=f"{side}_{joint_num}_bellows0",
+            name=f"{side}_j{joint_num}_p0",
+            tendon=f"{side}_j{joint_num}_bellows0",
             area=self.bellows_areas[joint_num] *
             1000,  # 1000 since inputs are in kPa
             dclass="cylinder",
@@ -259,8 +259,8 @@ class Baloo:
         #add actuator to side_tendon
         self.mjcf_model.actuator.add(
             "cylinder",
-            name=f"{side}_{joint_num}_p1",
-            tendon=f"{side}_{joint_num}_bellows1",
+            name=f"{side}_j{joint_num}_p1",
+            tendon=f"{side}_j{joint_num}_bellows1",
             area=self.bellows_areas[joint_num] *
             1000,  # 1000 since inputs are in kPa
             dclass='cylinder',
@@ -268,8 +268,8 @@ class Baloo:
 
         self.mjcf_model.actuator.add(
             "cylinder",
-            name=f"{side}_{joint_num}_p2",
-            tendon=f"{side}_{joint_num}_bellows2",
+            name=f"{side}_j{joint_num}_p2",
+            tendon=f"{side}_j{joint_num}_bellows2",
             area=self.bellows_areas[joint_num] *
             1000,  # 1000 since inputs are in kPa
             dclass='cylinder',
@@ -277,8 +277,8 @@ class Baloo:
 
         self.mjcf_model.actuator.add(
             "cylinder",
-            name=f"{side}_{joint_num}_p3",
-            tendon=f"{side}_{joint_num}_bellows3",
+            name=f"{side}_j{joint_num}_p3",
+            tendon=f"{side}_j{joint_num}_bellows3",
             area=self.bellows_areas[joint_num] *
             1000,  # 1000 since inputs are in kPa
             dclass='cylinder',
@@ -290,40 +290,40 @@ class Baloo:
             ##### BASE #####
             self.mjcf_model.sensor.add(
                 "framequat",
-                name=f"{side}_{joint_num}_B0_framequat",
+                name=f"{side}_j{joint_num}_B0_framequat",
                 objtype="body",
-                objname=f"{side}_{joint_num}_B0",
+                objname=f"{side}_j{joint_num}_B0",
             )
 
             #### TIP ####
             self.mjcf_model.sensor.add(
                 "framequat",
-                name=f"{side}_{joint_num}_B{self.num_disks-1}_framequat",
+                name=f"{side}_j{joint_num}_B{self.num_disks-1}_framequat",
                 objtype="body",
-                objname=f"{side}_{joint_num}_B{self.num_disks-1}",
+                objname=f"{side}_j{joint_num}_B{self.num_disks-1}",
             )
 
             #add frameangvel to tip, ref to base frame
             self.mjcf_model.sensor.add(
                 "frameangvel",
-                name=f"{side}_{joint_num}_B{self.num_disks-1}_frameangvel",
+                name=f"{side}_j{joint_num}_B{self.num_disks-1}_frameangvel",
                 objtype="body",
-                objname=f"{side}_{joint_num}_B{self.num_disks-1}",
+                objname=f"{side}_j{joint_num}_B{self.num_disks-1}",
                 reftype="body",
-                refname=f"{side}_{joint_num}_B0",
+                refname=f"{side}_j{joint_num}_B0",
             )
 
             self.mjcf_model.sensor.add(
                 "plugin",
                 plugin="mujoco.sensor.joint_angle_estimator",
-                name=f'{side}_{joint_num}')
+                name=f'{side}_j{joint_num}')
 
             #add tendon length sensors to all joints to see what they are at
             for i in range(4):
                 self.mjcf_model.sensor.add(
                     "tendonpos",
-                    name=f"{side}_{joint_num}_bellows{i}",
-                    tendon=f"{side}_{joint_num}_bellows{i}",
+                    name=f"{side}_j{joint_num}_bellows{i}",
+                    tendon=f"{side}_j{joint_num}_bellows{i}",
                 )
 
     def addLink0(self, body, side):
@@ -448,14 +448,14 @@ class Baloo:
         # create first body, whose frame is offset
         first_disk = parent_body.add(
             "body",
-            name=f"{side}_{joint_num}_B0",
+            name=f"{side}_j{joint_num}_B0",
             childclass="large_joint",
             pos=[0, 0, -(0.254 / 2 + self.disk_half_height)],
             euler=[180, 0, -45],
         )
         first_disk.add(
             "geom",
-            name=f"{side}_{joint_num}_G0",
+            name=f"{side}_j{joint_num}_G0",
             dclass="large_joint",
         )
 
@@ -472,13 +472,13 @@ class Baloo:
         for i in range(1, self.num_disks):
             body = prev_body.add(
                 "body",
-                name=f"{side}_{joint_num}_B{i}",
+                name=f"{side}_j{joint_num}_B{i}",
                 pos=[0, 0, (2 * self.disk_height)],
                 childclass="large_joint",
             )
             body.add(
                 "geom",
-                name=f"{side}_{joint_num}_G{i}",
+                name=f"{side}_j{joint_num}_G{i}",
                 dclass="large_joint",
             )
             body.add("inertial",
@@ -486,11 +486,11 @@ class Baloo:
                      diaginertia=[Ixy, Ixy, Iz],
                      pos=[0, 0, 0])
             body.add("joint",
-                     name=f"{side}_{joint_num}_Jx_{i-1}",
+                     name=f"{side}_j{joint_num}_Jx_{i-1}",
                      dclass="large_joint",
                      axis=self.X)
             body.add("joint",
-                     name=f"{side}_{joint_num}_Jy_{i-1}",
+                     name=f"{side}_j{joint_num}_Jy_{i-1}",
                      dclass="large_joint",
                      axis=self.Y)
 
@@ -534,12 +534,12 @@ class Baloo:
         for i in range(4):
             bellowsA = self.mjcf_model.tendon.add(
                 "spatial",
-                name=f"{side}_{joint_num}_bellows{i}_A",
+                name=f"{side}_j{joint_num}_bellows{i}_A",
                 dclass="tendon",
             )
             bellowsB = self.mjcf_model.tendon.add(
                 "spatial",
-                name=f"{side}_{joint_num}_bellows{i}_B",
+                name=f"{side}_j{joint_num}_bellows{i}_B",
                 dclass="tendon",
             )
 
@@ -566,14 +566,14 @@ class Baloo:
         # create first body, whose frame is offset
         first_disk = body.add(
             "body",
-            name=f"{side}_{joint_num}_B0",
+            name=f"{side}_j{joint_num}_B0",
             childclass="medium_joint",
             pos=[0, 0, (0.1 + self.disk_half_height)],  # from pneubotics
             euler=[0, 0, 45],
         )
         first_disk.add(
             "geom",
-            name=f"{side}_{joint_num}_G0",
+            name=f"{side}_j{joint_num}_G0",
             dclass='medium_joint',
         )
         first_disk.add("inertial",
@@ -588,12 +588,12 @@ class Baloo:
         for i in range(1, self.num_disks):
             body = prev_body.add(
                 "body",
-                name=f"{side}_{joint_num}_B{i}",
+                name=f"{side}_j{joint_num}_B{i}",
                 pos=[0, 0, (2 * self.disk_height)],
             )
             body.add(
                 "geom",
-                name=f"{side}_{joint_num}_G{i}",
+                name=f"{side}_j{joint_num}_G{i}",
                 dclass='medium_joint',
             )
             body.add("inertial",
@@ -603,11 +603,11 @@ class Baloo:
 
             #creates motion dof between body and the body's parent (i.e. prev_body)
             body.add("joint",
-                     name=f"{side}_{joint_num}_Jx_{i-1}",
+                     name=f"{side}_j{joint_num}_Jx_{i-1}",
                      axis=self.X,
                      dclass='medium_joint')
             body.add("joint",
-                     name=f"{side}_{joint_num}_Jy_{i-1}",
+                     name=f"{side}_j{joint_num}_Jy_{i-1}",
                      axis=self.Y,
                      dclass='medium_joint')
 
@@ -667,13 +667,13 @@ class Baloo:
 
         first_disk = body.add(
             "body",
-            name=f"{side}_{joint_num}_B0",
+            name=f"{side}_j{joint_num}_B0",
             childclass="small_joint",
             pos=[0, 0, (0.08 + self.disk_half_height)],  # from pneubotics
             euler=[0, 0, 45],
         )
         first_disk.add("geom",
-                       name=f"{side}_{joint_num}_G0",
+                       name=f"{side}_j{joint_num}_G0",
                        dclass='small_joint')
         first_disk.add("inertial",
                        mass=disk_mass,
@@ -691,12 +691,12 @@ class Baloo:
         for i in range(1, self.num_disks):
             body = prev_body.add(
                 "body",
-                name=f"{side}_{joint_num}_B{i}",
+                name=f"{side}_j{joint_num}_B{i}",
                 pos=[0, 0, (2 * self.disk_height)],
                 childclass="small_joint",
             )
             body.add("geom",
-                     name=f"{side}_{joint_num}_G{i}",
+                     name=f"{side}_j{joint_num}_G{i}",
                      dclass='small_joint')
             body.add("inertial",
                      mass=disk_mass,
@@ -704,11 +704,11 @@ class Baloo:
                      pos=[0, 0, 0])
 
             body.add("joint",
-                     name=f"{side}_{joint_num}_Jx_{i-1}",
+                     name=f"{side}_j{joint_num}_Jx_{i-1}",
                      dclass='small_joint',
                      axis=self.X)
             body.add("joint",
-                     name=f"{side}_{joint_num}_Jy_{i-1}",
+                     name=f"{side}_j{joint_num}_Jy_{i-1}",
                      dclass='small_joint',
                      axis=self.Y)
 
@@ -1228,7 +1228,7 @@ if __name__ == "__main__":
     # prepend absolute path to all stl in xml file
     xml = re.sub(
         r"file=\"",
-        'file="/home/curtis/curtis_ws/src/curtis_sandbox/src/mujoco/models/baloo/meshes/',
+        'file="/home/curtis/baloo_mujoco_sim/meshes/',
         xml,
     )
 
