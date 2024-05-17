@@ -13,10 +13,10 @@
 // limitations under the License.
 
 #include <mujoco/mjplugin.h>
-#include "pid.h"
+#include "MotionProfileServo.hpp"
 
 namespace mujoco::plugin::actuator {
 
-mjPLUGIN_LIB_INIT { Pid::RegisterPlugin(); }
+    mjPLUGIN_LIB_INIT{ MotionProfileServo::RegisterPlugin(); }
 
 }  // namespace mujoco::plugin::actuator

@@ -49,6 +49,11 @@ class Baloo:
             plugin="mujoco.sensor.joint_angle_estimator",
         )
 
+        elevator_plugin = self.mjcf_model.extension.add(
+            "plugin",
+            plugin="mujoco.actuator.motion_profile_servo",
+        )
+
     def _setupModel(self, num_disks):
 
         self.ORANGE = [0.8, 0.2, 0.1, 1]
@@ -669,7 +674,7 @@ class Baloo:
             "body",
             name=f"{side}_j{joint_num}_B0",
             childclass="small_joint",
-            pos=[0, 0, (.08+self.disk_half_height)],
+            pos=[0, 0, (.08 + self.disk_half_height)],
             euler=[0, 0, 45],
         )
         first_disk.add("geom",
@@ -891,16 +896,48 @@ class Baloo:
         # https://github.com/deepmind/mujoco/issues/175, this is correct. But I don't have any guarantee that the
         # trapezoidal vel profile is actually followed doing it this way.
 
-        # but having enough damping to keep it slow enough causes a lot of steady state error. Don't love this.
-        self.mjcf_model.actuator.add(
-            "position",
-            name=f"elevator",
-            joint="linear_actuator",
+        # # but having enough damping to keep it slow enough causes a lot of steady state error. Don't love this.
+        # self.mjcf_model.actuator.add(
+        #     "position",
+        #     name=f"elevator",
+        #     joint="linear_actuator",
+        #     ctrllimited=True,
+        #     ctrlrange=[-1, 0],
+        #     kp=1000,
+        #     # forcerange=[-300, 800],
+        #     # forcelimited=True,
+        # )
+        elevator_plugin = self.mjcf_model.actuator.add(
+            'plugin',
+            name='elevator',
+            plugin="mujoco.actuator.motion_profile_servo",
             ctrllimited=True,
-            ctrlrange=[-1, 0],
-            kp=1000,
-            # forcerange=[-300, 800],
-            # forcelimited=True,
+            ctrlrange=[-1000, 0],
+            joint="linear_actuator",
+        )
+
+        elevator_plugin.add(
+            "config",
+            key="kp",
+            value="0.3",  #m/s per meter
+        )
+
+        elevator_plugin.add(
+            "config",
+            key="kv",
+            value="500",
+        )
+
+        elevator_plugin.add(
+            "config",
+            key="zeta",
+            value="1",
+        )
+
+        elevator_plugin.add(
+            "config",
+            key="omega_n",
+            value="0.3",
         )
 
         # add tactile sensors to front of chest 30 rows, 16 columns for one side (32 columns for both)
@@ -1213,7 +1250,7 @@ if __name__ == "__main__":
     np.set_printoptions(precision=3, suppress=True)
     torso = Baloo(
         "baloo_torso",
-        10,
+        5,
     )
 
     # print(torso.mjcf_model)

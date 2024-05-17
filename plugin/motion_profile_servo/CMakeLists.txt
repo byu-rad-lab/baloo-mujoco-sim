@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.8)
+set(CMAKE_CXX_STANDARD 17)
 
-set(PROJECT_NAME mujoco_baloo_elevator_actuator_plugin)
+set(PROJECT_NAME mujoco_motion_profile_servo_plugin)
 set(CMAKE_COLOR_DIAGNOSTICS ON)
 
 project(${PROJECT_NAME} LANGUAGES CXX)
@@ -29,23 +30,23 @@ else()
   message(FATAL_ERROR "MuJoCo lib not found.")
 endif()
 
-set(MUJOCO_BLANK_SRCS
+set(MUJOCO_ACTUATOR_SRCS
   register.cpp
-  baloo_elevator.cpp
+  MotionProfileServo.cpp
 )
 
-set(MUJOCO_BLANK_INCLUDES
-  baloo_elevator.hpp
+set(MUJOCO_ACTUATOR_INCLUDES
+  MotionProfileServo.hpp
 )
 
-set(MUJOCO_BLANK_INCLUDE
+set(MUJOCO_ACTUATOR_INCLUDE
   ${MUJOCO_INCLUDE_DIR}
 )
 
-add_library(baloo_elevator SHARED)
-target_sources(baloo_elevator PRIVATE ${MUJOCO_BLANK_SRCS})
-target_include_directories(baloo_elevator PRIVATE ${MUJOCO_BLANK_INCLUDE})
-target_link_libraries(baloo_elevator PRIVATE ${LIB_MUJOCO})
+add_library(MotionProfileServo SHARED)
+target_sources(MotionProfileServo PRIVATE ${MUJOCO_ACTUATOR_SRCS})
+target_include_directories(MotionProfileServo PRIVATE ${MUJOCO_ACTUATOR_INCLUDE})
+target_link_libraries(MotionProfileServo PRIVATE ${LIB_MUJOCO})
 
-install(TARGETS baloo_elevator
+install(TARGETS MotionProfileServo
   LIBRARY DESTINATION ${MUJOCO_ROOT_DIR}/plugin)
