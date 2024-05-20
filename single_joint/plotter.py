@@ -51,7 +51,7 @@ class JointAnglePlotter():
         p3.setYRange(-50, 50)
         p3.showGrid(x=True, y=True)
         curve3 = [
-            p3.plot(pen='y', name='s'),  # Add a unique name for the curve
+            # p3.plot(pen='y', name='s'),  # Add a unique name for the curve
             # p2.plot(pen='r', name='vdot')  # Add a unique name for the curve
         ]
 
@@ -75,7 +75,7 @@ class JointAnglePlotter():
         self.udotdata.append(mjdata.sensor("left_0").data[2])
         self.vdotdata.append(mjdata.sensor("left_0").data[3])
         self.timedata.append(mjdata.time)
-        self.s_data.append(custom_data['s'])
+        # self.s_data.append(custom_data['s'])
 
         # Update plots
         self.curves[0][0].setData(self.timedata, self.udata)
@@ -85,7 +85,7 @@ class JointAnglePlotter():
         self.curves[1][0].setData(self.timedata, self.udotdata)
         self.curves[1][1].setData(self.timedata, self.vdotdata)
 
-        self.curves[2][0].setData(self.timedata, self.s_data)
+        # self.curves[2][0].setData(self.timedata, self.s_data)
 
         QtGui.QApplication.processEvents()  # you MUST process the plot now
 

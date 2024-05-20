@@ -5,5 +5,5 @@ small_joint:
   radius: 0.08 # radius of joint in meters
   bellows_radius: 0.04 # radius to center of bellows in meters
   bend_limit: 110 # bend limit in degrees, probably needs to be lengths of tendons
-  lumped_stiffness: 30 # lumped stiffness of the joint in Nm/rad, is divided evenly between bellows
-  lumped_damping: 7.5 # lumped damping of the joint in Nm/(rad/s), is divided evenly between universal joint in series
+  lumped_stiffness: 10 # lumped stiffness of the joint in Nm/rad, is divided evenly between bellows
+  lumped_damping: 0.05 # lumped damping of the joint in Nm/(rad/s), is divided evenly between universal joint in series

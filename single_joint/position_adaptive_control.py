@@ -183,19 +183,19 @@ class ManipulatorMRACRBF:
 
         tau = self.theta_hat.T @ Phi - self.Kd @ s
 
+        pressure = self.torque2pressures(tau)
+
         return tau, s, self.theta_hat
 
+    def torque2pressures(self, torque):
+        # convert torque to pressures
+        p0 = 200 + torque
+        p1 = 200 - torque
+
+        return p0, p1
 
 if __name__ == "__main__":
 
-    def u_to_pressures(u, pmean):
-        pressures = np.matrix([
-            [pmean + u[0] / 2 * 100.0],
-            [pmean - u[0] / 2 * 100.0],
-            [pmean + u[1] / 2 * 100.0],
-            [pmean - u[1] / 2 * 100.0],
-        ])
-        return pressures
 
     # Load model for simulation
     model = mujoco.MjModel.from_xml_path(
@@ -226,12 +226,6 @@ if __name__ == "__main__":
 
     paused = False
 
-    def torque2pressures(torque):
-        # convert torque to pressures
-        p0 = 200 + torque
-        p1 = 200 - torque
-
-        return p0, p1
 
     def key_callback(keycode):
         if keycode == ord(' '):
@@ -251,7 +245,7 @@ if __name__ == "__main__":
                 q = np.asarray(data.sensor("left_0").data[:2])
                 qdot = np.asarray(data.sensor("left_0").data[2:])
 
-                q_des = np.asarray([.5, -.5])
+                q_des = np.asarray([1.111, -1.111])
 
                 # start = time.time()
                 tau, s, theta_hat = controller.solve_for_next_u(q, qdot, q_des)

@@ -17,9 +17,12 @@ class GrubAdaptiveController:
         Lambda = 150.0  # time constant of sliding surface
         Gamma = 5  # adaptation rate
         K = 1.  # PD gain on s (Kd*Lambda = proportional term in control law, usually a low number 0<Kd<.5)
-        RBFmins = (np.array([-np.pi, -np.pi, -np.pi, -np.pi]) * 1.0)
+        RBFmins = (np.array([-10, -10, -10, -10]) * 10.0)
         RBFmaxes = -RBFmins
         numRBFs = 200
+
+        #think a refactor might be good to have each generalized coordiate have its own reference stystem, internal
+        # to the controller code. 
         self.mrac = ManipulatorMRACRBF(1, RBFmins, RBFmaxes, numRBFs, Lambda,
                                        Gamma, K)
 

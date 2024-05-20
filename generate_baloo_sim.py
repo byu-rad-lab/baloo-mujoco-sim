@@ -40,6 +40,29 @@ class Baloo:
         self._addSensors("right")
         self._addSensors("left")
 
+        # add mocap bodies to end effector disks, can't really do externally...
+        right_ee_mocap = self.mjcf_model.worldbody.add(
+            "body",
+            name="right_ee_mocap",
+            mocap="true",
+            pos=[0, 0, 0],
+        )
+
+        right_ee_mocap.add(
+            "geom",
+            name="right_ee_mocap",
+            type="box",
+            size=[0.05] * 3,
+            rgba=[1, 0, 0, 1],
+        )
+
+        self.mjcf_model.worldbody.add(
+            "body",
+            name="left_ee_mocap",
+            mocap="true",
+            pos=[0, 0, 0],
+        )
+
     def _loadPlugins(self):
         print(
             "Remember to build all plugins with current version of mujoco before running this script."
@@ -925,7 +948,7 @@ class Baloo:
         elevator_plugin.add(
             "config",
             key="kv",
-            value="500",
+            value="1000",
         )
 
         elevator_plugin.add(
@@ -1245,6 +1268,24 @@ class Baloo:
             ctrlrange=[0, self.pmax / 1000],  #kpa
         )
 
+    def to_clean_xml_string(self):
+        '''
+        pymjcf does some weird stuff. This function cleans up those weird things to 
+        avoid loading problems later. 
+        '''
+        xml = self.mjcf_model.to_xml_string()
+        # bandaid for weird bug to replace strings inserted after file names:
+        # remove random letters and numbers in between dash and .stl from comments above
+        xml = re.sub(r"-(.*?).stl", ".stl", xml)
+
+        # prepend absolute path to all stl in xml file
+        xml = re.sub(
+            r"file=\"",
+            'file="/home/curtis/baloo_mujoco_sim/meshes/',
+            xml,
+        )
+        return xml
+
 
 if __name__ == "__main__":
     np.set_printoptions(precision=3, suppress=True)
@@ -1253,25 +1294,9 @@ if __name__ == "__main__":
         5,
     )
 
-    # print(torso.mjcf_model)
-    # export_with_assets(torso.mjcf_model,'.', "baloo.xml", zero_threshold=1e-8)
-
-    xml = torso.mjcf_model.to_xml_string()
-
-    # bandaid for weird bug to replace strings inserted after file names:
-    # remove random letters and numbers in between dash and .stl from comments above
-    xml = re.sub(r"-(.*?).stl", ".stl", xml)
-
-    # prepend absolute path to all stl in xml file
-    xml = re.sub(
-        r"file=\"",
-        'file="/home/curtis/baloo_mujoco_sim/meshes/',
-        xml,
-    )
-
     # to actually write xml file. There's a weird bug in the stl that you need to fix.
     f = open("baloo.xml", "w")
-    f.write(xml)
+    f.write(torso.to_clean_xml_string())
     f.close()
 
     # Load model for simulation.

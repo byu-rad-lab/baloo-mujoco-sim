@@ -1,0 +1,32 @@
+<mujoco model="unnamed_model">
+  <default>
+    <default class="/"/>
+    <default class="left_arm/"/>
+    <default class="right_arm/"/>
+  </default>
+  <worldbody>
+    <geom name="torso" class="/" type="box" size="0.14999999999999999 0.044999999999999998 0.25"/>
+    <site name="//unnamed_site_0" class="/" size="9.9999999999999995e-07 9.9999999999999995e-07 9.9999999999999995e-07" pos="-0.14999999999999999 0 0.25"/>
+    <body pos="-0.14999999999999999 0 0.25" name="left_arm/">
+      <body name="left_arm/upper_arm">
+        <joint name="left_arm/shoulder" class="left_arm/" type="ball"/>
+        <geom name="left_arm/upper_arm" class="left_arm/" type="capsule" size="0.044999999999999998 0.14999999999999999" pos="0 0 -0.14999999999999999"/>
+        <body name="left_arm/forearm" pos="0 0 -0.29999999999999999">
+          <joint name="left_arm/elbow" class="left_arm/" type="hinge" axis="0 1 0"/>
+          <geom name="left_arm/forearm" class="left_arm/" type="capsule" size="0.044999999999999998 0.14999999999999999" pos="0 0 -0.14999999999999999"/>
+        </body>
+      </body>
+    </body>
+    <site name="//unnamed_site_1" class="/" size="9.9999999999999995e-07 9.9999999999999995e-07 9.9999999999999995e-07" pos="0.14999999999999999 0 0.25"/>
+    <body pos="0.14999999999999999 0 0.25" name="right_arm/">
+      <body name="right_arm/upper_arm">
+        <joint name="right_arm/shoulder" class="right_arm/" type="ball"/>
+        <geom name="right_arm/upper_arm" class="right_arm/" type="capsule" size="0.044999999999999998 0.14999999999999999" pos="0 0 -0.14999999999999999"/>
+        <body name="right_arm/forearm" pos="0 0 -0.29999999999999999">
+          <joint name="right_arm/elbow" class="right_arm/" type="hinge" axis="0 1 0"/>
+          <geom name="right_arm/forearm" class="right_arm/" type="capsule" size="0.044999999999999998 0.14999999999999999" pos="0 0 -0.14999999999999999"/>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+</mujoco>

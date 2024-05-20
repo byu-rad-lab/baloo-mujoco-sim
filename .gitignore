@@ -49,4 +49,6 @@ Thumbs.db
 *.wmv
 
 build/
-
+.vscode/
+*.bag
+*.csv

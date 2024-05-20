@@ -412,7 +412,7 @@ if __name__ == "__main__":
     np.set_printoptions(precision=3, suppress=True)
     torso = SmallJoint(
         "SmallJoint",
-        5,
+        10,
     )
 
     # print(torso.mjcf_model)
