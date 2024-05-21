@@ -142,7 +142,9 @@ namespace mujoco::plugin::sensor {
         //see Eq5 in Allen paper
         mjtNum R_base2Tip[9]{ 0 };
         mju_quat2Mat(R_base2Tip, r_base2Tip);
-        mjtNum phi = mju_acos(R_base2Tip[8]);
+
+        //clip to avoid numerical errors if r_base2Tip is not exactly unit quaternion, otherwise do nothing
+        mjtNum phi = mju_acos(mju_clip(R_base2Tip[8], -1, 1));
 
         // avoid division by zero, see allen eq 14
         mjtNum u = 0;
@@ -159,6 +161,11 @@ namespace mujoco::plugin::sensor {
         }
 
         //set joint angles in sensordata
+        if (std::isnan(u) || std::isnan(v))
+        {
+            mju_error("Joint Angle Estimator Plugin: u or v is nan. R_base2tip is %.16f, %.16f, %.16f, %.16f, %.16f, %.16f, %.16f, %.16f, %.16f \n and quaternion base2tip is %.16f, %.16f, %.16f, %.16f", R_base2Tip[0], R_base2Tip[1], R_base2Tip[2], R_base2Tip[3], R_base2Tip[4], R_base2Tip[5], R_base2Tip[6], R_base2Tip[7], R_base2Tip[8], r_base2Tip[0], r_base2Tip[1], r_base2Tip[2], r_base2Tip[3]);
+            return;
+        }
         mysensordata[0] = u;
         mysensordata[1] = v;
 
