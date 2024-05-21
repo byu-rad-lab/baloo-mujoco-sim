@@ -14,19 +14,22 @@ data = mujoco.MjData(model)
 
 controller = ManipulatorMRACRBF(
     num_gen_coords=6,
-    numberOfRBFCenters=2,
+    numberOfRBFCenters=
+    20,  #number doesn't seem to matter too much for performance, but more smooths out the control signal
     RBFmins=np.array([-200] * 6 * 4) * 1.0,
     RBFmaxes=np.array([200] * 6 * 4) * 1.0,
     zeta=np.array([1] * 6),
-    time_constant=np.array([.5] * 6),
-    Lambda=3,  #weight on position error qdes - q
-    Gamma=100,
+    time_constant=np.array([.2] * 6),
+    Lambda=2,  #weight on position error qdes - q
+    Gamma=150,  #don't love having this so high, its kind of like the itegrator
     KD=
-    100,  #weight on s, (directly velocity error, KD*lambda for equivalent position error)
+    150,  #weight on s, (directly velocity error, KD*lambda for equivalent position error)
     ctrl_dt=model.opt.timestep,
 )
 
 plotter = MjDataPlotter(30, model.opt.timestep)
+
+first_time = True
 
 with viewer.launch_passive(model, data) as viewer:
     start = time.time()
@@ -34,6 +37,9 @@ with viewer.launch_passive(model, data) as viewer:
     #disable pressure control sliders since user can't control them here.
 
     while viewer.is_running():
+        if first_time:
+            input("Press Enter to continue...")
+            first_time = False
         step_start = time.time()
 
         q0 = get_joint_angles(model, data, "left", 0)
@@ -47,7 +53,7 @@ with viewer.launch_passive(model, data) as viewer:
         q = np.hstack([q0, q1, q2]).squeeze()
         qdot = np.hstack([q0dot, q1dot, q2dot]).squeeze()
 
-        q_des = np.asarray([-0.5, 0.5, -0.5, 0.5, 0.5, -0.5])
+        q_des = np.asarray([0.7, -0.5, -0.25, 0.4, -0.7, 0.5])
 
         # start = time.time()
         tau, s, theta_hat = controller.solve_for_next_u(q, qdot, q_des)
@@ -75,10 +81,17 @@ with viewer.launch_passive(model, data) as viewer:
         # Pick up changes to the physics state, apply perturbations, update options from GUI.
         viewer.sync()
 
-        plotter.update(model, data)
+        # plotter.update(model, data, {
+        #     "joint0_angle0_cmd": q_des[0],
+        #     "joint0_angle1_cmd": q_des[1],
+        #     "joint1_angle0_cmd": q_des[2],
+        #     "joint1_angle1_cmd": q_des[3],
+        #     "joint2_angle0_cmd": q_des[4],
+        #     "joint2_angle1_cmd": q_des[5],
+        # })
 
-        # # Rudimentary time keeping, will drift relative to wall clock.
-        # # print(time.time() - step_start)
-        # time_until_next_step = model.opt.timestep - (time.time() - step_start)
-        # if time_until_next_step > 0:
-        #     time.sleep(time_until_next_step)
+        # Rudimentary time keeping, will drift relative to wall clock.
+        # print(time.time() - step_start)
+        time_until_next_step = model.opt.timestep - (time.time() - step_start)
+        if time_until_next_step > 0:
+            time.sleep(time_until_next_step)

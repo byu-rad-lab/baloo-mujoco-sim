@@ -11,6 +11,7 @@ from pyqtgraph.Qt import QtGui, QtCore
 import numpy as np
 from collections import deque
 from utils.baloo_mj_api import get_joint_pressures, get_joint_vel, get_joint_angles
+from pyqtgraph import mkPen
 
 
 class MjDataPlotter():
@@ -30,12 +31,16 @@ class MjDataPlotter():
             p.showGrid(x=True, y=True)
 
             curves = []
-            for j in range(2):  # For each pressure p0-p3
-                curves.append(p.plot(
-                    pen=colors[j],
-                    name=f'angle{j}'))  # Add a unique name for the curve
-                # curves.append(p.plot(pen='r', name=f'p{j}_cmd')
-                #   )  # Add a unique name for the pressure command
+            for j in range(2):  # For each angle
+                curves.append(
+                    p.plot(
+                        pen=mkPen(color=colors[j], style=QtCore.Qt.SolidLine),
+                        name=f'angle{j}'))  # Add a unique name for the curve
+                curves.append(
+                    p.plot(pen=mkPen(color=colors[j],
+                                     style=QtCore.Qt.DashLine),
+                           name=f'angle{j}_cmd')
+                )  # Add a unique name for the pressure command
 
             self.plots.append(p)
             self.curves.append(curves)
@@ -51,19 +56,29 @@ class MjDataPlotter():
         for i in range(3):
             self.angle_data.append([deque(maxlen=max_len) for _ in range(2)])
 
+        self.angle_cmd_data = []
+        for i in range(3):
+            self.angle_cmd_data.append(
+                [deque(maxlen=max_len) for _ in range(2)])
+
     def update(self, mjmodel, mjdata, custom_data: dict = None):
         # Update data
         self.time_data.append(mjdata.time)
 
-        # start = time.time()
         for joint_num in range(3):
             angles = get_joint_angles(mjmodel, mjdata, 'left', joint_num)
             vel = get_joint_vel(mjmodel, mjdata, 'left', joint_num)
             for angle_num in range(2):
                 self.angle_data[joint_num][angle_num].append(angles[angle_num])
-                self.curves[joint_num][angle_num].setData(
+                self.angle_cmd_data[joint_num][angle_num].append(
+                    custom_data[f"joint{joint_num}_angle{angle_num}_cmd"])
+
+                # Update the plot
+                self.curves[joint_num][angle_num * 2].setData(
                     self.time_data, self.angle_data[joint_num][angle_num])
-        # print(time.time() - start)
+
+                self.curves[joint_num][angle_num * 2 + 1].setData(
+                    self.time_data, self.angle_cmd_data[joint_num][angle_num])
 
         QtGui.QApplication.processEvents()  # you MUST process the plot now
 
