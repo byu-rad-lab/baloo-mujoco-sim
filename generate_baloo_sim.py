@@ -9,7 +9,7 @@ import mujoco.viewer as viewer
 from regex import F
 from dm_control.mjcf.export_with_assets import export_with_assets
 import yaml
-from baloo_mj_api import set_joint_angles, get_joint_angles
+from utils.baloo_mj_api import set_joint_angles, set_joint_velocities
 from scipy.spatial.transform import Rotation as R
 
 
@@ -1291,7 +1291,7 @@ if __name__ == "__main__":
     np.set_printoptions(precision=3, suppress=True)
     torso = Baloo(
         "baloo_torso",
-        5,
+        6,
     )
 
     # to actually write xml file. There's a weird bug in the stl that you need to fix.
@@ -1302,6 +1302,10 @@ if __name__ == "__main__":
     # Load model for simulation.
     model = mujoco.MjModel.from_xml_path(f.name)
     data = mujoco.MjData(model)
+
+    from utils.mjData_plotter import MjDataPlotter
+
+    plotter = MjDataPlotter(10, model.opt.timestep)
 
     import time
 
@@ -1321,7 +1325,14 @@ if __name__ == "__main__":
         # viewer.opt.flags[mujoco.mjtVisFlag.mjVIS_CONTACTPOINT] = True
         # viewer.opt.label = mujoco.mjtLabel.mjLABEL_CONTACTPOINT
 
-        # set_joint_angles(model, data, 'left', 0, np.array([.78, .78]))
+        #example of how to set the state to something specific
+        set_joint_angles(model, data, 'left', 0, np.array([-0.5, -0.5]))
+        set_joint_angles(model, data, 'right', 0, np.array([-0.5, -0.5]))
+        set_joint_velocities(model, data, 'left', 0, np.array([-1, -1]))
+        set_joint_velocities(model, data, 'right', 0, np.array([1, 1]))
+
+        #needed to actually render the updated state
+        viewer.sync()
 
         # Close the viewer automatically after 30 wall-seconds.
         start = time.time()
@@ -1340,19 +1351,12 @@ if __name__ == "__main__":
             # Pick up changes to the physics state, apply perturbations, update options from GUI.
             viewer.sync()
 
-            # print(data.sensor('left_0').data)
+            plotter.update(
+                model, data)  # takes almost as long to plot as to simulate.
 
-            # if detect_box_touch(model, data):
-            # print("box touched at time: ", data.time)
-            # get_contact_force(model, data)
-
-            # contact_forces = get_contact_forces_on_body(model, data, "box")
-            # print(f"net force on box: {contact_forces.sum(axis=0)}")
-            # print(f"contact forces on box\n: {contact_forces}")
-
-            # Rudimentary time keeping, will drift relative to wall clock.
-            # print(time.time() - step_start)
-            time_until_next_step = model.opt.timestep - (time.time() -
-                                                         step_start)
-            if time_until_next_step > 0:
-                time.sleep(time_until_next_step)
+            # # Rudimentary time keeping, will drift relative to wall clock.
+            # # print(time.time() - step_start)
+            # time_until_next_step = model.opt.timestep - (time.time() -
+            #                                              step_start)
+            # if time_until_next_step > 0:
+            #     time.sleep(time_until_next_step)

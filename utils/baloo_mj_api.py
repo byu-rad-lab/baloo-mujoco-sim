@@ -164,11 +164,13 @@ def get_joint_pressures(model, data, side, jointnum):
     for i in range(4):
         pressures.append(
             data.act[model.actuator(f"{side}_j{jointnum}_p{i}").actadr])
-    return np.asarray(pressures)
+    return np.asarray(pressures).squeeze()
 
 
 def set_joint_pressure_commands(model, data, side, jointnum,
                                 pressure_commands):
+
+    pressure_commands = np.clip(pressure_commands, 0, 400)
     for i in range(4):
         data.ctrl[model.actuator(
             f"{side}_j{jointnum}_p{i}").id] = pressure_commands[i]
@@ -213,24 +215,14 @@ def get_tactile_image(model, data, side, linknum):
     return tactile_img
 
 
-def get_joint_angles(model, data, side):
-    jangles = []
-    for i in range(3):
-        x = data.sensordata[model.sensor(f"{side}_qx{i}").id]
-        y = data.sensordata[model.sensor(f"{side}_qy{i}").id]
-        jangles.append(x)
-        jangles.append(y)
-    return np.asarray(jangles)
+def get_joint_angles(model, data, side, jointnum):
+    joint_angle_sensor = data.sensor(f"{side}_j{jointnum}").data
+    return joint_angle_sensor[:2]
 
 
-def get_joint_vel(model, data, side):
-    jvel = []
-    for i in range(3):
-        xd = data.sensordata[model.sensor(f"{side}_qxd{i}").id]
-        yd = data.sensordata[model.sensor(f"{side}_qyd{i}").id]
-        jvel.append(xd)
-        jvel.append(yd)
-    return np.asarray(jvel)
+def get_joint_vel(model, data, side, jointnum):
+    joint_vel_sensor = data.sensor(f"{side}_j{jointnum}").data
+    return joint_vel_sensor[2:]
 
 
 def detect_box_touch(model, data):
@@ -261,17 +253,15 @@ def set_joint_angles(model, data, side, jointnum, jangles):
         jointnum (int): 0, 1, or 2
         jangles (np array): np.array([qx,qy])
     """
-    num_disks = int(model.numeric("num_joint_disks").data.item())
+    num_disks = int(model.numeric("num_disks").data.item())
 
     x_disk_angle = jangles[0] / (num_disks - 1)
     y_disk_angle = jangles[1] / (num_disks - 1)
 
     #find jointid for each disk joint angles in data.qpos that corresponds to the jointnum
     for i in range(num_disks - 1):
-        data.qpos[model.joint(
-            f"{side}_{jointnum}_Jx_{i}").qposadr] = x_disk_angle
-        data.qpos[model.joint(
-            f"{side}_{jointnum}_Jy_{i}").qposadr] = y_disk_angle
+        data.joint(f"{side}_j{jointnum}_Jx_{i}").qpos = x_disk_angle
+        data.joint(f"{side}_j{jointnum}_Jy_{i}").qpos = y_disk_angle
 
     mujoco.mj_forward(model, data)
 
@@ -289,7 +279,7 @@ def set_joint_velocities(model, data, side, jointnum, jvel):
         jointnum (int): 0, 1, or 2
         jvel (np array): np.array([qxd,qyd])
     """
-    num_disks = int(model.numeric("num_joint_disks").data.item())
+    num_disks = int(model.numeric("num_disks").data.item())
 
     x_disk_vel = jvel[0] / (num_disks - 1)
     y_disk_vel = jvel[1] / (num_disks - 1)
@@ -297,8 +287,8 @@ def set_joint_velocities(model, data, side, jointnum, jvel):
     #find jointid for each disk joint angles in data.qpos that corresponds to the jointnum
     for i in range(num_disks - 1):
         data.qvel[model.joint(
-            f"{side}_{jointnum}_Jx_{i}").dofadr] = x_disk_vel
+            f"{side}_j{jointnum}_Jx_{i}").dofadr] = x_disk_vel
         data.qvel[model.joint(
-            f"{side}_{jointnum}_Jy_{i}").dofadr] = y_disk_vel
+            f"{side}_j{jointnum}_Jy_{i}").dofadr] = y_disk_vel
 
     mujoco.mj_forward(model, data)
