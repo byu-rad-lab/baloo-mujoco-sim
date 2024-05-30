@@ -105,13 +105,13 @@ class TwoLinkPlanarArmSlotine:
 
 class AdaptiveController:
     #implementation of adaptive controller in section 8.5.4 of siciliano
-    def __init__(self):
+    def __init__(self, dt):
         self.pi_hat = np.zeros(8)
         self.Kd = np.eye(2) * 100
         self.Kpi = np.eye(8)
         self.Lambda = np.eye(2) * 20
         self.a_hat = np.zeros(4)
-        self.dt = 0.001
+        self.dt = dt
         self.Gamma = np.diag([.03, .05, .1, .3])
 
         self.arm = TwoLinkPlanarArmSlotine([0., 0.], [0., 0.])
@@ -170,9 +170,11 @@ if __name__ == "__main__":
 
     # create a two link planar arm object
     # two_link_planar_arm = TwoLinkPlanarArmSlotine(q_init, qdot_init)
-    controller = AdaptiveController()
+    dt = 0.001  #needs to be this small for numerical stability
+    controller = AdaptiveController(dt)
 
     def calculate_desired_trajectory(t):
+        t = t * 1
         q1_des = np.deg2rad(30) * (1 - np.cos(2 * np.pi * t))
         q2_des = np.deg2rad(45) * (1 - np.cos(2 * np.pi * t))
 
@@ -185,7 +187,6 @@ if __name__ == "__main__":
         return [q1_des, q2_des], [qd1_des, qd2_des], [qdd1_des, qdd2_des]
 
     # simulate the dynamics
-    dt = 0.001 #needs to be this small for numerical stability
     q_values = []  # list to store q values
     a_hist = []
     s_hist = []
@@ -194,7 +195,7 @@ if __name__ == "__main__":
     t_hist = []
     q = np.array([0., 0.])
     qd = np.array([0., 0.])
-    seconds = 60 * 30
+    seconds = 20
     for i in tqdm(range(int(seconds / dt))):
         t = i * dt
         q_des, qd_des, qdd_des = calculate_desired_trajectory(t)
