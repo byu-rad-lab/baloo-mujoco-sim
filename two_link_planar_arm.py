@@ -103,7 +103,7 @@ class TwoLinkPlanarArmSlotine:
         plt.pause(0.00001)
 
 
-class AdaptiveController:
+class SlotineAdaptiveController:
     #implementation of adaptive controller in section 8.5.4 of siciliano
     def __init__(self, dt):
         self.pi_hat = np.zeros(8)
@@ -112,7 +112,7 @@ class AdaptiveController:
         self.Lambda = np.eye(2) * 20
         self.a_hat = np.zeros(4)
         self.dt = dt
-        self.Gamma = np.diag([.03, .05, .1, .3])
+        self.Gamma = np.diag([.03, .05, .1, .3]) * 2
 
         self.arm = TwoLinkPlanarArmSlotine([0., 0.], [0., 0.])
 
@@ -149,18 +149,45 @@ class AdaptiveController:
         qd_ref = qd_des - self.Lambda @ (q - q_des)
         qdd_ref = qdd_des - self.Lambda @ (qd - qd_des)
 
-        H = self.arm.calc_H(q, self.a_hat)
-        C = self.arm.calc_C(q, qd, self.a_hat)
-
         s = qd - qd_ref
-
-        tau = H @ qdd_ref + C @ qd_ref - self.Kd @ s
 
         Y = self.calc_Y_regressor(q, qd, qd_ref, qdd_ref)
 
+        # these two are algebraically identical, and the perfect analytical model is used.
+        tau = Y @ self.arm.a - self.Kd @ s
+        # tau = self.arm.calc_H(q, self.arm.a) @ qdd_ref + self.arm.calc_C(
+        # q, qd, self.arm.a) @ qd_ref - self.Kd @ s
+
+        # using approximation
+        # tau = Y @ self.a_hat - self.Kd @ s
         self.upate_adaptive_params(Y, s)
 
         return tau, self.a_hat, s
+    
+
+class LavretskyAdaptiveController:
+    def __init__(self) -> None:
+        self.arm = TwoLinkPlanarArmSlotine([0., 0.], [0., 0.])
+        self.Kx_hat = np.eye(2) * 100
+        self.Kr_hat = np.eye(2) * 100
+        self.Theta_hat = np.zeros(4)
+
+    def calc_plant_derivs(self, state, input):
+
+        H = self.arm.calc_H(state, self.arm.a)
+        C = self.arm.calc_C(state, input, self.arm.a)
+
+        Hinv = np.linalg.inv(H)
+        A = np.block([[Hinv@C, np.zeros((2, 2))], [np.eye(2), np.zeros((2, 2))]])
+        B = np.block([Hinv, np.zeros((2, 2))])
+
+        statedot = A @ state + B @ input
+
+        return statedot
+    
+    def update_adaptive_params(self, state, error):
+        pass
+
 
 
 if __name__ == "__main__":
@@ -171,23 +198,54 @@ if __name__ == "__main__":
     # create a two link planar arm object
     # two_link_planar_arm = TwoLinkPlanarArmSlotine(q_init, qdot_init)
     dt = 0.001  #needs to be this small for numerical stability
-    controller = AdaptiveController(dt)
+    controller = SlotineAdaptiveController(dt)
 
     def calculate_desired_trajectory(t):
         t = t * 1
-        q1_des = np.deg2rad(30) * (1 - np.cos(2 * np.pi * t))
-        q2_des = np.deg2rad(45) * (1 - np.cos(2 * np.pi * t))
+        # # this trajectory is tough and takes a while to converge (and needs high gains.)
+        # q1_des = np.deg2rad(30) * (1 - np.cos(2 * np.pi * t))
+        # q2_des = np.deg2rad(45) * (1 - np.cos(2 * np.pi * t))
 
-        qd1_des = np.deg2rad(30) * 2 * np.pi * np.sin(2 * np.pi * t)
-        qd2_des = np.deg2rad(45) * 2 * np.pi * np.sin(2 * np.pi * t)
+        # qd1_des = np.deg2rad(30) * 2 * np.pi * np.sin(2 * np.pi * t)
+        # qd2_des = np.deg2rad(45) * 2 * np.pi * np.sin(2 * np.pi * t)
 
-        qdd1_des = np.deg2rad(30) * (2 * np.pi)**2 * np.cos(2 * np.pi * t)
-        qdd2_des = np.deg2rad(45) * (2 * np.pi)**2 * np.cos(2 * np.pi * t)
+        # qdd1_des = np.deg2rad(30) * (2 * np.pi)**2 * np.cos(2 * np.pi * t)
+        # qdd2_des = np.deg2rad(45) * (2 * np.pi)**2 * np.cos(2 * np.pi * t)
+
+        q1_des = np.pi / 4 + 2 * (1 - np.cos(3 * t))
+        q2_des = np.pi / 6 + 1 * (1 - np.cos(6 * t))
+
+        qd1_des = 6 * np.sin(3 * t)
+        qd2_des = 6 * np.sin(6 * t)
+
+        qdd1_des = 18 * np.cos(3 * t)
+        qdd2_des = 36 * np.cos(6 * t)
+
+        # if t > 5:
+        #     q1_des = np.pi / 4
+        #     q2_des = np.pi / 6
+
+        #     qd1_des = 0
+        #     qd2_des = 0
+
+        #     qdd1_des = 0
+        #     qdd2_des = 0
+
+        # else:
+        #     q1_des = 0
+        #     q2_des = 0
+
+        #     qd1_des = 0
+        #     qd2_des = 0
+
+        #     qdd1_des = 0
+        #     qdd2_des = 0
 
         return [q1_des, q2_des], [qd1_des, qd2_des], [qdd1_des, qdd2_des]
 
     # simulate the dynamics
     q_values = []  # list to store q values
+    q_des_values = []  # list to store desired q values
     a_hist = []
     s_hist = []
     tau_hist = []
@@ -195,7 +253,7 @@ if __name__ == "__main__":
     t_hist = []
     q = np.array([0., 0.])
     qd = np.array([0., 0.])
-    seconds = 20
+    seconds = 60 * 5
     for i in tqdm(range(int(seconds / dt))):
         t = i * dt
         q_des, qd_des, qdd_des = calculate_desired_trajectory(t)
@@ -204,6 +262,7 @@ if __name__ == "__main__":
         # controller.arm.visualize(q)
         t_hist.append(t)
         q_values.append(deepcopy(q))  # store the current q value
+        q_des_values.append(deepcopy(q_des))
         a_hist.append(deepcopy(a_hat))
         s_hist.append(deepcopy(s))
         tau_hist.append(deepcopy(tau))
@@ -212,9 +271,12 @@ if __name__ == "__main__":
     # plot q over time
     t_hist = np.array(t_hist)[::10]
     q_values = np.array(q_values)[::10]
+    q_des_values = np.array(q_des_values)[::10]
     plt.figure()
     plt.plot(t_hist, q_values[:, 0], label='vartheta1')
     plt.plot(t_hist, q_values[:, 1], label='vartheta2')
+    plt.plot(t_hist, q_des_values[:, 0], '--', label='q1')
+    plt.plot(t_hist, q_des_values[:, 1], '--', label='q2')
     plt.xlabel('Time step')
     plt.ylabel('Configuration')
     plt.legend()
@@ -234,12 +296,19 @@ if __name__ == "__main__":
     plt.legend()
 
     s_hist = np.array(s_hist)[::10]
-    plt.figure()
-    plt.plot(t_hist, s_hist[:, 0], label='s1')
-    plt.plot(t_hist, s_hist[:, 1], label='s2')
-    plt.xlabel('Time step')
-    plt.ylabel('s')
-    plt.legend()
+
+    fig, axs = plt.subplots(2, 1)  # create a figure with 2 subplots
+
+    # plot s1 on the first subplot
+    axs[0].plot(t_hist, s_hist[:, 0], label='s1')
+    axs[0].set_ylabel('s1')
+    axs[0].legend()
+
+    # plot s2 on the second subplot
+    axs[1].plot(t_hist, s_hist[:, 1], label='s2')
+    axs[1].set_xlabel('Time step')
+    axs[1].set_ylabel('s2')
+    axs[1].legend()
 
     tau_hist = np.array(tau_hist)[::10]
     plt.figure()

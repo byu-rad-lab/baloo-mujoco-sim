@@ -20,3 +20,5 @@ To run the simulation, you will need Python and the `dm_control` and `mujoco` li
 ``` bash
 pip install dm_control mujoco==3.0.1
 ```
+
+<camera pos="-1.643 3.062 2.339" xyaxes="-0.856 -0.518 0.000 0.219 -0.361 0.906"/>

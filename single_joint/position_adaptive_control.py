@@ -9,7 +9,6 @@ import time
 import scipy
 from copy import deepcopy
 import matplotlib.pyplot as plt
-from plotter import JointAnglePlotter
 
 
 class ManipulatorMRACRBF:
@@ -21,10 +20,10 @@ class ManipulatorMRACRBF:
         RBFmaxes: npt.NDArray,
         zeta=npt.NDArray,
         time_constant=npt.NDArray,
-        Lambda=1.0,
-        Gamma=1.0,
-        KD=1.0,
-        ctrl_dt=0.0,
+        Lambda=2.0,
+        Gamma=100.0,
+        KD=25.0,
+        ctrl_dt=0.005,
     ):
         assert len(
             RBFmins) == 4 * num_gen_coords  #4 bc of the [q,qd,qd_r,qdd_r]
@@ -37,13 +36,24 @@ class ManipulatorMRACRBF:
         self.RBFmins = RBFmins  # should be same length as x in Phi(x)
         self.RBFmaxes = RBFmaxes  # should be same length as x in Phi(x)
 
-        self.theta_hat = np.zeros([numberOfRBFCenters + 1, num_gen_coords])
+        self.theta_hat = np.random.uniform(-1,
+                                           1,
+                                           size=(numberOfRBFCenters + 1,
+                                                 num_gen_coords))
         self.Gamma = np.eye(numberOfRBFCenters + 1) * Gamma
         self.Lambda = np.eye(num_gen_coords) * Lambda
+        self.Lambda_2 = np.eye(numberOfRBFCenters) * .1
         self.Kd = np.eye(num_gen_coords) * KD
         self.dt = ctrl_dt
 
         self._create_desired_system(zeta, time_constant, ctrl_dt)
+
+        # center_hat = np.linspace(self.RBFmins, self.RBFmaxes, self.N)
+        self.center_hat = np.random.uniform(self.RBFmins[0], self.RBFmaxes[0],
+                                            (self.N, self.RBFmins.shape[0]))
+        self.dMax = np.linalg.norm(self.center_hat[1, :] -
+                                   self.center_hat[0, :])
+        self.width = self.N / self.dMax**2
 
     def _create_desired_system(self, zeta, tau, dt):
         # A_ref (2*num_gen_coords x 2*num_gen_coords)
@@ -111,14 +121,13 @@ class ManipulatorMRACRBF:
         assert len(qdot_ref) == self.numberGenCoords
         assert len(qddot_ref) == self.numberGenCoords
 
-        centers = np.linspace(self.RBFmins, self.RBFmaxes, self.N)
-        dMax = np.linalg.norm(centers[1, :] - centers[0, :])
         x = np.hstack([q, qdot, qdot_ref, qddot_ref])
-        norms = np.linalg.norm(x - centers, axis=1)
-        width = self.N / dMax**2
-        Phi = np.exp(-width * norms**2)
+        norms = np.linalg.norm(x - self.center_hat, axis=1)
+        Phi = np.exp(-self.width * norms**2)
 
-        return np.append(Phi, 1.0)
+        return np.append(
+            Phi, 1.0
+        )  #this 1 is critical for performance. Its a bias term that lets torques be non-zero centered.
 
     def _calc_refs(
         self,
@@ -156,6 +165,16 @@ class ManipulatorMRACRBF:
         thetaDot = -self.Gamma @ np.outer(Phi, s)
         self.theta_hat = self.theta_hat + thetaDot * self.dt
 
+        center_hat_dot = -self.Lambda_2 @ (np.linalg.norm(s, 2) *
+                                           self.center_hat)
+        self.center_hat = self.center_hat + center_hat_dot * self.dt * 0
+
+        self.dMax = np.linalg.norm(self.center_hat[1, :] -
+                                   self.center_hat[0, :])
+        self.width = self.N / self.dMax**2
+
+        print(self.center_hat[0, :])
+
     def solve_for_next_u(
         self,
         q: npt.NDArray[np.float64],
@@ -181,11 +200,20 @@ class ManipulatorMRACRBF:
         if adapt:
             self._update_weights(s, Phi)
 
-        tau = self.theta_hat.T @ Phi - self.Kd @ s
+        tauFF = self.theta_hat.T @ Phi
+        tauPD = self.Kd @ s
+        tau = tauFF - 1 * tauPD - 0 * self.saturate(s)  #signum function
 
         pressure = self.torque2pressures(tau)
 
-        return tau, s, self.theta_hat
+        return tau, s, self.theta_hat, tauFF, tauPD, qdot_ref
+
+    def saturate(self, s):
+        sign = np.sign(s)
+
+        y = 0.5 * s
+
+        return np.clip(y * sign, -1, 1)
 
     def torque2pressures(self, torque):
         # convert torque to pressures
@@ -194,8 +222,8 @@ class ManipulatorMRACRBF:
 
         return p0, p1
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
 
     # Load model for simulation
     model = mujoco.MjModel.from_xml_path(
@@ -221,16 +249,40 @@ if __name__ == "__main__":
         model.opt.timestep,
     )
 
-    plotter = JointAnglePlotter(30, model.opt.timestep)
-    plotter.show()
+    # plotter = JointAnglePlotter(30, model.opt.timestep)
+    # plotter.show()
 
     paused = False
-
 
     def key_callback(keycode):
         if keycode == ord(' '):
             global paused
             paused = not paused
+
+    def update_qdes(t):
+        q_des = np.zeros(2)
+        # step commands to 5 different places, 10 seconds at each place
+        if t < 10:
+            q_des[0] = 0.2
+            q_des[1] = -1.1
+        elif t < 30:
+            q_des[0] = 0.0
+            q_des[1] = 0.0
+        elif t < 40:
+            q_des[0] = -0.7
+            q_des[1] = 0.9
+        else:
+            q_des[0] = 0
+            q_des[1] = 0
+
+        return q_des
+
+    time_hist = []
+    u_history = []
+    v_history = []
+    ucmd_history = []
+    vcmd_history = []
+    first_time = True
 
     with mujoco.viewer.launch_passive(model, data,
                                       key_callback=key_callback) as viewer:
@@ -240,25 +292,35 @@ if __name__ == "__main__":
 
         while viewer.is_running():
             if not paused:
+                if first_time:
+                    input("Press Enter to continue...")
+                    first_time = False
                 step_start = time.time()
 
                 q = np.asarray(data.sensor("left_0").data[:2])
                 qdot = np.asarray(data.sensor("left_0").data[2:])
 
-                q_des = np.asarray([1.111, -1.111])
+                # q_des = np.asarray([.75, -1.111])
+                q_des = update_qdes(data.time)
 
                 # start = time.time()
                 tau, s, theta_hat = controller.solve_for_next_u(q, qdot, q_des)
 
-                print(q_des - q)
+                # print(q_des - q)
                 # print(s)
 
                 ctrl = tau / 2 * 50
-                p0, p1 = torque2pressures(ctrl[0])
-                p2, p3 = torque2pressures(ctrl[1])
+                p0, p1 = controller.torque2pressures(ctrl[0])
+                p2, p3 = controller.torque2pressures(ctrl[1])
 
                 data.ctrl = np.array([p0, p1, p2, p3])
-                # print(ctrl)
+                # print(theta_hat.shape)
+
+                time_hist.append(data.time)
+                u_history.append(data.sensor("left_0").data[0])
+                v_history.append(data.sensor("left_0").data[1])
+                ucmd_history.append(q_des[0])
+                vcmd_history.append(q_des[1])
 
                 # mj_step can be replaced with code that also evaluates
                 # a policy and applies a control signal before stepping the physics.
@@ -266,25 +328,36 @@ if __name__ == "__main__":
 
                 # Pick up changes to the physics state, apply perturbations, update options from GUI.
                 viewer.sync()
-                plotter.update(
-                    model,
-                    data,
-                    {
-                        "u_cmd": q_des[0],
-                        # "s": s.item(),
-                        # "theta_hat": theta_hat
-                    })
+                # plotter.update(
+                #     model,
+                #     data,
+                #     {
+                #         "u_cmd": q_des[0],
+                #         "s0": s[0],
+                #         "s1": s[1],
+                #         # "theta_hat": theta_hat
+                #     })
 
                 # Rudimentary time keeping, will drift relative to wall clock.
                 # print(time.time() - step_start)
                 time_until_next_step = model.opt.timestep - (time.time() -
                                                              step_start)
-                if time_until_next_step > 0:
-                    time.sleep(time_until_next_step)
+                # if time_until_next_step > 0:
+                #     time.sleep(time_until_next_step)
 
-    plotter.close()
-'''
-Observations
+                if data.time > 50:
+                    break
 
+    # plotter.close()
 
-'''
+    import matplotlib.pyplot as plt
+    plt.figure()
+    plt.plot(time_hist, u_history, label="u")
+    plt.plot(time_hist, v_history, label="v")
+    plt.plot(time_hist, ucmd_history, '--', label="u_cmd")
+    plt.plot(time_hist, vcmd_history, '--', label="v_cmd")
+    plt.xlabel("Time (s)")
+    plt.ylabel("Angle (rad)")
+    plt.legend()
+    plt.grid()
+    plt.show()

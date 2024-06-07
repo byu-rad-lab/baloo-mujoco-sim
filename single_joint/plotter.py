@@ -9,6 +9,7 @@ import pyqtgraph as pg
 from pyqtgraph.Qt import QtGui, QtCore
 import numpy as np
 from collections import deque
+import time
 
 
 class JointAnglePlotter():
@@ -51,7 +52,8 @@ class JointAnglePlotter():
         p3.setYRange(-50, 50)
         p3.showGrid(x=True, y=True)
         curve3 = [
-            # p3.plot(pen='y', name='s'),  # Add a unique name for the curve
+            p3.plot(pen='y', name='s0'),  # Add a unique name for the curve
+            p3.plot(pen='r', name='s1')  # Add a unique name for the curve
             # p2.plot(pen='r', name='vdot')  # Add a unique name for the curve
         ]
 
@@ -65,7 +67,8 @@ class JointAnglePlotter():
         self.vdotdata = deque(maxlen=max_len)
         self.timedata = deque(maxlen=max_len)
         self.ucmd_data = deque(maxlen=max_len)
-        self.s_data = deque(maxlen=max_len)
+        self.s0_data = deque(maxlen=max_len)
+        self.s1_data = deque(maxlen=max_len)
 
     def update(self, mjmodel, mjdata, custom_data: dict):
         # Update data
@@ -75,9 +78,11 @@ class JointAnglePlotter():
         self.udotdata.append(mjdata.sensor("left_0").data[2])
         self.vdotdata.append(mjdata.sensor("left_0").data[3])
         self.timedata.append(mjdata.time)
-        # self.s_data.append(custom_data['s'])
+        self.s0_data.append(custom_data['s0'])
+        self.s1_data.append(custom_data['s1'])
 
         # Update plots
+        start = time.time()
         self.curves[0][0].setData(self.timedata, self.udata)
         self.curves[0][1].setData(self.timedata, self.vdata)
         self.curves[0][2].setData(self.timedata, self.ucmd_data)
@@ -85,7 +90,9 @@ class JointAnglePlotter():
         self.curves[1][0].setData(self.timedata, self.udotdata)
         self.curves[1][1].setData(self.timedata, self.vdotdata)
 
-        # self.curves[2][0].setData(self.timedata, self.s_data)
+        self.curves[2][0].setData(self.timedata, self.s0_data)
+        self.curves[2][1].setData(self.timedata, self.s1_data)
+        print(time.time() - start)
 
         QtGui.QApplication.processEvents()  # you MUST process the plot now
 
