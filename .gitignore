@@ -52,3 +52,5 @@ build/
 .vscode/
 *.bag
 *.csv
+
+*.egg-info/
