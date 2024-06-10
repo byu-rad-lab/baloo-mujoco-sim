@@ -10,7 +10,7 @@ import pyqtgraph as pg
 from pyqtgraph.Qt import QtGui, QtCore
 import numpy as np
 from collections import deque
-from utils.baloo_mj_api import get_joint_pressures, get_joint_vel, get_joint_angles
+from baloo_mujoco_sim.utils.baloo_mj_api import get_joint_pressures, get_joint_vel, get_joint_angles
 from pyqtgraph import mkPen
 from PyQt5 import QtWidgets
 import pyqtgraph as pg

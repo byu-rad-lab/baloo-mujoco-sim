@@ -5,11 +5,11 @@ import re
 from dm_control import mjcf
 import numpy as np
 
-import mujoco
-import mujoco.viewer as viewer
 from regex import F
 import yaml
 from scipy.spatial.transform import Rotation as R
+import baloo_mujoco_sim.assets as assets
+import baloo_mujoco_sim
 
 
 class Baloo:
@@ -126,7 +126,7 @@ class Baloo:
         self._loadPlugins()
 
     def _loadParams(self):
-        with open(os.path.join(os.path.dirname(__file__), "params.yaml")) as f:
+        with open("./params.yaml") as f:
             params = yaml.safe_load(f)
 
         self.small_joint_radius = params["small_joint"]["radius"]
@@ -1141,9 +1141,7 @@ class Baloo:
         )
 
         # add assets for all the meshes in the meshes directory
-        mesh_dir = (
-            "/home/curtis/curtis_ws/src/curtis_sandbox/src/mujoco/models/baloo/meshes/"
-        )
+        mesh_dir = os.path.join(assets.__path__[0], "meshes/")
 
         for file in os.listdir(mesh_dir):
             if file.endswith(".stl"):
@@ -1290,7 +1288,7 @@ class Baloo:
         # prepend absolute path to all stl in xml file
         xml = re.sub(
             r"file=\"",
-            'file="/home/curtis/baloo_mujoco_sim/meshes/',
+            f'file="{os.path.join(assets.__path__[0], "meshes/")}',
             xml,
         )
         return xml
@@ -1301,7 +1299,8 @@ if __name__ == "__main__":
     torso = Baloo("Baloo")
 
     # to actually write xml file. There's a weird bug in the stl that you need to fix.
-    with open("../baloo_mujoco_sim/assets/baloo.xml", "w") as f:
+    with open(os.path.join(baloo_mujoco_sim.__path__[0], "assets/baloo.xml"),
+              "w") as f:
         f.write(torso.to_clean_xml_string())
 
     f.close()

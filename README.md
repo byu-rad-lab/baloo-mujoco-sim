@@ -13,12 +13,48 @@ The robot is composed of a number of disks, which can be specified when creating
 
 The simulation includes a world plane and a fixed camera view. There is also a box object in the simulation that the robot can interact with.
 
-## Installation
+## Dependencies
 
 To run the simulation, you will need Python and the `dm_control` and `mujoco` libraries. You can install these libraries using pip:
 
 ``` bash
-pip install dm_control mujoco==3.0.1
+pip install dm_control mujoco
 ```
 
-<camera pos="-1.643 3.062 2.339" xyaxes="-0.856 -0.518 0.000 0.219 -0.361 0.906"/>
+## Installation and Setup
+
+There are a few steps to install and set up the simulation:
+
+1. Clone the repository
+2. Navigate to the plugin directory and build/install the joint_angle_estimator and motion_profile_servo plugins. There is a top-level CMakeLists.txt file that will build and install all the plugins needed.
+3. Install the simulation package locally using pip. This will set up everything to be nicely importable.
+4. Run the generate_baloo_xml.py script to generate the xml file for the robot.
+
+Here's an example of how to do this:
+
+``` bash
+git clone <repo-url>
+cd baloo_mujoco_sim
+
+# Build and install the plugins
+cd plugins
+mkdir build
+cd build
+cmake ..
+make install
+
+# Install the simulation package locally
+cd ../..
+pip install -e .
+
+# Generate the xml file for the robot
+cd ../../..
+python generate_baloo_xml.py
+
+```
+
+## Usage
+Once everything is built and installed, you can run a simulation as shown in the examples directory. 
+
+
+
