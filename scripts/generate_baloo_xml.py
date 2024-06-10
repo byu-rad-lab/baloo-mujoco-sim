@@ -41,21 +41,21 @@ class Baloo:
         self._addSensors("right")
         self._addSensors("left")
 
-        # add mocap bodies to end effector disks, can't really do externally...
-        right_ee_mocap = self.mjcf_model.worldbody.add(
-            "body",
-            name="right_ee_mocap",
-            mocap="true",
-            pos=[0, 0, 0],
-        )
+        # # add mocap bodies to end effector disks, can't really do externally...
+        # right_ee_mocap = self.mjcf_model.worldbody.add(
+        #     "body",
+        #     name="right_ee_mocap",
+        #     mocap="true",
+        #     pos=[0, 0, 0],
+        # )
 
-        right_ee_mocap.add(
-            "geom",
-            name="right_ee_mocap",
-            type="box",
-            size=[0.05] * 3,
-            rgba=[1, 0, 0, 1],
-        )
+        # right_ee_mocap.add(
+        #     "geom",
+        #     name="right_ee_mocap",
+        #     type="box",
+        #     size=[0.05] * 3,
+        #     rgba=[1, 0, 0, 1],
+        # )
 
         self.mjcf_model.worldbody.add(
             "body",
