@@ -36,11 +36,14 @@ Here's an example of how to do this:
 git clone <repo-url>
 cd baloo_mujoco_sim
 
+#check installation path of mujoco
+pip3 show mujoco | grep Location
+
 # Build and install the plugins
-cd plugins
+cd plugin
 mkdir build
 cd build
-cmake ..
+cmake .. -DMUJOCO_ROOT_DIR=<filepath-from-pip-show-above>/mujoco
 make install
 
 # Install the simulation package locally
@@ -48,8 +51,12 @@ cd ../..
 pip install -e .
 
 # Generate the xml file for the robot
-cd ../../..
-python generate_baloo_xml.py
+cd scripts
+python3 generate_baloo_xml.py
+
+#run simulation
+cd ../examples
+python3 baloo_sim_loop.py
 
 ```
 
