@@ -8,7 +8,7 @@ general:
 
 large_joint:
   mass: 4.63 # mass in kg
-  radius: 0.125 # radius of joint in meters
+  radius: 0.128 # radius of joint in meters
   bellows_radius: 0.075 # radius to center of bellows in meters
   bellows_effective_area: .006 # effective area of bellows in meters^2 from P = F/A
   bend_limit: 90 # bend limit in degrees, probably needs to be lengths of tendons
@@ -18,7 +18,7 @@ large_joint:
 
 medium_joint:
   mass: 2.03 # mass in kg
-  radius: 0.1 # radius of joint in meters
+  radius: 0.102 # radius of joint in meters
   bellows_radius: 0.06 # radius to center of bellows in meters
   bellows_effective_area: .004 # effective area of bellows in meters^2 from P = F/A
   bend_limit: 110 # bend limit in degrees, probably needs to be lengths of tendons
@@ -28,7 +28,7 @@ medium_joint:
 
 small_joint:
   mass: 1.65 # mass in kg
-  radius: 0.08 # radius of joint in meters
+  radius: 0.089 # radius of joint in meters
   bellows_radius: 0.04 # radius to center of bellows in meters, affect torque output
   bellows_effective_area: .004 # effective area of bellows in meters^2 from P = F/A
   bend_limit: 110 # bend limit in degrees, probably needs to be lengths of tendons

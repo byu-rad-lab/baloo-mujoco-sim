@@ -12,15 +12,15 @@
     <default class="/">
       <default class="large_joint">
         <joint group="0" type="hinge" pos="0 0 -0.025000000000000001" stiffness="360" damping="20"/>
-        <geom type="cylinder" size="0.125 0.012500000000000001" rgba="0.47058823529411764 0.47058823529411764 0.47058823529411764 0.69999999999999996"/>
+        <geom type="cylinder" size="0.128 0.012500000000000001" rgba="0.47058823529411764 0.47058823529411764 0.47058823529411764 0.69999999999999996"/>
       </default>
       <default class="medium_joint">
         <joint group="0" type="hinge" pos="0 0 -0.025000000000000001" stiffness="200" damping="20"/>
-        <geom type="cylinder" size="0.10000000000000001 0.012500000000000001" rgba="0.47058823529411764 0.47058823529411764 0.47058823529411764 0.69999999999999996"/>
+        <geom type="cylinder" size="0.10199999999999999 0.012500000000000001" rgba="0.47058823529411764 0.47058823529411764 0.47058823529411764 0.69999999999999996"/>
       </default>
       <default class="small_joint">
         <joint group="0" type="hinge" pos="0 0 -0.025000000000000001" stiffness="120" damping="2"/>
-        <geom type="cylinder" size="0.080000000000000002 0.012500000000000001" rgba="0.47058823529411764 0.47058823529411764 0.47058823529411764 0.69999999999999996"/>
+        <geom type="cylinder" size="0.088999999999999996 0.012500000000000001" rgba="0.47058823529411764 0.47058823529411764 0.47058823529411764 0.69999999999999996"/>
       </default>
       <default class="bellows_site">
         <site rgba="0 1 0 1"/>
@@ -1804,12 +1804,12 @@
         <site name="chest_31_17" class="/" type="sphere" rgba="0.19607843137254902 0.19607843137254902 0.19607843137254902 0.69999999999999996" size="0.0074999999999999997" pos="-0.26785937500000001 0.13 -0.16983333333333334"/>
         <geom name="chest_31_18_geom" class="/" type="sphere" size="0.0074999999999999997" rgba="0.19607843137254902 0.19607843137254902 0.19607843137254902 0.69999999999999996" pos="-0.26785937500000001 0.13 -0.18696666666666667"/>
         <site name="chest_31_18" class="/" type="sphere" rgba="0.19607843137254902 0.19607843137254902 0.19607843137254902 0.69999999999999996" size="0.0074999999999999997" pos="-0.26785937500000001 0.13 -0.18696666666666667"/>
-        <body name="right_shoulder" pos="0.42499999999999999 0 0" euler="0 0 0">
+        <body name="right_shoulder" pos="0.42499999999999999 0 0" euler="67.5 0 0">
           <geom name="right_shoulder" class="/" type="mesh" material="silver" mesh="SimpleShoulderMesh"/>
           <inertial pos="0 0 0" mass="0.013599999999999999" diaginertia="0.0008497 0.0008497 0.0016992000000000001"/>
           <body name="right_j0_B0" childclass="large_joint" pos="0 0 -0.19750000000000001" euler="180 0 -45">
             <geom name="right_j0_G0" class="large_joint"/>
-            <inertial pos="0 0 0" mass="0.92599999999999993" diaginertia="0.0036654166666666662 0.0036654166666666662 0.0072343749999999995"/>
+            <inertial pos="0 0 0" mass="0.92599999999999993" diaginertia="0.0038411251666666669 0.0038411251666666669 0.0075857919999999992"/>
             <site name="right_j0_b0_site0" class="bellows_site" pos="0 0.074999999999999997 0"/>
             <site name="right_j0_b0_site1" class="bellows_site" pos="0 -0.074999999999999997 0"/>
             <site name="right_j0_b0_site2" class="bellows_site" pos="-0.074999999999999997 0 0"/>
@@ -1824,7 +1824,7 @@
             <site name="right_j0_b0_site3_B" group="0" rgba="1 1 1 1" pos="0.069290964938346508 -0.028701257427381728 0"/>
             <body name="right_j0_B1" childclass="large_joint" pos="0 0 0.050000000000000003">
               <geom name="right_j0_G1" class="large_joint"/>
-              <inertial pos="0 0 0" mass="0.92599999999999993" diaginertia="0.0036654166666666662 0.0036654166666666662 0.0072343749999999995"/>
+              <inertial pos="0 0 0" mass="0.92599999999999993" diaginertia="0.0038411251666666669 0.0038411251666666669 0.0075857919999999992"/>
               <joint name="right_j0_Jx_0" class="large_joint" axis="1 0 0"/>
               <joint name="right_j0_Jy_0" class="large_joint" axis="0 1 0"/>
               <site name="right_j0_b1_site0" class="bellows_site" pos="0 0.074999999999999997 0"/>
@@ -1841,7 +1841,7 @@
               <site name="right_j0_b1_site3_B" group="0" rgba="1 1 1 1" pos="0.069290964938346508 -0.028701257427381728 0"/>
               <body name="right_j0_B2" childclass="large_joint" pos="0 0 0.050000000000000003">
                 <geom name="right_j0_G2" class="large_joint"/>
-                <inertial pos="0 0 0" mass="0.92599999999999993" diaginertia="0.0036654166666666662 0.0036654166666666662 0.0072343749999999995"/>
+                <inertial pos="0 0 0" mass="0.92599999999999993" diaginertia="0.0038411251666666669 0.0038411251666666669 0.0075857919999999992"/>
                 <joint name="right_j0_Jx_1" class="large_joint" axis="1 0 0"/>
                 <joint name="right_j0_Jy_1" class="large_joint" axis="0 1 0"/>
                 <site name="right_j0_b2_site0" class="bellows_site" pos="0 0.074999999999999997 0"/>
@@ -1858,7 +1858,7 @@
                 <site name="right_j0_b2_site3_B" group="0" rgba="1 1 1 1" pos="0.069290964938346508 -0.028701257427381728 0"/>
                 <body name="right_j0_B3" childclass="large_joint" pos="0 0 0.050000000000000003">
                   <geom name="right_j0_G3" class="large_joint"/>
-                  <inertial pos="0 0 0" mass="0.92599999999999993" diaginertia="0.0036654166666666662 0.0036654166666666662 0.0072343749999999995"/>
+                  <inertial pos="0 0 0" mass="0.92599999999999993" diaginertia="0.0038411251666666669 0.0038411251666666669 0.0075857919999999992"/>
                   <joint name="right_j0_Jx_2" class="large_joint" axis="1 0 0"/>
                   <joint name="right_j0_Jy_2" class="large_joint" axis="0 1 0"/>
                   <site name="right_j0_b3_site0" class="bellows_site" pos="0 0.074999999999999997 0"/>
@@ -1875,7 +1875,7 @@
                   <site name="right_j0_b3_site3_B" group="0" rgba="1 1 1 1" pos="0.069290964938346508 -0.028701257427381728 0"/>
                   <body name="right_j0_B4" childclass="large_joint" pos="0 0 0.050000000000000003">
                     <geom name="right_j0_G4" class="large_joint"/>
-                    <inertial pos="0 0 0" mass="0.92599999999999993" diaginertia="0.0036654166666666662 0.0036654166666666662 0.0072343749999999995"/>
+                    <inertial pos="0 0 0" mass="0.92599999999999993" diaginertia="0.0038411251666666669 0.0038411251666666669 0.0075857919999999992"/>
                     <joint name="right_j0_Jx_3" class="large_joint" axis="1 0 0"/>
                     <joint name="right_j0_Jy_3" class="large_joint" axis="0 1 0"/>
                     <site name="right_j0_b4_site0" class="bellows_site" pos="0 0.074999999999999997 0"/>
@@ -3943,14 +3943,14 @@
                       <site name="right_link0_63_15" type="sphere" rgba="0.19607843137254902 0.19607843137254902 0.19607843137254902 0.69999999999999996" size="0.0050000000000000001" pos="0.14430178536746854 -0.014212485347786272 -0.097968750000000007" euler="0 0 354.375"/>
                       <body name="right_j1_B0" childclass="medium_joint" pos="0 0 0.11699999999999999" euler="0 0 45">
                         <geom name="right_j1_G0" class="medium_joint"/>
-                        <inertial pos="0 0 0" mass="0.40599999999999997" diaginertia="0.0010361458333333336 0.0010361458333333336 0.0020300000000000001"/>
+                        <inertial pos="0 0 0" mass="0.40599999999999997" diaginertia="0.0010771518333333333 0.0010771518333333333 0.0021120119999999995"/>
                         <site name="right_j1_b0_site0" class="bellows_site" pos="0 0.059999999999999998 0"/>
                         <site name="right_j1_b0_site1" class="bellows_site" pos="0 -0.059999999999999998 0"/>
                         <site name="right_j1_b0_site2" class="bellows_site" pos="-0.059999999999999998 0 0"/>
                         <site name="right_j1_b0_site3" class="bellows_site" pos="0.059999999999999998 0 0"/>
                         <body name="right_j1_B1" pos="0 0 0.050000000000000003">
                           <geom name="right_j1_G1" class="medium_joint"/>
-                          <inertial pos="0 0 0" mass="0.40599999999999997" diaginertia="0.0010361458333333336 0.0010361458333333336 0.0020300000000000001"/>
+                          <inertial pos="0 0 0" mass="0.40599999999999997" diaginertia="0.0010771518333333333 0.0010771518333333333 0.0021120119999999995"/>
                           <joint name="right_j1_Jx_0" class="medium_joint" axis="1 0 0"/>
                           <joint name="right_j1_Jy_0" class="medium_joint" axis="0 1 0"/>
                           <site name="right_j1_b1_site0" class="bellows_site" pos="0 0.059999999999999998 0"/>
@@ -3959,7 +3959,7 @@
                           <site name="right_j1_b1_site3" class="bellows_site" pos="0.059999999999999998 0 0"/>
                           <body name="right_j1_B2" pos="0 0 0.050000000000000003">
                             <geom name="right_j1_G2" class="medium_joint"/>
-                            <inertial pos="0 0 0" mass="0.40599999999999997" diaginertia="0.0010361458333333336 0.0010361458333333336 0.0020300000000000001"/>
+                            <inertial pos="0 0 0" mass="0.40599999999999997" diaginertia="0.0010771518333333333 0.0010771518333333333 0.0021120119999999995"/>
                             <joint name="right_j1_Jx_1" class="medium_joint" axis="1 0 0"/>
                             <joint name="right_j1_Jy_1" class="medium_joint" axis="0 1 0"/>
                             <site name="right_j1_b2_site0" class="bellows_site" pos="0 0.059999999999999998 0"/>
@@ -3968,7 +3968,7 @@
                             <site name="right_j1_b2_site3" class="bellows_site" pos="0.059999999999999998 0 0"/>
                             <body name="right_j1_B3" pos="0 0 0.050000000000000003">
                               <geom name="right_j1_G3" class="medium_joint"/>
-                              <inertial pos="0 0 0" mass="0.40599999999999997" diaginertia="0.0010361458333333336 0.0010361458333333336 0.0020300000000000001"/>
+                              <inertial pos="0 0 0" mass="0.40599999999999997" diaginertia="0.0010771518333333333 0.0010771518333333333 0.0021120119999999995"/>
                               <joint name="right_j1_Jx_2" class="medium_joint" axis="1 0 0"/>
                               <joint name="right_j1_Jy_2" class="medium_joint" axis="0 1 0"/>
                               <site name="right_j1_b3_site0" class="bellows_site" pos="0 0.059999999999999998 0"/>
@@ -3977,7 +3977,7 @@
                               <site name="right_j1_b3_site3" class="bellows_site" pos="0.059999999999999998 0 0"/>
                               <body name="right_j1_B4" pos="0 0 0.050000000000000003">
                                 <geom name="right_j1_G4" class="medium_joint"/>
-                                <inertial pos="0 0 0" mass="0.40599999999999997" diaginertia="0.0010361458333333336 0.0010361458333333336 0.0020300000000000001"/>
+                                <inertial pos="0 0 0" mass="0.40599999999999997" diaginertia="0.0010771518333333333 0.0010771518333333333 0.0021120119999999995"/>
                                 <joint name="right_j1_Jx_3" class="medium_joint" axis="1 0 0"/>
                                 <joint name="right_j1_Jy_3" class="medium_joint" axis="0 1 0"/>
                                 <site name="right_j1_b4_site0" class="bellows_site" pos="0 0.059999999999999998 0"/>
@@ -6037,14 +6037,14 @@
                                   <site name="right_link1_63_15" type="sphere" rgba="0.19607843137254902 0.19607843137254902 0.19607843137254902 0.69999999999999996" size="0.0050000000000000001" pos="0.11942216720066362 -0.01176205683954726 -0.079218750000000018" euler="0 0 354.375"/>
                                   <body name="right_j2_B0" childclass="small_joint" pos="0 0 0.092499999999999999" euler="0 0 45">
                                     <geom name="right_j2_G0" class="small_joint"/>
-                                    <inertial pos="0 0 0" mass="0.32999999999999996" diaginertia="0.00054518749999999999 0.00054518749999999999 0.0010559999999999999"/>
+                                    <inertial pos="0 0 0" mass="0.32999999999999996" diaginertia="0.00067066999999999995 0.00067066999999999995 0.0013069649999999998"/>
                                     <site name="right_j2_b0_site0" class="bellows_site" pos="0 0.040000000000000001 0"/>
                                     <site name="right_j2_b0_site1" class="bellows_site" pos="0 -0.040000000000000001 0"/>
                                     <site name="right_j2_b0_site2" class="bellows_site" pos="-0.040000000000000001 0 0"/>
                                     <site name="right_j2_b0_site3" class="bellows_site" pos="0.040000000000000001 0 0"/>
                                     <body name="right_j2_B1" childclass="small_joint" pos="0 0 0.050000000000000003">
                                       <geom name="right_j2_G1" class="small_joint"/>
-                                      <inertial pos="0 0 0" mass="0.32999999999999996" diaginertia="0.00054518749999999999 0.00054518749999999999 0.0010559999999999999"/>
+                                      <inertial pos="0 0 0" mass="0.32999999999999996" diaginertia="0.00067066999999999995 0.00067066999999999995 0.0013069649999999998"/>
                                       <joint name="right_j2_Jx_0" class="small_joint" axis="1 0 0"/>
                                       <joint name="right_j2_Jy_0" class="small_joint" axis="0 1 0"/>
                                       <site name="right_j2_b1_site0" class="bellows_site" pos="0 0.040000000000000001 0"/>
@@ -6053,7 +6053,7 @@
                                       <site name="right_j2_b1_site3" class="bellows_site" pos="0.040000000000000001 0 0"/>
                                       <body name="right_j2_B2" childclass="small_joint" pos="0 0 0.050000000000000003">
                                         <geom name="right_j2_G2" class="small_joint"/>
-                                        <inertial pos="0 0 0" mass="0.32999999999999996" diaginertia="0.00054518749999999999 0.00054518749999999999 0.0010559999999999999"/>
+                                        <inertial pos="0 0 0" mass="0.32999999999999996" diaginertia="0.00067066999999999995 0.00067066999999999995 0.0013069649999999998"/>
                                         <joint name="right_j2_Jx_1" class="small_joint" axis="1 0 0"/>
                                         <joint name="right_j2_Jy_1" class="small_joint" axis="0 1 0"/>
                                         <site name="right_j2_b2_site0" class="bellows_site" pos="0 0.040000000000000001 0"/>
@@ -6062,7 +6062,7 @@
                                         <site name="right_j2_b2_site3" class="bellows_site" pos="0.040000000000000001 0 0"/>
                                         <body name="right_j2_B3" childclass="small_joint" pos="0 0 0.050000000000000003">
                                           <geom name="right_j2_G3" class="small_joint"/>
-                                          <inertial pos="0 0 0" mass="0.32999999999999996" diaginertia="0.00054518749999999999 0.00054518749999999999 0.0010559999999999999"/>
+                                          <inertial pos="0 0 0" mass="0.32999999999999996" diaginertia="0.00067066999999999995 0.00067066999999999995 0.0013069649999999998"/>
                                           <joint name="right_j2_Jx_2" class="small_joint" axis="1 0 0"/>
                                           <joint name="right_j2_Jy_2" class="small_joint" axis="0 1 0"/>
                                           <site name="right_j2_b3_site0" class="bellows_site" pos="0 0.040000000000000001 0"/>
@@ -6071,7 +6071,7 @@
                                           <site name="right_j2_b3_site3" class="bellows_site" pos="0.040000000000000001 0 0"/>
                                           <body name="right_j2_B4" childclass="small_joint" pos="0 0 0.050000000000000003">
                                             <geom name="right_j2_G4" class="small_joint"/>
-                                            <inertial pos="0 0 0" mass="0.32999999999999996" diaginertia="0.00054518749999999999 0.00054518749999999999 0.0010559999999999999"/>
+                                            <inertial pos="0 0 0" mass="0.32999999999999996" diaginertia="0.00067066999999999995 0.00067066999999999995 0.0013069649999999998"/>
                                             <joint name="right_j2_Jx_3" class="small_joint" axis="1 0 0"/>
                                             <joint name="right_j2_Jy_3" class="small_joint" axis="0 1 0"/>
                                             <site name="right_j2_b4_site0" class="bellows_site" pos="0 0.040000000000000001 0"/>
@@ -6096,12 +6096,12 @@
             </body>
           </body>
         </body>
-        <body name="left_shoulder" pos="-0.42499999999999999 0 0" euler="0 0 0">
+        <body name="left_shoulder" pos="-0.42499999999999999 0 0" euler="67.5 0 0">
           <geom name="left_shoulder" class="/" type="mesh" material="silver" euler="0 0 180" mesh="SimpleShoulderMesh"/>
           <inertial pos="0 0 0" mass="0.013599999999999999" diaginertia="0.0008497 0.0008497 0.0016992000000000001"/>
           <body name="left_j0_B0" childclass="large_joint" pos="0 0 -0.19750000000000001" euler="180 0 -45">
             <geom name="left_j0_G0" class="large_joint"/>
-            <inertial pos="0 0 0" mass="0.92599999999999993" diaginertia="0.0036654166666666662 0.0036654166666666662 0.0072343749999999995"/>
+            <inertial pos="0 0 0" mass="0.92599999999999993" diaginertia="0.0038411251666666669 0.0038411251666666669 0.0075857919999999992"/>
             <site name="left_j0_b0_site0" class="bellows_site" pos="0 0.074999999999999997 0"/>
             <site name="left_j0_b0_site1" class="bellows_site" pos="0 -0.074999999999999997 0"/>
             <site name="left_j0_b0_site2" class="bellows_site" pos="-0.074999999999999997 0 0"/>
@@ -6116,7 +6116,7 @@
             <site name="left_j0_b0_site3_B" group="0" rgba="1 1 1 1" pos="0.069290964938346508 -0.028701257427381728 0"/>
             <body name="left_j0_B1" childclass="large_joint" pos="0 0 0.050000000000000003">
               <geom name="left_j0_G1" class="large_joint"/>
-              <inertial pos="0 0 0" mass="0.92599999999999993" diaginertia="0.0036654166666666662 0.0036654166666666662 0.0072343749999999995"/>
+              <inertial pos="0 0 0" mass="0.92599999999999993" diaginertia="0.0038411251666666669 0.0038411251666666669 0.0075857919999999992"/>
               <joint name="left_j0_Jx_0" class="large_joint" axis="1 0 0"/>
               <joint name="left_j0_Jy_0" class="large_joint" axis="0 1 0"/>
               <site name="left_j0_b1_site0" class="bellows_site" pos="0 0.074999999999999997 0"/>
@@ -6133,7 +6133,7 @@
               <site name="left_j0_b1_site3_B" group="0" rgba="1 1 1 1" pos="0.069290964938346508 -0.028701257427381728 0"/>
               <body name="left_j0_B2" childclass="large_joint" pos="0 0 0.050000000000000003">
                 <geom name="left_j0_G2" class="large_joint"/>
-                <inertial pos="0 0 0" mass="0.92599999999999993" diaginertia="0.0036654166666666662 0.0036654166666666662 0.0072343749999999995"/>
+                <inertial pos="0 0 0" mass="0.92599999999999993" diaginertia="0.0038411251666666669 0.0038411251666666669 0.0075857919999999992"/>
                 <joint name="left_j0_Jx_1" class="large_joint" axis="1 0 0"/>
                 <joint name="left_j0_Jy_1" class="large_joint" axis="0 1 0"/>
                 <site name="left_j0_b2_site0" class="bellows_site" pos="0 0.074999999999999997 0"/>
@@ -6150,7 +6150,7 @@
                 <site name="left_j0_b2_site3_B" group="0" rgba="1 1 1 1" pos="0.069290964938346508 -0.028701257427381728 0"/>
                 <body name="left_j0_B3" childclass="large_joint" pos="0 0 0.050000000000000003">
                   <geom name="left_j0_G3" class="large_joint"/>
-                  <inertial pos="0 0 0" mass="0.92599999999999993" diaginertia="0.0036654166666666662 0.0036654166666666662 0.0072343749999999995"/>
+                  <inertial pos="0 0 0" mass="0.92599999999999993" diaginertia="0.0038411251666666669 0.0038411251666666669 0.0075857919999999992"/>
                   <joint name="left_j0_Jx_2" class="large_joint" axis="1 0 0"/>
                   <joint name="left_j0_Jy_2" class="large_joint" axis="0 1 0"/>
                   <site name="left_j0_b3_site0" class="bellows_site" pos="0 0.074999999999999997 0"/>
@@ -6167,7 +6167,7 @@
                   <site name="left_j0_b3_site3_B" group="0" rgba="1 1 1 1" pos="0.069290964938346508 -0.028701257427381728 0"/>
                   <body name="left_j0_B4" childclass="large_joint" pos="0 0 0.050000000000000003">
                     <geom name="left_j0_G4" class="large_joint"/>
-                    <inertial pos="0 0 0" mass="0.92599999999999993" diaginertia="0.0036654166666666662 0.0036654166666666662 0.0072343749999999995"/>
+                    <inertial pos="0 0 0" mass="0.92599999999999993" diaginertia="0.0038411251666666669 0.0038411251666666669 0.0075857919999999992"/>
                     <joint name="left_j0_Jx_3" class="large_joint" axis="1 0 0"/>
                     <joint name="left_j0_Jy_3" class="large_joint" axis="0 1 0"/>
                     <site name="left_j0_b4_site0" class="bellows_site" pos="0 0.074999999999999997 0"/>
@@ -8235,14 +8235,14 @@
                       <site name="left_link0_63_15" type="sphere" rgba="0.19607843137254902 0.19607843137254902 0.19607843137254902 0.69999999999999996" size="0.0050000000000000001" pos="0.14430178536746854 -0.014212485347786272 -0.097968750000000007" euler="0 0 354.375"/>
                       <body name="left_j1_B0" childclass="medium_joint" pos="0 0 0.11699999999999999" euler="0 0 45">
                         <geom name="left_j1_G0" class="medium_joint"/>
-                        <inertial pos="0 0 0" mass="0.40599999999999997" diaginertia="0.0010361458333333336 0.0010361458333333336 0.0020300000000000001"/>
+                        <inertial pos="0 0 0" mass="0.40599999999999997" diaginertia="0.0010771518333333333 0.0010771518333333333 0.0021120119999999995"/>
                         <site name="left_j1_b0_site0" class="bellows_site" pos="0 0.059999999999999998 0"/>
                         <site name="left_j1_b0_site1" class="bellows_site" pos="0 -0.059999999999999998 0"/>
                         <site name="left_j1_b0_site2" class="bellows_site" pos="-0.059999999999999998 0 0"/>
                         <site name="left_j1_b0_site3" class="bellows_site" pos="0.059999999999999998 0 0"/>
                         <body name="left_j1_B1" pos="0 0 0.050000000000000003">
                           <geom name="left_j1_G1" class="medium_joint"/>
-                          <inertial pos="0 0 0" mass="0.40599999999999997" diaginertia="0.0010361458333333336 0.0010361458333333336 0.0020300000000000001"/>
+                          <inertial pos="0 0 0" mass="0.40599999999999997" diaginertia="0.0010771518333333333 0.0010771518333333333 0.0021120119999999995"/>
                           <joint name="left_j1_Jx_0" class="medium_joint" axis="1 0 0"/>
                           <joint name="left_j1_Jy_0" class="medium_joint" axis="0 1 0"/>
                           <site name="left_j1_b1_site0" class="bellows_site" pos="0 0.059999999999999998 0"/>
@@ -8251,7 +8251,7 @@
                           <site name="left_j1_b1_site3" class="bellows_site" pos="0.059999999999999998 0 0"/>
                           <body name="left_j1_B2" pos="0 0 0.050000000000000003">
                             <geom name="left_j1_G2" class="medium_joint"/>
-                            <inertial pos="0 0 0" mass="0.40599999999999997" diaginertia="0.0010361458333333336 0.0010361458333333336 0.0020300000000000001"/>
+                            <inertial pos="0 0 0" mass="0.40599999999999997" diaginertia="0.0010771518333333333 0.0010771518333333333 0.0021120119999999995"/>
                             <joint name="left_j1_Jx_1" class="medium_joint" axis="1 0 0"/>
                             <joint name="left_j1_Jy_1" class="medium_joint" axis="0 1 0"/>
                             <site name="left_j1_b2_site0" class="bellows_site" pos="0 0.059999999999999998 0"/>
@@ -8260,7 +8260,7 @@
                             <site name="left_j1_b2_site3" class="bellows_site" pos="0.059999999999999998 0 0"/>
                             <body name="left_j1_B3" pos="0 0 0.050000000000000003">
                               <geom name="left_j1_G3" class="medium_joint"/>
-                              <inertial pos="0 0 0" mass="0.40599999999999997" diaginertia="0.0010361458333333336 0.0010361458333333336 0.0020300000000000001"/>
+                              <inertial pos="0 0 0" mass="0.40599999999999997" diaginertia="0.0010771518333333333 0.0010771518333333333 0.0021120119999999995"/>
                               <joint name="left_j1_Jx_2" class="medium_joint" axis="1 0 0"/>
                               <joint name="left_j1_Jy_2" class="medium_joint" axis="0 1 0"/>
                               <site name="left_j1_b3_site0" class="bellows_site" pos="0 0.059999999999999998 0"/>
@@ -8269,7 +8269,7 @@
                               <site name="left_j1_b3_site3" class="bellows_site" pos="0.059999999999999998 0 0"/>
                               <body name="left_j1_B4" pos="0 0 0.050000000000000003">
                                 <geom name="left_j1_G4" class="medium_joint"/>
-                                <inertial pos="0 0 0" mass="0.40599999999999997" diaginertia="0.0010361458333333336 0.0010361458333333336 0.0020300000000000001"/>
+                                <inertial pos="0 0 0" mass="0.40599999999999997" diaginertia="0.0010771518333333333 0.0010771518333333333 0.0021120119999999995"/>
                                 <joint name="left_j1_Jx_3" class="medium_joint" axis="1 0 0"/>
                                 <joint name="left_j1_Jy_3" class="medium_joint" axis="0 1 0"/>
                                 <site name="left_j1_b4_site0" class="bellows_site" pos="0 0.059999999999999998 0"/>
@@ -10329,14 +10329,14 @@
                                   <site name="left_link1_63_15" type="sphere" rgba="0.19607843137254902 0.19607843137254902 0.19607843137254902 0.69999999999999996" size="0.0050000000000000001" pos="0.11942216720066362 -0.01176205683954726 -0.079218750000000018" euler="0 0 354.375"/>
                                   <body name="left_j2_B0" childclass="small_joint" pos="0 0 0.092499999999999999" euler="0 0 45">
                                     <geom name="left_j2_G0" class="small_joint"/>
-                                    <inertial pos="0 0 0" mass="0.32999999999999996" diaginertia="0.00054518749999999999 0.00054518749999999999 0.0010559999999999999"/>
+                                    <inertial pos="0 0 0" mass="0.32999999999999996" diaginertia="0.00067066999999999995 0.00067066999999999995 0.0013069649999999998"/>
                                     <site name="left_j2_b0_site0" class="bellows_site" pos="0 0.040000000000000001 0"/>
                                     <site name="left_j2_b0_site1" class="bellows_site" pos="0 -0.040000000000000001 0"/>
                                     <site name="left_j2_b0_site2" class="bellows_site" pos="-0.040000000000000001 0 0"/>
                                     <site name="left_j2_b0_site3" class="bellows_site" pos="0.040000000000000001 0 0"/>
                                     <body name="left_j2_B1" childclass="small_joint" pos="0 0 0.050000000000000003">
                                       <geom name="left_j2_G1" class="small_joint"/>
-                                      <inertial pos="0 0 0" mass="0.32999999999999996" diaginertia="0.00054518749999999999 0.00054518749999999999 0.0010559999999999999"/>
+                                      <inertial pos="0 0 0" mass="0.32999999999999996" diaginertia="0.00067066999999999995 0.00067066999999999995 0.0013069649999999998"/>
                                       <joint name="left_j2_Jx_0" class="small_joint" axis="1 0 0"/>
                                       <joint name="left_j2_Jy_0" class="small_joint" axis="0 1 0"/>
                                       <site name="left_j2_b1_site0" class="bellows_site" pos="0 0.040000000000000001 0"/>
@@ -10345,7 +10345,7 @@
                                       <site name="left_j2_b1_site3" class="bellows_site" pos="0.040000000000000001 0 0"/>
                                       <body name="left_j2_B2" childclass="small_joint" pos="0 0 0.050000000000000003">
                                         <geom name="left_j2_G2" class="small_joint"/>
-                                        <inertial pos="0 0 0" mass="0.32999999999999996" diaginertia="0.00054518749999999999 0.00054518749999999999 0.0010559999999999999"/>
+                                        <inertial pos="0 0 0" mass="0.32999999999999996" diaginertia="0.00067066999999999995 0.00067066999999999995 0.0013069649999999998"/>
                                         <joint name="left_j2_Jx_1" class="small_joint" axis="1 0 0"/>
                                         <joint name="left_j2_Jy_1" class="small_joint" axis="0 1 0"/>
                                         <site name="left_j2_b2_site0" class="bellows_site" pos="0 0.040000000000000001 0"/>
@@ -10354,7 +10354,7 @@
                                         <site name="left_j2_b2_site3" class="bellows_site" pos="0.040000000000000001 0 0"/>
                                         <body name="left_j2_B3" childclass="small_joint" pos="0 0 0.050000000000000003">
                                           <geom name="left_j2_G3" class="small_joint"/>
-                                          <inertial pos="0 0 0" mass="0.32999999999999996" diaginertia="0.00054518749999999999 0.00054518749999999999 0.0010559999999999999"/>
+                                          <inertial pos="0 0 0" mass="0.32999999999999996" diaginertia="0.00067066999999999995 0.00067066999999999995 0.0013069649999999998"/>
                                           <joint name="left_j2_Jx_2" class="small_joint" axis="1 0 0"/>
                                           <joint name="left_j2_Jy_2" class="small_joint" axis="0 1 0"/>
                                           <site name="left_j2_b3_site0" class="bellows_site" pos="0 0.040000000000000001 0"/>
@@ -10363,7 +10363,7 @@
                                           <site name="left_j2_b3_site3" class="bellows_site" pos="0.040000000000000001 0 0"/>
                                           <body name="left_j2_B4" childclass="small_joint" pos="0 0 0.050000000000000003">
                                             <geom name="left_j2_G4" class="small_joint"/>
-                                            <inertial pos="0 0 0" mass="0.32999999999999996" diaginertia="0.00054518749999999999 0.00054518749999999999 0.0010559999999999999"/>
+                                            <inertial pos="0 0 0" mass="0.32999999999999996" diaginertia="0.00067066999999999995 0.00067066999999999995 0.0013069649999999998"/>
                                             <joint name="left_j2_Jx_3" class="small_joint" axis="1 0 0"/>
                                             <joint name="left_j2_Jy_3" class="small_joint" axis="0 1 0"/>
                                             <site name="left_j2_b4_site0" class="bellows_site" pos="0 0.040000000000000001 0"/>
