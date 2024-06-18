@@ -1,5 +1,5 @@
 general:
-  joint_height: 0.2 # height in meters
+  joint_height: 0.225 # height in meters
   max_pressure: 400000 # maximum pressure in Pascals
   arm_angle: 67.5 # angle of arm in degrees, pick from 0, 22.5, 45, 67.5, 90
   manipuland: box #what type of manipuland to use, options [box, none]
@@ -7,7 +7,7 @@ general:
   num_disks: 5 # number of disks to approximate each joint
 
 large_joint:
-  mass: 2.653 # mass in kg
+  mass: 4.63 # mass in kg
   radius: 0.125 # radius of joint in meters
   bellows_radius: 0.075 # radius to center of bellows in meters
   bellows_effective_area: .006 # effective area of bellows in meters^2 from P = F/A
@@ -17,7 +17,7 @@ large_joint:
   pressure_time_constant: 0.2 # time constant of pressure in seconds
 
 medium_joint:
-  mass: 1.326 # mass in kg
+  mass: 2.03 # mass in kg
   radius: 0.1 # radius of joint in meters
   bellows_radius: 0.06 # radius to center of bellows in meters
   bellows_effective_area: .004 # effective area of bellows in meters^2 from P = F/A
@@ -27,7 +27,7 @@ medium_joint:
   pressure_time_constant: 0.2 # time constant of pressure in seconds
 
 small_joint:
-  mass: 1.326 # mass in kg
+  mass: 1.65 # mass in kg
   radius: 0.08 # radius of joint in meters
   bellows_radius: 0.04 # radius to center of bellows in meters, affect torque output
   bellows_effective_area: .004 # effective area of bellows in meters^2 from P = F/A
@@ -36,3 +36,12 @@ small_joint:
   lumped_damping: 0.5 # lumped damping of the joint in Nm/(rad/s), is divided evenly between universal joint in series
   pressure_time_constant: 0.3 # time constant of pressure in seconds, mostly function of valve size
 
+link0:
+  mass: 4.54
+  height: .209
+  radius: .145
+
+link1:
+  mass: 2.214
+  height: .169
+  radius: .12

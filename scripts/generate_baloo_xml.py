@@ -16,21 +16,28 @@ class Baloo:
     def __init__(self, name) -> None:
         # set default options and visual things.
         self.mjcf_model = mjcf.RootElement(model=name)
+        print("Setting up the model...")
         self._setupModel()
 
         if self.manipuland != 'None':
+            print("Creating manipuland...")
             self._createManipuland()
 
+        print("Creating base...")
         linear_actuator = self._createBase(self.mjcf_model.worldbody)
+        print("Creating chest...")
         chest = self.createChest(linear_actuator)
+        print("Creating shoulders...")
         right_shoulder, left_shoulder = self.createShoulders(chest)
 
+        print("Building right arm...")
         right_last_disk = self._buildLargeJoint(right_shoulder, "right")
         right_link0 = self.addLink0(right_last_disk, "right")
         last_disk = self._buildMediumJoint(right_link0, "right")
         right_link1 = self.addLink1(last_disk, "right")
         right_ee_disk = self._buildSmallJoint(right_link1, "right")
 
+        print("Building left arm...")
         left_last_disk = self._buildLargeJoint(left_shoulder, "left")
         left_link0 = self.addLink0(left_last_disk, "left")
         last_disk = self._buildMediumJoint(left_link0, "left")
@@ -38,8 +45,12 @@ class Baloo:
         left_ee_disk = self._buildSmallJoint(left_link1, "left")
 
         # comment out if not whole arm is built (i.e. for testing)
+        print("Adding sensors to right arm...")
         self._addSensors("right")
+        print("Adding sensors to left arm...")
         self._addSensors("left")
+
+        print("Model building completed.")
 
         # # add mocap bodies to end effector disks, can't really do externally...
         # right_ee_mocap = self.mjcf_model.worldbody.add(
@@ -162,6 +173,14 @@ class Baloo:
         self.large_joint_lumped_damping = params["large_joint"][
             "lumped_damping"]
         self.large_joint_area = params["large_joint"]["bellows_effective_area"]
+
+        self.link0_height = params["link0"]["height"]
+        self.link0_radius = params["link0"]["radius"]
+        self.link0_mass = params["link0"]["mass"]
+
+        self.link1_height = params["link1"]["height"]
+        self.link1_radius = params["link1"]["radius"]
+        self.link1_mass = params["link1"]["mass"]
 
         # some joint measurements common (hopefully) among all joints
         self.joint_height = params["general"]["joint_height"]
@@ -367,27 +386,31 @@ class Baloo:
         link = body.add(
             "body",
             name=f"{side}_link0",
-            pos=[0, 0, (self.disk_half_height + 0.1)],
+            pos=[0, 0, (self.disk_half_height + self.link0_height / 2)],
             euler=[0, 0, -45],
         )
-        link.add("inertial",
-                 pos=[0, 0, 0],
-                 diaginertia=[0.108, 0.108, 0.023],
-                 mass=3.881)
 
-        # TODO: fix this inertial frame pos to account for valve block and stuff. Not sure what pos is relative to.
         link.add(
             "geom",
             name=f"{side}_link0",
             type="cylinder",
-            size=[0.13, 0.1],
+            size=[self.link0_radius, self.link0_height / 2],
             rgba=self.BLACK,
         )
 
-        link_height = 0.2
+        Ixx = self.link0_mass * (3 * self.link0_radius**2 +
+                                 self.link0_height**2) / 12
+        Iyy = self.link0_mass * (3 * self.link0_radius**2 +
+                                 self.link0_height**2) / 12
+        Izz = self.link0_mass * self.link0_radius**2 / 2
 
-        r = 0.13
-        self.add_tactile_sleeve(side, link, 0, link_height, r)
+        link.add("inertial",
+                 pos=[0, 0, 112e-3 - self.link0_height / 2],
+                 diaginertia=[Ixx, Iyy, Izz],
+                 mass=self.link0_mass)
+
+        self.add_tactile_sleeve(side, link, 0, self.link0_height,
+                                self.link0_radius)
 
         return link
 
@@ -444,29 +467,33 @@ class Baloo:
         link = body.add(
             "body",
             name=f"{side}_link1",
-            pos=[0, 0, (self.disk_half_height + 0.08)],
+            pos=[0, 0, (self.disk_half_height + self.link1_height / 2)],
             euler=[0, 0, -45],
         )
-        link.add(
-            "inertial",
-            pos=[0, 0, 0],
-            diaginertia=[0.05, 0.05, 0.017],
-            mass=3.474,
-        )
 
-        # TODO: fix this inertial frame pos to account for valve block and stuff. Not sure what pos is relative to.
         link.add(
             "geom",
             name=f"{side}_link1",
             type="cylinder",
-            size=[0.1, 0.08],
+            size=[self.link1_radius, self.link1_height / 2],
             rgba=self.BLACK,
         )
 
-        r = 0.1
-        link_height = 0.08 * 2
+        Ixx = self.link1_mass * (3 * self.link1_radius**2 +
+                                 self.link1_height**2) / 12
+        Iyy = self.link1_mass * (3 * self.link1_radius**2 +
+                                 self.link1_height**2) / 12
+        Izz = self.link1_mass * self.link1_radius**2 / 2
 
-        self.add_tactile_sleeve(side, link, 1, link_height, r)
+        link.add(
+            "inertial",
+            pos=[0, 0, 87e-3 - self.link1_height / 2],
+            diaginertia=[Ixx, Iyy, Izz],
+            mass=self.link1_mass,
+        )
+
+        self.add_tactile_sleeve(side, link, 1, self.link1_height,
+                                self.link1_radius)
 
         return link
 
@@ -486,7 +513,7 @@ class Baloo:
             "body",
             name=f"{side}_j{joint_num}_B0",
             childclass="large_joint",
-            pos=[0, 0, -(0.254 / 2 + self.disk_half_height)],
+            pos=[0, 0, -(185e-3 + self.disk_half_height)],
             euler=[180, 0, -45],
         )
         first_disk.add(
@@ -604,7 +631,8 @@ class Baloo:
             "body",
             name=f"{side}_j{joint_num}_B0",
             childclass="medium_joint",
-            pos=[0, 0, (0.1 + self.disk_half_height)],  # from pneubotics
+            pos=[0, 0, (self.link0_height / 2 + self.disk_half_height)
+                 ],  # from pneubotics
             euler=[0, 0, 45],
         )
         first_disk.add(
@@ -884,7 +912,7 @@ class Baloo:
     def createChest(self, linear_actuator):
         chest = linear_actuator.add("body",
                                     name="chest",
-                                    pos=[0, 194.5e-3, 1553.5e-3],
+                                    pos=[0, 195e-3, 1554e-3],
                                     euler=[0, 0, 0])
 
         # add geom
@@ -923,21 +951,6 @@ class Baloo:
             damping=500,
         )
 
-        # TODO: not sure how to model this ball screw joint correctly. Acording to
-        # https://github.com/deepmind/mujoco/issues/175, this is correct. But I don't have any guarantee that the
-        # trapezoidal vel profile is actually followed doing it this way.
-
-        # # but having enough damping to keep it slow enough causes a lot of steady state error. Don't love this.
-        # self.mjcf_model.actuator.add(
-        #     "position",
-        #     name=f"elevator",
-        #     joint="linear_actuator",
-        #     ctrllimited=True,
-        #     ctrlrange=[-1, 0],
-        #     kp=1000,
-        #     # forcerange=[-300, 800],
-        #     # forcelimited=True,
-        # )
         elevator_plugin = self.mjcf_model.actuator.add(
             'plugin',
             name='elevator',
@@ -1026,7 +1039,7 @@ class Baloo:
         right_shoulder = chest.add(
             "body",
             name="right_shoulder",
-            pos=[424.7e-3, 0, 0],
+            pos=[425e-3, 0, 0],
             euler=[self.arm_angle, 0, 0],
         )
 
@@ -1056,7 +1069,7 @@ class Baloo:
         left_shoulder = chest.add(
             "body",
             name="left_shoulder",
-            pos=[-424.7e-3, 0, 0],
+            pos=[-425e-3, 0, 0],
             euler=[self.arm_angle, 0, 0],
         )
 
