@@ -1,31 +1,43 @@
 import mujoco
-from single_joint.position_adaptive_control import ManipulatorMRACRBF
+from mrac.ManipulatorMRACRBF import ManipulatorMRACRBF
 import numpy as np
 import mujoco.viewer as viewer
 import time
-from utils.baloo_mj_api import get_joint_angles, get_joint_vel, set_joint_pressure_commands, get_joint_pressures
-from utils.mjData_plotter import MjDataPlotter
+from baloo_mujoco_sim.utils.baloo_mj_api import get_joint_angles, get_joint_vel, set_joint_pressure_commands, get_joint_pressures, disable_gravity, set_mocap_pose
+from baloo_mujoco_sim.utils.mjData_plotter import MjDataPlotter
+import baloo_mujoco_sim as baloo_mj
+
+from scipy.spatial.transform import Rotation as R
+from continuum_kinematics_py import ContinuumKinematics
 
 np.set_printoptions(precision=3, suppress=True)
 
 #load baloo.xml file
-model = mujoco.MjModel.from_xml_path("baloo.xml")
+model = mujoco.MjModel.from_xml_string(baloo_mj.XML_STRING)
 data = mujoco.MjData(model)
+
+des_pos = np.array([-.4, .7, .7])
+des_quat = np.array([1, 0, 0, 0])
+
+des_R = R.from_quat(np.moveaxis(des_quat, 0, -1)).as_matrix()
+set_mocap_pose(model, data, "left_ee_mocap", des_pos, des_quat)
+
+# disable_gravity(model)
 
 controller = ManipulatorMRACRBF(
     num_gen_coords=6,
     numberOfRBFCenters=
     20,  #number doesn't seem to matter too much for performance, but more smooths out the control signal to a point.
-    RBFmins=np.array([-10] * 6 * 4) *
-    1.0,  #TODO: stopping parameter adjustment somehow? saturate? sat() function doesn't seem to do much.
+    RBFmins=np.array([-10] * 6 * 4) * 1.0,
     RBFmaxes=np.array([10] * 6 * 4) * 1.0,
     zeta=np.array([1] * 6),
     time_constant=np.array(
-        [0.25] * 6
+        [0.5] * 6
     ),  #this needs to be tuned aware of underlying dynamics, otherwise smoothing effect is lost. Optional if you have desired trajecotyr already.
-    Lambda=3,  #lambda*KD is weight on position error qdes - q
-    Gamma=100,  #don't love having this so high, its kind of like the itegrator
-    KD=50,  #weight on velocity error, too high causes chattering
+    Lambda=20 * .5,  #lambda*KD is weight on position error qdes - q
+    Gamma=10 *
+    .5,  #don't love having this so high, its kind of like the itegrator
+    KD=5 * .5,  #weight on velocity error, too high causes chattering
     ctrl_dt=model.opt.timestep,
 )
 
@@ -51,6 +63,21 @@ def q_des_function_generator(t):
         test = np.zeros(6)
 
     return test, None, None
+
+
+def left_ee_des(t):
+    if t < 10:
+        des_pos = np.array([-.4, .7, .7])
+    elif t < 20:
+        des_pos = np.array([-.8, 1.0, 1])
+    elif t < 30:
+        des_pos = np.array([-0, .8, .8])
+    elif t < 40:
+        des_pos = np.array([-.4, 1.0, 1.2])
+    else:
+        des_pos = np.array([-.4, 1.4, .7])
+
+    return des_pos
 
 
 def q_des_sine_wave(t):
@@ -113,10 +140,19 @@ pressure_cmd_hist = []
 pressure_hist = []
 qd_ref_hist = []
 
+
+def torque2pressures(torque):
+    # convert torque to pressures
+    p0 = 200 + torque
+    p1 = 200 - torque
+
+    return p0, p1
+
+
+test = ContinuumKinematics(67.5)
+
 with viewer.launch_passive(model, data) as viewer:
     start = time.time()
-
-    #disable pressure control sliders since user can't control them here.
 
     while viewer.is_running():
         # if first_time:
@@ -136,14 +172,29 @@ with viewer.launch_passive(model, data) as viewer:
         qdot = np.hstack([q0dot, q1dot, q2dot]).squeeze()
 
         # q_des = np.asarray([0.7, -0.5, -0.25, 0.4, -0.7, 0.5])
+        qd_des = None
+        qdd_des = None
         # q_des, qd_des, qdd_des = q_des_function_generator(data.time)
-        q_des, qd_des, qdd_des = q_des_sine_wave(data.time)
+        # q_des, qd_des, qdd_des = q_des_sine_wave(data.time)
+
+        des_pos = left_ee_des(data.time)
+        set_mocap_pose(model, data, "left_ee_mocap", des_pos, des_quat)
+
+        q_des, iterations = test.solveDampedPseudoInvIK(
+            "LEFT", q0, q1, q2, des_pos, des_R, .01, 100, .05, False)
 
         # start = time.time()
         if data.time > 0:
-            tau, s, theta_hat, tau_ff, tau_pd, qd_ref = controller.solve_for_next_u(
+
+            tau, s, theta_hat, tau_ff, tau_pd, q_des, qdot_des, qddot_des = controller.solve_for_next_u(
                 q, qdot, q_des, qd_des, qdd_des)
             # print(f"Time to solve: {time.time() - start}")
+
+            # stiffness feedforward compensation, add torque required to get to desired position to input signal
+            tau_stiffness = 110 * q_des
+
+            # tau_stiff_ff = 100 * q_des
+            tau = tau + tau_stiffness
 
             # if data.time > 30:
             #     tau = tau + tau_pd  #do only the feedforward control
@@ -157,8 +208,8 @@ with viewer.launch_passive(model, data) as viewer:
             p_cmds = []
             ps = []
             for i in range(3):
-                p0, p1 = controller.torque2pressures(tau[i * 2])
-                p2, p3 = controller.torque2pressures(tau[(2 * i) + 1])
+                p0, p1 = torque2pressures(tau[i * 2])
+                p2, p3 = torque2pressures(tau[(2 * i) + 1])
                 p_cmds.append([p0, p1, p2, p3])
                 set_joint_pressure_commands(model, data, "left", i,
                                             [p0, p1, p2, p3])
@@ -202,7 +253,7 @@ with viewer.launch_passive(model, data) as viewer:
             tau_pd_hist.append(tau_pd)
             tau_hist.append(tau)
 
-            qd_ref_hist.append(qd_ref)
+            # qd_ref_hist.append(qd_ref)
 
         # data.ctrl = np.array([p0, p1, p2, p3])
         # print(theta_hat.shape)
@@ -232,7 +283,7 @@ with viewer.launch_passive(model, data) as viewer:
         # if time_until_next_step > 0:
         #     time.sleep(time_until_next_step)
 
-        if data.time > 120:
+        if data.time > 50:
             plotter.close()
             viewer.close()
 
@@ -328,7 +379,7 @@ with viewer.launch_passive(model, data) as viewer:
         # axs[i].legend()
 
     s_hist = np.array(s_hist)
-    print(s_hist.shape)
+    # print(s_hist.shape)
     fig, axs = plt.subplots(6, 1, sharex=True)
     for i in range(6):
         axs[i].plot(time_hist, s_hist[:, i], label=f"s_{j}")
@@ -366,10 +417,5 @@ with viewer.launch_passive(model, data) as viewer:
         axs[i].grid()
         axs[i].legend()
 
-    plt.figure()
-    plt.plot(time_hist, qd_ref_hist)
-    plt.title("qd_ref")
-    plt.grid()
-
-    print(f"CENTERS: {controller.center_hat}")
+    # print(f"CENTERS: {controller.center_hat}")
     plt.show()

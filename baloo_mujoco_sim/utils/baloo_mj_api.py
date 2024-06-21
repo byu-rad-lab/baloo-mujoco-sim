@@ -16,6 +16,18 @@ class Jangles:
         return np.array([self.j0, self.j1, self.j2, self.j3, self.j4, self.j5])
 
 
+def disable_gravity(model):
+    model.opt.disableflags = mujoco.mjtDisableBit.mjDSBL_GRAVITY.value
+
+
+def set_mocap_pose(model, data, mocap_name, pos, quat):
+
+    mocap = model.body(mocap_name).id
+
+    data.mocap_pos[:3] = pos
+    data.mocap_quat[:4] = quat
+
+
 def get_contact_forces_on_body(model, data, body_name):
     """
     Returns the contact forces acting on the specified body.

@@ -52,28 +52,30 @@ class Baloo:
 
         print("Model building completed.")
 
-        # # add mocap bodies to end effector disks, can't really do externally...
-        # right_ee_mocap = self.mjcf_model.worldbody.add(
-        #     "body",
-        #     name="right_ee_mocap",
-        #     mocap="true",
-        #     pos=[0, 0, 0],
-        # )
-
-        # right_ee_mocap.add(
-        #     "geom",
-        #     name="right_ee_mocap",
-        #     type="box",
-        #     size=[0.05] * 3,
-        #     rgba=[1, 0, 0, 1],
-        # )
-
-        self.mjcf_model.worldbody.add(
+        # add mocap bodies to end effector disks, can't really do externally...
+        left_ee_mocap = self.mjcf_model.worldbody.add(
             "body",
             name="left_ee_mocap",
             mocap="true",
             pos=[0, 0, 0],
         )
+
+        left_ee_mocap.add(
+            "geom",
+            name="left_ee_mocap",
+            type="box",
+            size=[0.05] * 3,
+            rgba=[1, 0, 0, 1],
+            contype=0,
+            conaffinity=0,
+        )
+
+        # self.mjcf_model.worldbody.add(
+        #     "body",
+        #     name="left_ee_mocap",
+        #     mocap="true",
+        #     pos=[0, 0, 0],
+        # )
 
     def _loadPlugins(self):
         print(
