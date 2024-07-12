@@ -1,6 +1,7 @@
 import numpy as np
 from dataclasses import dataclass
 import mujoco
+from typing import Literal
 
 
 @dataclass
@@ -195,7 +196,8 @@ def get_joint_pressure_commands(model, data, side, jointnum):
     return np.asarray(cmds)
 
 
-def get_tactile_image(model, data, side, linknum):
+def get_tactile_image(model, data, side: Literal['left', 'right', 'chest'],
+                      linknum: Literal[0, 1]):
     "note that contact between tactile sleeves and ground has been disabled in the xml file"
     if linknum == 0:
         tactile_img = np.zeros((64, 16))

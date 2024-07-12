@@ -1,26 +1,22 @@
-import os
 import importlib.resources as pkg_resources
-import baloo_mujoco_sim.assets
+from importlib.metadata import version
+import baloo_mujoco_sim.assets as assets
+import baloo_mujoco_sim
 
-# Initialize XML_STRING to None
-XML_STRING = None
 
-
-# Define a function to read the baloo.xml file
-def read_baloo_xml():
-    global XML_STRING
-    # Try to read the baloo.xml file
+# Define a function to get the path to the baloo.xml file
+def get_baloo_xml_path():
+    ver = version(baloo_mujoco_sim.__name__)
+    filename = f'baloo_v{ver}.xml'  # The name of the file
+    # Use the path function to get a path to the resource
     try:
-        with pkg_resources.open_text(baloo_mujoco_sim.assets,
-                                     'baloo.xml') as f:
-            XML_STRING = f.read()
+        with pkg_resources.path(assets, filename) as p:
+            xml_path = str(p)
+        return xml_path
     except FileNotFoundError:
-        # Handle the error if the file is not found
-        XML_STRING = "Error: baloo.xml file not found."
-    except Exception as e:
-        # Handle any other exceptions
-        XML_STRING = f"Error reading baloo.xml: {e}"
+        xml_path = ''  # Return an empty string if the file is not found
+        raise
 
 
-# Call the function to read the current baloo.xml file
-read_baloo_xml()
+# Call the function to get the path to the current baloo.xml file
+XML_PATH = get_baloo_xml_path()

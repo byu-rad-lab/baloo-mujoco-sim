@@ -1,4 +1,4 @@
-<mujoco model="Baloo">
+<mujoco model="baloo_v1.0.1">
   <compiler angle="degree"/>
   <option timestep="0.0050000000000000001" integrator="implicitfast" cone="elliptic" jacobian="sparse" solver="Newton">
     <flag gravity="enable"/>
@@ -10394,6 +10394,14 @@
       <geom name="left_ee_mocap" class="/" type="box" contype="0" conaffinity="0" size="0.050000000000000003 0.050000000000000003 0.050000000000000003" rgba="1 0 0 1"/>
     </body>
   </worldbody>
+  <contact>
+    <exclude name="chest_left_link0" body1="chest" body2="left_link0"/>
+    <exclude name="chest_left_link1" body1="chest" body2="left_link1"/>
+    <exclude name="chest_right_link0" body1="chest" body2="right_link0"/>
+    <exclude name="chest_right_link1" body1="chest" body2="right_link1"/>
+    <exclude name="left_link0_right_link0" body1="left_link0" body2="right_link0"/>
+    <exclude name="left_link1_right_link1" body1="left_link1" body2="right_link1"/>
+  </contact>
   <tendon>
     <spatial name="right_j0_bellows0" class="tendon" rgba="0 0 0 0">
       <site site="right_j0_b0_site0"/>

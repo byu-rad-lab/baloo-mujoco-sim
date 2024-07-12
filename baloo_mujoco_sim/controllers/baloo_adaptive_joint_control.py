@@ -22,22 +22,22 @@ des_quat = np.array([1, 0, 0, 0])
 des_R = R.from_quat(np.moveaxis(des_quat, 0, -1)).as_matrix()
 set_mocap_pose(model, data, "left_ee_mocap", des_pos, des_quat)
 
-# disable_gravity(model)
+disable_gravity(model)
 
 controller = ManipulatorMRACRBF(
     num_gen_coords=6,
     numberOfRBFCenters=
-    20,  #number doesn't seem to matter too much for performance, but more smooths out the control signal to a point.
+    10,  #number doesn't seem to matter too much for performance, but more smooths out the control signal to a point.
     RBFmins=np.array([-10] * 6 * 4) * 1.0,
     RBFmaxes=np.array([10] * 6 * 4) * 1.0,
     zeta=np.array([1] * 6),
     time_constant=np.array(
         [0.5] * 6
     ),  #this needs to be tuned aware of underlying dynamics, otherwise smoothing effect is lost. Optional if you have desired trajecotyr already.
-    Lambda=20 * .5,  #lambda*KD is weight on position error qdes - q
+    Lambda=20 * .3,  #lambda*KD is weight on position error qdes - q
     Gamma=10 *
-    .5,  #don't love having this so high, its kind of like the itegrator
-    KD=5 * .5,  #weight on velocity error, too high causes chattering
+    1,  #don't love having this so high, its kind of like the itegrator
+    KD=5 * 2,  #weight on velocity error, too high causes chattering
     ctrl_dt=model.opt.timestep,
 )
 
@@ -50,17 +50,33 @@ first_time = True
 
 
 def q_des_function_generator(t):
-    #step commands to 5 different places, 10 seconds at each place
+    # # step commands to 5 different places, 10 seconds at each place
     if t < 10:
         test = np.asarray([0.7, -0.5, -0.25, 0.4, -0.7, 0.5])
     elif t < 20:
         test = np.asarray([0.2, -0.1, -0.6, 0.4, -0.4, 0.3])
     elif t < 30:
-        test = np.asarray([0.0, -0.0, -0.0, 0.0, -0.0, 0.0])
+        test = np.asarray([0.5, 0.5, 0.3, 0.3, 0.6, 0.4])
     elif t < 40:
         test = np.asarray([-0.7, 0.5, 0.25, -0.4, 0.7, 0.5])
+    elif t < 50:
+        test = np.asarray([-0.2, 0.1, 0.6, -0.4, 0.4, -0.3])
+    elif t < 60:
+        test = np.asarray([0.0, -0.0, .6, 0.6, -0.25, 0.8])
+    elif t < 70:
+        test = np.asarray([-.6, -0.3, -.6,- 0.6, -0.5, -0.2])
+    elif t < 80:
+        test = np.asarray([0.0, -0.0, .0, -0.4, -0.25, 0.])
+    elif t < 90:
+        test = np.asarray([0.7, -0.4, .6, -0.6, -0.25, 0.8])
+    elif t < 100:
+        test = np.asarray([-0.4, .5, -.4, 0.2, 0.5, -0.8])
+    elif t < 110:
+        test = np.asarray([0.6, .3, .0, 0.6, -0.25, 0.6])
     else:
         test = np.zeros(6)
+
+    # test = np.zeros(6)
 
     return test, None, None
 
@@ -174,14 +190,14 @@ with viewer.launch_passive(model, data) as viewer:
         # q_des = np.asarray([0.7, -0.5, -0.25, 0.4, -0.7, 0.5])
         qd_des = None
         qdd_des = None
-        # q_des, qd_des, qdd_des = q_des_function_generator(data.time)
+        q_des, qd_des, qdd_des = q_des_function_generator(data.time)
         # q_des, qd_des, qdd_des = q_des_sine_wave(data.time)
 
-        des_pos = left_ee_des(data.time)
-        set_mocap_pose(model, data, "left_ee_mocap", des_pos, des_quat)
+        # des_pos = left_ee_des(data.time)
+        # set_mocap_pose(model, data, "left_ee_mocap", des_pos, des_quat)
 
-        q_des, iterations = test.solveDampedPseudoInvIK(
-            "LEFT", q0, q1, q2, des_pos, des_R, .01, 100, .05, False)
+        # q_des, iterations = test.solveDampedPseudoInvIK(
+        #     "LEFT", q0, q1, q2, des_pos, des_R, .01, 100, .05, False)
 
         # start = time.time()
         if data.time > 0:
@@ -190,10 +206,12 @@ with viewer.launch_passive(model, data) as viewer:
                 q, qdot, q_des, qd_des, qdd_des)
             # print(f"Time to solve: {time.time() - start}")
 
+            print(f"norm of s: {np.linalg.norm(s)}")
+
             # stiffness feedforward compensation, add torque required to get to desired position to input signal
-            tau_stiffness = 110 * q_des
 
             # tau_stiff_ff = 100 * q_des
+            tau_stiffness = 110 * q_des
             tau = tau + tau_stiffness
 
             # if data.time > 30:
@@ -283,7 +301,7 @@ with viewer.launch_passive(model, data) as viewer:
         # if time_until_next_step > 0:
         #     time.sleep(time_until_next_step)
 
-        if data.time > 50:
+        if data.time > 120:
             plotter.close()
             viewer.close()
 
@@ -369,14 +387,23 @@ with viewer.launch_passive(model, data) as viewer:
     # axs[2].grid()
     # axs[2].legend()
 
-    theta_hat = np.array(theta_hist)
+    theta_hatT = np.array(theta_hist).T
+    print(len(time_hist))
+    print(theta_hatT.shape)  #should be time x M+1 x 6
     fig, axs = plt.subplots(6, 1, sharex=True)
     for i in range(6):
-        for j in range(controller.N):
-            axs[i].plot(time_hist, theta_hat[:, j, i], label=f"theta_hat_{j}")
+        for j in range(controller.M):
+            axs[i].plot(time_hist,
+                        theta_hatT[i, j, :],
+                        label=f"theta_hatT[{i},{j}]")
         axs[i].set_ylabel(f"theta_{i}")
         axs[i].grid()
-        # axs[i].legend()
+        axs[i].legend()
+        axs[i].set_yscale('symlog')
+
+    #plot heatmap just to make sure
+    plt.figure()
+    plt.imshow(theta_hatT[:, :, 100])
 
     s_hist = np.array(s_hist)
     # print(s_hist.shape)
@@ -417,5 +444,4 @@ with viewer.launch_passive(model, data) as viewer:
         axs[i].grid()
         axs[i].legend()
 
-    # print(f"CENTERS: {controller.center_hat}")
     plt.show()

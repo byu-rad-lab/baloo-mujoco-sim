@@ -10,6 +10,7 @@ import yaml
 from scipy.spatial.transform import Rotation as R
 import baloo_mujoco_sim.assets as assets
 import baloo_mujoco_sim
+import mujoco
 
 
 class Baloo:
@@ -44,13 +45,17 @@ class Baloo:
         left_link1 = self.addLink1(last_disk, "left")
         left_ee_disk = self._buildSmallJoint(left_link1, "left")
 
+        # exclude contact between chest and each link on each arm
+        #exclude contacts between left and right arm links
+        self._setContactDetection()
+
         # comment out if not whole arm is built (i.e. for testing)
         print("Adding sensors to right arm...")
         self._addSensors("right")
         print("Adding sensors to left arm...")
         self._addSensors("left")
 
-        print("Model building completed.")
+        print(f"{name} model building completed.")
 
         # add mocap bodies to end effector disks, can't really do externally...
         left_ee_mocap = self.mjcf_model.worldbody.add(
@@ -79,7 +84,7 @@ class Baloo:
 
     def _loadPlugins(self):
         print(
-            "Remember to build all plugins with current version of mujoco before running this script."
+            f"Remember to build all plugins with current version of mujoco (v {mujoco.__version__}) before running this script."
         )
         plugin = self.mjcf_model.extension.add(
             "plugin",
@@ -108,7 +113,6 @@ class Baloo:
         self._setSimSize()
         self._setVisual()
         self._addAssets()
-        # self._setContacts()
         self._loadParams()
         self._setCustomData()
         self._setDefaults()
@@ -212,6 +216,49 @@ class Baloo:
         assert self.manipuland in ['box', 'None'
                                    ], "manipuland must be 'box' or 'None'"
         self.useTactileSensors = params["general"]["tactile_sensors"]
+
+    def _setContactDetection(self):
+        self.mjcf_model.contact.add(
+            "exclude",
+            name="chest_left_link0",
+            body1="chest",
+            body2="left_link0",
+        )
+
+        self.mjcf_model.contact.add(
+            "exclude",
+            name="chest_left_link1",
+            body1="chest",
+            body2="left_link1",
+        )
+
+        self.mjcf_model.contact.add(
+            "exclude",
+            name="chest_right_link0",
+            body1="chest",
+            body2="right_link0",
+        )
+
+        self.mjcf_model.contact.add(
+            "exclude",
+            name="chest_right_link1",
+            body1="chest",
+            body2="right_link1",
+        )
+
+        self.mjcf_model.contact.add(
+            "exclude",
+            name="left_link0_right_link0",
+            body1="left_link0",
+            body2="right_link0",
+        )
+
+        self.mjcf_model.contact.add(
+            "exclude",
+            name="left_link1_right_link1",
+            body1="left_link1",
+            body2="right_link1",
+        )
 
     def _createManipuland(self):
         # pos = (-.5, .5)m, box of .5 m side,
@@ -1311,11 +1358,16 @@ class Baloo:
 
 if __name__ == "__main__":
     np.set_printoptions(precision=3, suppress=True)
-    torso = Baloo("Baloo")
+
+    from importlib.metadata import version
+    ver = version(baloo_mujoco_sim.__name__)
+
+    torso = Baloo(f"baloo_v{ver}")
 
     # to actually write xml file. There's a weird bug in the stl that you need to fix.
-    with open(os.path.join(baloo_mujoco_sim.__path__[0], "assets/baloo.xml"),
-              "w") as f:
+    with open(
+            os.path.join(baloo_mujoco_sim.__path__[0],
+                         f"assets/baloo_v{ver}.xml"), "w") as f:
         f.write(torso.to_clean_xml_string())
 
     f.close()
