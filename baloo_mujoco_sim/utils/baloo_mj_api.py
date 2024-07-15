@@ -96,7 +96,6 @@ def get_box_position(model, data):
     -----
     Since mujoco requires floating bodies to be children of the world body, the joint space coords
     of the box are the same as the world coords. The pose data is stored in qpos as [x, y, z, qw, qx, qy, qz].
-    See https://shorturl.at/sHIS5 for more info.
     """
     qpos_adr = model.joint(model.body("box").jntadr).qposadr.item()
     free_body_len = 7  # position + quaternion

@@ -45,9 +45,9 @@ class Baloo:
         left_link1 = self.addLink1(last_disk, "left")
         left_ee_disk = self._buildSmallJoint(left_link1, "left")
 
-        # exclude contact between chest and each link on each arm
-        #exclude contacts between left and right arm links
-        self._setContactDetection()
+        # # exclude contact between chest and each link on each arm
+        # #exclude contacts between left and right arm links
+        # self._setContactDetection()
 
         # comment out if not whole arm is built (i.e. for testing)
         print("Adding sensors to right arm...")
@@ -57,23 +57,23 @@ class Baloo:
 
         print(f"{name} model building completed.")
 
-        # add mocap bodies to end effector disks, can't really do externally...
-        left_ee_mocap = self.mjcf_model.worldbody.add(
-            "body",
-            name="left_ee_mocap",
-            mocap="true",
-            pos=[0, 0, 0],
-        )
+        # # add mocap bodies to end effector disks, can't really do externally...
+        # left_ee_mocap = self.mjcf_model.worldbody.add(
+        #     "body",
+        #     name="left_ee_mocap",
+        #     mocap="true",
+        #     pos=[0, 0, 0],
+        # )
 
-        left_ee_mocap.add(
-            "geom",
-            name="left_ee_mocap",
-            type="box",
-            size=[0.05] * 3,
-            rgba=[1, 0, 0, 1],
-            contype=0,
-            conaffinity=0,
-        )
+        # left_ee_mocap.add(
+        #     "geom",
+        #     name="left_ee_mocap",
+        #     type="box",
+        #     size=[0.05] * 3,
+        #     rgba=[1, 0, 0, 1],
+        #     contype=0,
+        #     conaffinity=0,
+        # )
 
         # self.mjcf_model.worldbody.add(
         #     "body",
@@ -278,7 +278,11 @@ class Baloo:
             type="box",
             size=[width / 2, depth / 2, height / 2],
             rgba=self.ORANGE,
+            contype=2,
+            conaffinity=1,
         )
+
+        #contype and affinity are set up so taxels only respond to being touched by the manipuland, not by other bodies.
 
         box.add(
             "inertial",
@@ -488,6 +492,8 @@ class Baloo:
                         ],
                         euler=[0, 0, theta],
                         rgba=self.GRAY2,
+                        contype=0,
+                        conaffinity=2,  #to exclude contact with joint disks
                     )
                     link.add(
                         "site",
@@ -561,7 +567,7 @@ class Baloo:
         first_disk = parent_body.add(
             "body",
             name=f"{side}_j{joint_num}_B0",
-            childclass="large_joint",
+            # childclass="large_joint",
             pos=[0, 0, -(185e-3 + self.disk_half_height)],
             euler=[180, 0, -45],
         )
@@ -586,7 +592,7 @@ class Baloo:
                 "body",
                 name=f"{side}_j{joint_num}_B{i}",
                 pos=[0, 0, (2 * self.disk_height)],
-                childclass="large_joint",
+                # childclass="large_joint",
             )
             body.add(
                 "geom",
@@ -679,7 +685,7 @@ class Baloo:
         first_disk = body.add(
             "body",
             name=f"{side}_j{joint_num}_B0",
-            childclass="medium_joint",
+            # childclass="medium_joint",
             pos=[0, 0, (self.link0_height / 2 + self.disk_half_height)
                  ],  # from pneubotics
             euler=[0, 0, 45],
@@ -781,7 +787,7 @@ class Baloo:
         first_disk = body.add(
             "body",
             name=f"{side}_j{joint_num}_B0",
-            childclass="small_joint",
+            # childclass="small_joint",
             pos=[0, 0, (.08 + self.disk_half_height)],
             euler=[0, 0, 45],
         )
@@ -806,7 +812,7 @@ class Baloo:
                 "body",
                 name=f"{side}_j{joint_num}_B{i}",
                 pos=[0, 0, (2 * self.disk_height)],
-                childclass="small_joint",
+                # childclass="small_joint",
             )
             body.add("geom",
                      name=f"{side}_j{joint_num}_G{i}",

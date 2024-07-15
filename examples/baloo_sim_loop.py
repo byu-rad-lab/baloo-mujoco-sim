@@ -8,7 +8,7 @@ import baloo_mujoco_sim as baloo_mj
 from baloo_mujoco_sim.utils.mjData_plotter import MjDataPlotter
 
 # path to robot description file
-model = mujoco.MjModel.from_xml_string(baloo_mj.XML_STRING)
+model = mujoco.MjModel.from_xml_path(baloo_mj.XML_PATH)
 data = mujoco.MjData(model)
 
 plotter = MjDataPlotter(10, model.opt.timestep)
