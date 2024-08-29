@@ -13,14 +13,14 @@ from continuum_kinematics_py import ContinuumKinematics
 np.set_printoptions(precision=3, suppress=True)
 
 #load baloo.xml file
-model = mujoco.MjModel.from_xml_string(baloo_mj.XML_STRING)
+model = mujoco.MjModel.from_xml_path(baloo_mj.XML_PATH)
 data = mujoco.MjData(model)
 
-des_pos = np.array([-.4, .7, .7])
-des_quat = np.array([1, 0, 0, 0])
+# des_pos = np.array([-.4, .7, .7])
+# des_quat = np.array([1, 0, 0, 0])
 
-des_R = R.from_quat(np.moveaxis(des_quat, 0, -1)).as_matrix()
-set_mocap_pose(model, data, "left_ee_mocap", des_pos, des_quat)
+# des_R = R.from_quat(np.moveaxis(des_quat, 0, -1)).as_matrix()
+# set_mocap_pose(model, data, "left_ee_mocap", des_pos, des_quat)
 
 disable_gravity(model)
 
@@ -28,16 +28,16 @@ controller = ManipulatorMRACRBF(
     num_gen_coords=6,
     numberOfRBFCenters=
     10,  #number doesn't seem to matter too much for performance, but more smooths out the control signal to a point.
-    RBFmins=np.array([-10] * 6 * 4) * 1.0,
-    RBFmaxes=np.array([10] * 6 * 4) * 1.0,
+    RBFmins=np.array([-1] * 6 * 4) * 1.0,
+    RBFmaxes=np.array([1] * 6 * 4) * 1.0,
     zeta=np.array([1] * 6),
     time_constant=np.array(
-        [0.5] * 6
+        [1] * 6
     ),  #this needs to be tuned aware of underlying dynamics, otherwise smoothing effect is lost. Optional if you have desired trajecotyr already.
-    Lambda=20 * .3,  #lambda*KD is weight on position error qdes - q
+    Lambda=10 * .5,  #lambda*KD is weight on position error qdes - q
     Gamma=10 *
     1,  #don't love having this so high, its kind of like the itegrator
-    KD=5 * 2,  #weight on velocity error, too high causes chattering
+    KD=1 * 2,  #weight on velocity error, too high causes chattering
     ctrl_dt=model.opt.timestep,
 )
 
@@ -51,7 +51,7 @@ first_time = True
 
 def q_des_function_generator(t):
     # # step commands to 5 different places, 10 seconds at each place
-    if t < 10:
+    if t < 100:
         test = np.asarray([0.7, -0.5, -0.25, 0.4, -0.7, 0.5])
     elif t < 20:
         test = np.asarray([0.2, -0.1, -0.6, 0.4, -0.4, 0.3])
@@ -64,7 +64,7 @@ def q_des_function_generator(t):
     elif t < 60:
         test = np.asarray([0.0, -0.0, .6, 0.6, -0.25, 0.8])
     elif t < 70:
-        test = np.asarray([-.6, -0.3, -.6,- 0.6, -0.5, -0.2])
+        test = np.asarray([-.6, -0.3, -.6, -0.6, -0.5, -0.2])
     elif t < 80:
         test = np.asarray([0.0, -0.0, .0, -0.4, -0.25, 0.])
     elif t < 90:
@@ -165,7 +165,9 @@ def torque2pressures(torque):
     return p0, p1
 
 
-test = ContinuumKinematics(67.5)
+# test = ContinuumKinematics(67.5)
+
+solve_times = []
 
 with viewer.launch_passive(model, data) as viewer:
     start = time.time()
@@ -199,20 +201,23 @@ with viewer.launch_passive(model, data) as viewer:
         # q_des, iterations = test.solveDampedPseudoInvIK(
         #     "LEFT", q0, q1, q2, des_pos, des_R, .01, 100, .05, False)
 
-        # start = time.time()
         if data.time > 0:
-
+            start = time.time()
             tau, s, theta_hat, tau_ff, tau_pd, q_des, qdot_des, qddot_des = controller.solve_for_next_u(
                 q, qdot, q_des, qd_des, qdd_des)
-            # print(f"Time to solve: {time.time() - start}")
+            
+            solve_times.append(time.time() - start)
+            print(f"Time to solve: {time.time() - start}")
 
-            print(f"norm of s: {np.linalg.norm(s)}")
+            # print(f"norm of s: {np.linalg.norm(s)}")
 
             # stiffness feedforward compensation, add torque required to get to desired position to input signal
 
             # tau_stiff_ff = 100 * q_des
-            tau_stiffness = 110 * q_des
-            tau = tau + tau_stiffness
+            tau_stiffness = 100 * q_des
+            # tau = tau + tau_stiffness
+
+            # print(f"tau_stiffness ratio: {np.linalg.norm(tau_stiffness)/np.min(np.linalg.eigvals(controller.Kd))}")
 
             # if data.time > 30:
             #     tau = tau + tau_pd  #do only the feedforward control
@@ -445,3 +450,5 @@ with viewer.launch_passive(model, data) as viewer:
         axs[i].legend()
 
     plt.show()
+
+    print(f"Average solve time: {np.mean(solve_times)}")
