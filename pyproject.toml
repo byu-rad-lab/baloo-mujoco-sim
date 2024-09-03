@@ -1,0 +1,27 @@
+[project]
+name = "baloo_mujoco_sim"
+version = "1.0.1"
+requires-python = ">=3.8"
+authors = [
+    {name="Curtis C. Johnson", email="curtiscarljohnson@gmail.com"}
+]
+description= "A MuJoCo simulation of the Baloo robot"
+readme = "README.md"
+dynamic = ["dependencies"]
+
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages]
+find = {}
+
+[tool.setuptools.package-data]
+"baloo_mujoco_sim" = ["assets/*", "assets/meshes/*.stl"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[project.scripts]
+generate-baloo-xml = "scripts.generate_baloo_xml:generate_xml"
+

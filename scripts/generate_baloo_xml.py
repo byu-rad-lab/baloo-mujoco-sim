@@ -8,9 +8,10 @@ import numpy as np
 from regex import F
 import yaml
 from scipy.spatial.transform import Rotation as R
-import baloo_mujoco_sim.assets as assets
-import baloo_mujoco_sim
+import baloo_mujoco_sim as bms
 import mujoco
+
+from importlib.resources import path
 
 
 class Baloo:
@@ -143,8 +144,9 @@ class Baloo:
         self._loadPlugins()
 
     def _loadParams(self):
-        with open("./params.yaml") as f:
-            params = yaml.safe_load(f)
+        with path("baloo_mujoco_sim", "assets") as asset_dir:
+            with open(os.path.join(asset_dir, "params.yaml"), "r") as file:
+                params = yaml.safe_load(file)
 
         self.small_joint_radius = params["small_joint"]["radius"]
         self.small_joint_mass = params["small_joint"]["mass"]
@@ -1209,16 +1211,15 @@ class Baloo:
         )
 
         # add assets for all the meshes in the meshes directory
-        mesh_dir = os.path.join(assets.__path__[0], "meshes/")
-
-        for file in os.listdir(mesh_dir):
-            if file.endswith(".stl"):
-                self.mjcf_model.asset.add(
-                    "mesh",
-                    name=file.split(".")[0],
-                    file=mesh_dir + file,
-                )
-                # print(file.split(".")[0])
+        with path("baloo_mujoco_sim", "assets") as asset_dir:
+            mesh_dir = os.path.join(asset_dir, "meshes")
+            for file in os.listdir(mesh_dir):
+                if file.endswith(".stl"):
+                    self.mjcf_model.asset.add(
+                        "mesh",
+                        name=file.split(".")[0],
+                        file=os.path.join(mesh_dir, file),
+                    )
 
         # add materials to define colors for different parts
         self.mjcf_model.asset.add(
@@ -1354,26 +1355,43 @@ class Baloo:
         xml = re.sub(r"-(.*?).stl", ".stl", xml)
 
         # prepend absolute path to all stl in xml file
-        xml = re.sub(
-            r"file=\"",
-            f'file="{os.path.join(assets.__path__[0], "meshes/")}',
-            xml,
-        )
+        with path("baloo_mujoco_sim", "assets") as asset_dir:
+            mesh_dir = os.path.join(asset_dir, "meshes")
+            xml = re.sub(
+                r"file=\"",
+                f'file="{mesh_dir}/',
+                xml,
+            )
         return xml
 
 
-if __name__ == "__main__":
+def generate_xml():
     np.set_printoptions(precision=3, suppress=True)
 
     from importlib.metadata import version
-    ver = version(baloo_mujoco_sim.__name__)
+    ver = version(bms.__name__)
 
     torso = Baloo(f"baloo_v{ver}")
 
     # to actually write xml file. There's a weird bug in the stl that you need to fix.
-    with open(
-            os.path.join(baloo_mujoco_sim.__path__[0],
-                         f"assets/baloo_v{ver}.xml"), "w") as f:
-        f.write(torso.to_clean_xml_string())
-
+    with path("baloo_mujoco_sim", "assets") as asset_dir:
+        with open(os.path.join(asset_dir, f"baloo_v{ver}.xml"), "w") as f:
+            f.write(torso.to_clean_xml_string())
     f.close()
+
+
+# if __name__ == "__main__":
+#     np.set_printoptions(precision=3, suppress=True)
+
+#     from importlib.metadata import version
+#     ver = version(baloo_mujoco_sim.__name__)
+
+#     torso = Baloo(f"baloo_v{ver}")
+
+#     # to actually write xml file. There's a weird bug in the stl that you need to fix.
+#     with open(
+#             os.path.join(baloo_mujoco_sim.__path__[0],
+#                          f"assets/baloo_v{ver}.xml"), "w") as f:
+#         f.write(torso.to_clean_xml_string())
+
+#     f.close()

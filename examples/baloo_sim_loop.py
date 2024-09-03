@@ -49,6 +49,9 @@ with mujoco.viewer.launch_passive(model, data) as viewer:
         # Pick up changes to the physics state, apply perturbations, update options from GUI.
         viewer.sync()
 
+        if time.time() - start > 10:
+            model.geom('box').rgba = [0, 1, 0, 1]
+
         # plotter.update(
         #     model, data)  # takes almost as long to plot as to simulate.
 
