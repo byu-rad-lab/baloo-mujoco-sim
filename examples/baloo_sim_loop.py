@@ -1,17 +1,12 @@
 import time
 import mujoco
-import matplotlib.pyplot as plt
 import numpy as np
-from copy import deepcopy
 import mujoco.viewer
 import baloo_mujoco_sim as baloo_mj
-from baloo_mujoco_sim.utils.mjData_plotter import MjDataPlotter
 
 # path to robot description file
 model = mujoco.MjModel.from_xml_path(baloo_mj.XML_PATH)
 data = mujoco.MjData(model)
-
-plotter = MjDataPlotter(10, model.opt.timestep)
 
 with mujoco.viewer.launch_passive(model, data) as viewer:
     # with viewer.lock():

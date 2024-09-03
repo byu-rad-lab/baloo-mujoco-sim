@@ -13,14 +13,6 @@ The robot is composed of a number of disks, which can be specified when creating
 
 The simulation includes a world plane and a fixed camera view. There is also a box object in the simulation that the robot can interact with.
 
-## Dependencies
-
-To run the simulation, you will need Python and the `dm_control` and `mujoco` libraries. You can install these libraries using pip:
-
-``` bash
-pip install dm_control mujoco
-```
-
 ## Installation and Setup
 
 There are a few steps to install and set up the simulation:
@@ -48,11 +40,10 @@ make install
 
 # Install the simulation package locally
 cd ../..
-pip install -e .
+pip install .
 
-# Generate the xml file for the robot
-cd scripts
-python3 generate_baloo_xml.py
+# Generate the xml file for the robot using CLI
+generate-baloo-xml
 
 #run simulation
 cd ../examples
