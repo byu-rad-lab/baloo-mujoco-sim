@@ -54,3 +54,5 @@ build/
 *.csv
 
 *.egg-info/
+
+_skbuild/

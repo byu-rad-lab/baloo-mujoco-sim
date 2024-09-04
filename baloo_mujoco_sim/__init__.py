@@ -1,6 +1,7 @@
 import importlib.metadata
 import glob
 import os
+import subprocess
 
 
 def find_xml_files_in_assets(package_name):
@@ -33,6 +34,5 @@ xml_files = find_xml_files_in_assets(package_name)
 if xml_files:
     XML_PATH = xml_files[0]
 else:
-    raise FileNotFoundError(
-        f"No XML files found in '{package_name}' package. Remember to run generate-baloo-xml."
-    )
+    #there is not xml file. So we need to generate it.
+    print("No XML model found.")

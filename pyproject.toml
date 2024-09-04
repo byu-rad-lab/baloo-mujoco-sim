@@ -10,18 +10,20 @@ readme = "README.md"
 dynamic = ["dependencies"]
 
 [build-system]
-requires = ["setuptools >= 61.0"]
+requires = [
+    "setuptools >= 61.0", 
+    "scikit-build>=0.13",
+    "cmake >= 3.10",
+    "ninja",
+]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools.packages]
-find = {}
-
-[tool.setuptools.package-data]
-"baloo_mujoco_sim" = ["assets/*", "assets/meshes/*.stl"]
+[tool.setuptools]
+packages = ["baloo_mujoco_sim", "baloo_mujoco_sim.utils", "baloo_mujoco_sim.controllers"]
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
 
 [project.scripts]
-generate-baloo-xml = "scripts.generate_baloo_xml:generate_xml"
+run-baloo-sim = "baloo_mujoco_sim.controllers.baloo_open_loop:main"
 

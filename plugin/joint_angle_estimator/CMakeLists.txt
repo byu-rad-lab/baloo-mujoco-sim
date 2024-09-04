@@ -48,4 +48,4 @@ target_include_directories(joint_angle_estimator PRIVATE ${MUJOCO_BLANK_INCLUDE}
 target_link_libraries(joint_angle_estimator PRIVATE ${LIB_MUJOCO})
 
 install(TARGETS joint_angle_estimator
-    LIBRARY DESTINATION ${MUJOCO_ROOT_DIR}/plugin)
+    LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/plugin/joint_angle_estimator)

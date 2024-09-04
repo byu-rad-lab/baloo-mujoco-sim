@@ -8,7 +8,6 @@ from baloo_mujoco_sim.utils.mjData_plotter import MjDataPlotter
 import baloo_mujoco_sim as baloo_mj
 
 from scipy.spatial.transform import Rotation as R
-from continuum_kinematics_py import ContinuumKinematics
 
 np.set_printoptions(precision=3, suppress=True)
 
@@ -205,7 +204,7 @@ with viewer.launch_passive(model, data) as viewer:
             start = time.time()
             tau, s, theta_hat, tau_ff, tau_pd, q_des, qdot_des, qddot_des = controller.solve_for_next_u(
                 q, qdot, q_des, qd_des, qdd_des)
-            
+
             solve_times.append(time.time() - start)
             print(f"Time to solve: {time.time() - start}")
 

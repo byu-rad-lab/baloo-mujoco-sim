@@ -49,4 +49,4 @@ target_include_directories(MotionProfileServo PRIVATE ${MUJOCO_ACTUATOR_INCLUDE}
 target_link_libraries(MotionProfileServo PRIVATE ${LIB_MUJOCO})
 
 install(TARGETS MotionProfileServo
-  LIBRARY DESTINATION ${MUJOCO_ROOT_DIR}/plugin)
+  LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/plugin/motion_profile_servo)
