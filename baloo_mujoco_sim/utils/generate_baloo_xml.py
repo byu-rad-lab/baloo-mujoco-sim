@@ -1367,7 +1367,9 @@ def generate_xml():
     #get version of package
     from pathlib import Path as path
 
-    project_root = path(__file__).resolve().parent.parent
+    project_root = path(__file__).resolve().parent.parent.parent
+
+    print(project_root)
 
     import toml
     toml_path = project_root / "pyproject.toml"
