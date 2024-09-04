@@ -1374,9 +1374,16 @@ def generate_xml():
     import toml
     toml_path = project_root / "pyproject.toml"
 
-    with open(toml_path) as f:
-        data = toml.load(f)
-    ver = data["project"]["version"]
+    try:
+        with open(toml_path) as f:
+            data = toml.load(f)
+        ver = data["project"]["version"]
+
+    except FileNotFoundError:
+        #means we are in the installed package, not the source code
+        import importlib.metadata
+        metadata = importlib.metadata.metadata("baloo_mujoco_sim")
+        ver = metadata['Version']
 
     torso = Baloo(f"baloo_v{ver}",
                   asset_dir=project_root / "baloo_mujoco_sim" / "assets")
@@ -1393,17 +1400,3 @@ def generate_xml():
 
 if __name__ == "__main__":
     generate_xml()
-#     np.set_printoptions(precision=3, suppress=True)
-
-#     from importlib.metadata import version
-#     ver = version(baloo_mujoco_sim.__name__)
-
-#     torso = Baloo(f"baloo_v{ver}")
-
-#     # to actually write xml file. There's a weird bug in the stl that you need to fix.
-#     with open(
-#             os.path.join(baloo_mujoco_sim.__path__[0],
-#                          f"assets/baloo_v{ver}.xml"), "w") as f:
-#         f.write(torso.to_clean_xml_string())
-
-#     f.close()

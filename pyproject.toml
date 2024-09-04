@@ -18,8 +18,15 @@ requires = [
 ]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools]
-packages = ["baloo_mujoco_sim", "baloo_mujoco_sim.utils", "baloo_mujoco_sim.controllers"]
+[tool.setuptools.packages.find]
+where = ["src"]
+exclude = ["tactile_sensors/*", "single_joint/*", "plugin/*/*"]
+
+#[tool.setuptools]
+#packages = ["baloo_mujoco_sim", "baloo_mujoco_sim.utils", "baloo_mujoco_sim.controllers", "baloo_mujoco_sim.assets"]
+
+[tool.setuptools.package-data]
+"baloo_mujoco_sim" = ["assets/params.yaml", "assets/meshes/*.stl"]
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
