@@ -20,9 +20,10 @@ The simulation includes a world plane and a fixed camera view. There is also a b
 There are a few steps to install and set up the simulation:
 
 1. Clone the repository
-2. pip install the package. This will automatically build and install the C++ plugins to the pip-installed mujoco location. On my system, this is in the ```plugin``` directory of the mujoco pip installation.
-3. Once installed, on the first import of the package, the mujoco model xml files will be generated in the pip-installed mujoco location, and then available for loading in a simulation.
-4. You can run a simulation loop with the command line with ```run-baloo-sim```. This command runs [```controllers/baloo_open_loop.py```](./src/baloo_mujoco_sim/controllers/baloo_open_loop.py).
+2. Install dependencies with ```pip install -r requirements.txt```
+3. pip install the package. This will automatically build and install the C++ plugins to the pip-installed mujoco location. On my system, this is in the ```plugin``` directory of the mujoco pip installation.
+4. Once installed, on the first import of the package, the mujoco model xml files will be generated in the pip-installed mujoco location, and then available for loading in a simulation.
+5. You can run a simulation loop with the command line with ```run-baloo-sim```. This command runs [```controllers/baloo_open_loop.py```](./src/baloo_mujoco_sim/controllers/baloo_open_loop.py).
 
 
 Here's an example of how to do this:
@@ -31,8 +32,8 @@ Here's an example of how to do this:
 git clone <repo-url>
 cd baloo_mujoco_sim
 
-# install package and build plugins
-pip install .
+# install dependencies, install package, and build plugins
+./install.sh
 
 # run simulation (which will import the package and generate the mujoco xml files)
 run-baloo-sim
