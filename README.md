@@ -22,7 +22,7 @@ There are a few steps to install and set up the simulation:
 1. Clone the repository
 2. pip install the package. This will automatically build and install the C++ plugins to the pip-installed mujoco location. On my system, this is in the ```plugin``` directory of the mujoco pip installation.
 3. Once installed, on the first import of the package, the mujoco model xml files will be generated in the pip-installed mujoco location, and then available for loading in a simulation.
-4. You can run a simulation loop with the command line with ```run-baloo-sim```. This command runs ```controllers/baloo_open_loop.py```
+4. You can run a simulation loop with the command line with ```run-baloo-sim```. This command runs [```controllers/baloo_open_loop.py```](./src/baloo_mujoco_sim/controllers/baloo_open_loop.py).
 
 
 Here's an example of how to do this:
@@ -56,7 +56,7 @@ This will build the plugins and install them in the mujoco directory. You can th
 The package exposes a few different things:
 
 1) An ```XML_PATH``` variable that points to the xml files to load a mujoco simulation.
-2) A ```baloo_mj_api`` utility module that has a few helper functions for interacting with the mujoco simulation.
+2) A ```baloo_mj_api``` utility module that has a few helper functions for interacting with the mujoco simulation.
 
 Example usage:
 
@@ -74,7 +74,7 @@ from baloo_mujoco_sim.utils.baloo_mj_api import set_joint_pressure_commands
  set_joint_pressure_commands(model, data, 'left', 0, [0,0,0,0])
  ```
 
-See ```utils/baloo_mj_api.py``` for more details on the functions that are available. In general, the functions are for setting joint commands, getting joint angles, and getting tactile sensor readings.
+See [```utils/baloo_mj_api.py```](./src/baloo_mujoco_sim/utils/baloo_mj_api.py) for more details on the functions that are available. In general, the functions are for setting joint commands, getting joint angles, and getting tactile sensor readings.
 
 ## Simulation Assumptions
 
