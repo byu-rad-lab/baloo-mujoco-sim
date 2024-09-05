@@ -83,9 +83,7 @@ class Baloo:
         # )
 
     def _loadPlugins(self):
-        print(
-            f"Remember to build all plugins with current version of mujoco (v {mujoco.__version__}) before running this script."
-        )
+        print(f"Using currently installed mujoco v{mujoco.__version__}...")
         plugin = self.mjcf_model.extension.add(
             "plugin",
             plugin="mujoco.sensor.joint_angle_estimator",
