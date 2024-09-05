@@ -38,7 +38,7 @@ pip install .
 run-baloo-sim
 ```
 
-## C++
+### C++
 If you have a C++ version of mujoco, you can build the plugins with CMake. The CMakeLists.txt file is in the ```plugin``` directory. You can build the plugins with the following commands:
 
 ``` bash
