@@ -55,11 +55,13 @@ if(SKBUILD)
   install(TARGETS MotionProfileServo
     LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX})
 
-  # then copy files over outside
-  message(STATUS "Copying ${CMAKE_BINARY_DIR}/motion_profile_servo/libMotionProfileServo.so to ${MUJOCO_PLUGIN_DIR}")
-  file(
-    COPY ${CMAKE_BINARY_DIR}/motion_profile_servo/libMotionProfileServo.so
-    DESTINATION ${MUJOCO_PLUGIN_DIR}
+  add_custom_command(
+    TARGET MotionProfileServo POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+    ${CMAKE_BINARY_DIR}/motion_profile_servo/libMotionProfileServo.so
+    ${MUJOCO_PLUGIN_DIR}
+    COMMAND ${CMAKE_COMMAND} -E echo "Copying libMotionProfileServo.so to ${MUJOCO_PLUGIN_DIR}"
+    COMMENT "Copying plugin to MuJoCo plugin directory"
   )
 else()
   message(STATUS "Building with CMake")

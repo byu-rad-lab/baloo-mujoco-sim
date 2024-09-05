@@ -54,11 +54,13 @@ if(SKBUILD)
     install(TARGETS joint_angle_estimator
         LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX})
 
-    # then copy files over outside
-    message(STATUS "Copying ${CMAKE_BINARY_DIR}/joint_angle_estimator/libjoint_angle_estimator.so to ${MUJOCO_PLUGIN_DIR}")
-    file(
-        COPY ${CMAKE_BINARY_DIR}/joint_angle_estimator/libjoint_angle_estimator.so
-        DESTINATION ${MUJOCO_PLUGIN_DIR}
+    add_custom_command(
+        TARGET joint_angle_estimator POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_BINARY_DIR}/joint_angle_estimator/libjoint_angle_estimator.so
+        ${MUJOCO_PLUGIN_DIR}
+        COMMAND ${CMAKE_COMMAND} -E echo "Copying libjoint_angle_estimator.so to ${MUJOCO_PLUGIN_DIR}"
+        COMMENT "Copying plugin to MuJoCo plugin directory"
     )
 else()
     message(STATUS "Building with CMake")
