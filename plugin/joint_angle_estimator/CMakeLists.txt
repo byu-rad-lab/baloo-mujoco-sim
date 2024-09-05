@@ -15,6 +15,7 @@ endif()
 set(MUJOCO_INCLUDE_DIR "${MUJOCO_ROOT_DIR}/include")
 set(MUJOCO_LIB_DIR "${MUJOCO_ROOT_DIR}")
 set(MUJOCO_BIN_DIR "${MUJOCO_ROOT_DIR}/bin")
+set(MUJOCO_PLUGIN_DIR "${MUJOCO_ROOT_DIR}/plugin")
 
 # find files that match these patterns and save to LIB_MUJOCO variable.
 message(STATUS "Looking for MuJoCo lib in " ${MUJOCO_LIB_DIR} " and " ${MUJOCO_BIN_DIR} "...")
@@ -47,5 +48,22 @@ target_sources(joint_angle_estimator PRIVATE ${MUJOCO_BLANK_SRCS})
 target_include_directories(joint_angle_estimator PRIVATE ${MUJOCO_BLANK_INCLUDE})
 target_link_libraries(joint_angle_estimator PRIVATE ${LIB_MUJOCO})
 
-install(TARGETS joint_angle_estimator
-    LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/plugin/joint_angle_estimator)
+# check if being built with SKBUILD or with CMake
+if(SKBUILD)
+    message(STATUS "Building with SKBUILD")
+    install(TARGETS joint_angle_estimator
+        LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX})
+
+    # then copy files over outside
+    message(STATUS "Copying ${CMAKE_BINARY_DIR}/joint_angle_estimator/libjoint_angle_estimator.so to ${MUJOCO_PLUGIN_DIR}")
+    file(
+        COPY ${CMAKE_BINARY_DIR}/joint_angle_estimator/libjoint_angle_estimator.so
+        DESTINATION ${MUJOCO_PLUGIN_DIR}
+    )
+else()
+    message(STATUS "Building with CMake")
+    install(TARGETS joint_angle_estimator
+        LIBRARY DESTINATION ${MUJOCO_PLUGIN_DIR})
+endif()
+
+# message(STATUS "CMAKE_INSTALL_PREFIX: " ${CMAKE_CURRENT_BINARY_DIR})

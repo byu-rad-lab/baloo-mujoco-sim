@@ -16,6 +16,7 @@ endif()
 set(MUJOCO_INCLUDE_DIR "${MUJOCO_ROOT_DIR}/include")
 set(MUJOCO_LIB_DIR "${MUJOCO_ROOT_DIR}")
 set(MUJOCO_BIN_DIR "${MUJOCO_ROOT_DIR}/bin")
+set(MUJOCO_PLUGIN_DIR "${MUJOCO_ROOT_DIR}/plugin")
 
 # find files that match these patterns and save to LIB_MUJOCO variable.
 message(STATUS "Looking for MuJoCo lib in " ${MUJOCO_LIB_DIR} " and " ${MUJOCO_BIN_DIR} "...")
@@ -48,5 +49,22 @@ target_sources(MotionProfileServo PRIVATE ${MUJOCO_ACTUATOR_SRCS})
 target_include_directories(MotionProfileServo PRIVATE ${MUJOCO_ACTUATOR_INCLUDE})
 target_link_libraries(MotionProfileServo PRIVATE ${LIB_MUJOCO})
 
-install(TARGETS MotionProfileServo
-  LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/plugin/motion_profile_servo)
+# check if being built with SKBUILD or with CMake
+if(SKBUILD)
+  message(STATUS "Building with SKBUILD")
+  install(TARGETS MotionProfileServo
+    LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX})
+
+  # then copy files over outside
+  message(STATUS "Copying ${CMAKE_BINARY_DIR}/motion_profile_servo/libMotionProfileServo.so to ${MUJOCO_PLUGIN_DIR}")
+  file(
+    COPY ${CMAKE_BINARY_DIR}/motion_profile_servo/libMotionProfileServo.so
+    DESTINATION ${MUJOCO_PLUGIN_DIR}
+  )
+else()
+  message(STATUS "Building with CMake")
+  install(
+    TARGETS MotionProfileServo LIBRARY
+    DESTINATION ${MUJOCO_PLUGIN_DIR}
+  )
+endif()
