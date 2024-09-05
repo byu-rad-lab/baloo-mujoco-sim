@@ -1,9 +1,9 @@
 # Baloo Simulation
 
-This repository contains the code for a simulation of a robot named Baloo. The simulation is written in Python and uses the `dm_control` and `mujoco` libraries.
+This repository contains the code for a simulation of a robot named Baloo. 
 
 <!-- add  scresnshot.png-->
-![Sim](screenshot.png)
+![Sim](./screenshot.png)
 
 ## Overview
 
@@ -13,14 +13,17 @@ The robot is composed of a number of disks, which can be specified when creating
 
 The simulation includes a world plane and a fixed camera view. There is also a box object in the simulation that the robot can interact with.
 
-## Installation and Setup
+## Getting Started
+
+### Python 
 
 There are a few steps to install and set up the simulation:
 
 1. Clone the repository
-2. Navigate to the plugin directory and build/install the joint_angle_estimator and motion_profile_servo plugins. There is a top-level CMakeLists.txt file that will build and install all the plugins needed.
-3. Install the simulation package locally using pip. This will set up everything to be nicely importable.
-4. Run the generate_baloo_xml.py script to generate the xml file for the robot.
+2. pip install the package. This will automatically build and install the C++ plugins to the pip-installed mujoco location. On my system, this is in the ```plugin``` directory of the mujoco pip installation.
+3. Once installed, on the first import of the package, the mujoco model xml files will be generated in the pip-installed mujoco location, and then available for loading in a simulation.
+4. You can run a simulation loop with the command line with ```run-baloo-sim```. This command runs ```controllers/baloo_open_loop.py```
+
 
 Here's an example of how to do this:
 
@@ -28,33 +31,52 @@ Here's an example of how to do this:
 git clone <repo-url>
 cd baloo_mujoco_sim
 
-#check installation path of mujoco
-pip3 show mujoco | grep Location
+# install package and build plugins
+pip install .
 
-# Build and install the plugins
+# run simulation (which will import the package and generate the mujoco xml files)
+run-baloo-sim
+```
+
+## C++
+If you have a C++ version of mujoco, you can build the plugins with CMake. The CMakeLists.txt file is in the ```plugin``` directory. You can build the plugins with the following commands:
+
+``` bash
 cd plugin
 mkdir build
 cd build
-cmake .. -DMUJOCO_ROOT_DIR=<filepath-from-pip-show-above>/mujoco
+cmake .. -DMUJOCO_ROOT_DIR=<path-to-mujoco> -DCMAKE_BUILD_TYPE=Release
 make install
-
-# Install the simulation package locally
-cd ../..
-pip install .
-
-# Generate the xml file for the robot using CLI
-generate-baloo-xml
-
-#run simulation
-cd ../examples
-python3 baloo_sim_loop.py
-
 ```
 
-## Usage
-Once everything is built and installed, you can run a simulation as shown in the examples directory. 
+This will build the plugins and install them in the mujoco directory. You can then run the simulation without the python interface. 
 
-## Assumptions
+## Python Package API
+
+The package exposes a few different things:
+
+1) An ```XML_PATH``` variable that points to the xml files to load a mujoco simulation.
+2) A ```baloo_mj_api`` utility module that has a few helper functions for interacting with the mujoco simulation.
+
+Example usage:
+
+``` python
+import mujoco
+import baloo_mujoco_sim as baloo_mj
+from baloo_mujoco_sim.utils.baloo_mj_api import set_joint_pressure_commands
+
+# Load the simulation
+ model = mujoco.MjModel.from_xml_path(baloo_mj.XML_PATH)
+ data = mujoco.MjData(model)
+
+
+ # later in simulation loop...
+ set_joint_pressure_commands(model, data, 'left', 0, [0,0,0,0])
+ ```
+
+See ```utils/baloo_mj_api.py``` for more details on the functions that are available. In general, the functions are for setting joint commands, getting joint angles, and getting tactile sensor readings.
+
+## Simulation Assumptions
 
 * The inertia of the links (since this is tough to measure accurately) is assumed to be a [solid cylinder](https://en.wikipedia.org/wiki/List_of_moments_of_inertia#:~:text=%5D-,Solid%20cylinder%20of%20radius%20r%2C%20height%20h%20and%20mass%20m,-%F0%9D%90%BC)
 * The mass of the joints is divided evenly (i.e. lumped evenly) between the disks that compose the joint. Each disk is assumed to be a solid cylinder as well. This also assumes that the distribution of mass is roughly uniform along the length of the joint.
