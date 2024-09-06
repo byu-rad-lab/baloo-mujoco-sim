@@ -3,6 +3,7 @@ import mujoco
 import numpy as np
 import mujoco.viewer
 import baloo_mujoco_sim as baloo_mj
+from baloo_mujoco_sim.utils.baloo_mj_api import get_tactile_image
 
 
 def main():
@@ -51,6 +52,9 @@ def main():
 
             # plotter.update(
             #     model, data)  # takes almost as long to plot as to simulate.
+
+            img = get_tactile_image(model, data, "right", 0)
+            print(f"Min: {np.min(img)}, Max: {np.max(img)}")
 
             # Rudimentary time keeping, will drift relative to wall clock.
             # print(time.time() - step_start)
