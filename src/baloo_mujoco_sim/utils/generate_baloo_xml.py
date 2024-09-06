@@ -117,7 +117,7 @@ class Baloo:
         # create world plane
         self.mjcf_model.worldbody.add(
             "geom",
-            condim=1,
+            condim=6,
             material="groundplane",
             name="world",
             size=[0, 0, 1],
@@ -492,6 +492,7 @@ class Baloo:
                         rgba=self.GRAY2,
                         contype=0,
                         conaffinity=2,  #to exclude contact with joint disks
+                        condim=4,  #to simulate soft contacts
                     )
                     link.add(
                         "site",
@@ -1068,6 +1069,7 @@ class Baloo:
                             size=[0.015 / 2],
                             pos=[x, y, z],
                             rgba=self.GRAY2,
+                            condim=4,  #to simulate soft contact
                         )
                         chest.add(
                             "site",
@@ -1164,7 +1166,7 @@ class Baloo:
             cone="elliptic",
         )
 
-        self.mjcf_model.option.flag.set_attributes(gravity="enable")
+        self.mjcf_model.option.flag.set_attributes(gravity="enable", )
 
     def _setSimSize(self):
         self.mjcf_model.size.set_attributes(njmax=5000,
@@ -1269,6 +1271,9 @@ class Baloo:
         medium_damping = self.medium_joint_lumped_damping * self.num_universal_joints
         small_stiffness = self.small_joint_lumped_stiffness * self.num_universal_joints
         small_damping = self.small_joint_lumped_damping * self.num_universal_joints
+        large_limit = self.large_joint_bend_limit / self.num_universal_joints
+        medium_limit = self.medium_joint_bend_limit / self.num_universal_joints
+        small_limit = self.small_joint_bend_limit / self.num_universal_joints
 
         # create default class for 8 bellows disks. Then I use this as childclass so that all elements in a given body default to these settings, unless overwritten.
         large_class = self.mjcf_model.default.add("default",
@@ -1284,8 +1289,8 @@ class Baloo:
             stiffness=large_stiffness,
             damping=large_damping,
             pos=[0, 0, -self.disk_height],
-            # limited="true",
-            # range=[-eight_limit, eight_limit], #todo: need limits? or just springs?
+            limited="true",
+            range=[-large_limit, large_limit],
         )
 
         # create default class for 8 bellows disks. Then I use this as childclass so that all elements in a given body default to these settings, unless overwritten.
@@ -1302,8 +1307,8 @@ class Baloo:
             stiffness=medium_stiffness,
             damping=medium_damping,
             pos=[0, 0, -self.disk_height],
-            # limited="true",
-            # range=[-four_limit, four_limit],
+            limited="true",
+            range=[-medium_limit, medium_limit],
         )
 
         small_class = self.mjcf_model.default.add("default",
@@ -1319,8 +1324,8 @@ class Baloo:
             stiffness=small_stiffness,
             damping=small_damping,
             pos=[0, 0, -self.disk_height],
-            # limited="true",
-            # range=[-four_limit, four_limit],
+            limited="true",
+            range=[-small_limit, small_limit],
         )
 
         bellows_site_class = self.mjcf_model.default.add("default",
