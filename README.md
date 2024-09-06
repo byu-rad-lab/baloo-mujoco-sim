@@ -83,6 +83,17 @@ See [```utils/baloo_mj_api.py```](./src/baloo_mujoco_sim/utils/baloo_mj_api.py) 
 * The joint_angle_estimator plugin assumes constant curvature of the joint. This is not true in the real world and is also not assumed in the simulation. The plugin is a simply estimates a constant curvature angle based on the first and last disks of the joint.
 * Mostly for RL training, I used custom contact filtering using the contype and conaffinity parameters in Mujoco. The parameters are set so that the only thing that can trigger a tactile sensor response is the manipuland, not the robot itself. This is not realistic, but it is useful for training RL agents to avoid learning to punch itself.
 
+## Future Work
+
+### Joint Limits
+Right now, the joint limits are implemented by setting the maximum bend angle in the .yaml file. This is then divided evenly between the universal joints. 
+
+A secondary effect is that there are contacts allowed between disks[^1], which also limits the range of motion depending on how thick the disks are. Right now, the length of the joints is divided evenly between the numbers of disks + gaps. 
+
+[^1]: Technically, its between every other disk, since by default, [MuJoCo disables contacts between geom pairs that have a parent-child body relationship](https://mujoco.readthedocs.io/en/stable/XMLreference.html#option-flag:~:text=down%20the%20solver.-,filterparent,-%3A%20%5Bdisable%2C%20enable). This can be disabled, but then the thickness of the disks needs to be adjusted to provide the correct joint limit. Alternatively, the contact between disks could be disabled completely using the ```contype``` and ```conaffinity``` parameters to rely solely on the joint limits specified in another way.
+
+We could instead specify the maximum length for each of the tendons, which might work better. Either way, it's unclear how the actual joint limit changes with respect to the number of disks used.
+
 
 
 
