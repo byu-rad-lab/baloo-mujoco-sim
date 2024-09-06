@@ -467,6 +467,12 @@ class Baloo:
 
     def add_tactile_sleeve(self, side, link, linknum, link_height, r):
         if self.useTactileSensors:
+            #add parent body to attach sensors to
+            sleeve = link.add(
+                "body",
+                name=f"{side}_link{linknum}_tactile_sleeve",
+            )
+
             # need to add site to attach sensor and geom to generate collision to the body
             # need function for cylinders of some radius, height, and spacing (since we know its a 16x64 taxel array)
             # todo: need to scale size of geoms based on geometry since taxels size is different.
@@ -478,9 +484,9 @@ class Baloo:
                 h = height
                 for j in range(16):
                     site_name = f"{side}_link{linknum}_{i}_{j}"
-                    link.add(
+                    sleeve.add(
                         "geom",
-                        name=site_name + "_geom",
+                        name=site_name + "_taxel",
                         type="sphere",
                         size=[0.01 / 2],
                         pos=[
@@ -494,7 +500,7 @@ class Baloo:
                         conaffinity=2,  #to exclude contact with joint disks
                         condim=4,  #to simulate soft contacts
                     )
-                    link.add(
+                    sleeve.add(
                         "site",
                         name=site_name,
                         type="sphere",
@@ -572,7 +578,7 @@ class Baloo:
         )
         first_disk.add(
             "geom",
-            name=f"{side}_j{joint_num}_G0",
+            name=f"{side}_j{joint_num}_disk0",
             dclass="large_joint",
         )
 
@@ -595,7 +601,7 @@ class Baloo:
             )
             body.add(
                 "geom",
-                name=f"{side}_j{joint_num}_G{i}",
+                name=f"{side}_j{joint_num}_disk{i}",
                 dclass="large_joint",
             )
             body.add("inertial",
@@ -691,7 +697,7 @@ class Baloo:
         )
         first_disk.add(
             "geom",
-            name=f"{side}_j{joint_num}_G0",
+            name=f"{side}_j{joint_num}_disk0",
             dclass='medium_joint',
         )
         first_disk.add("inertial",
@@ -711,7 +717,7 @@ class Baloo:
             )
             body.add(
                 "geom",
-                name=f"{side}_j{joint_num}_G{i}",
+                name=f"{side}_j{joint_num}_disk{i}",
                 dclass='medium_joint',
             )
             body.add("inertial",
@@ -791,7 +797,7 @@ class Baloo:
             euler=[0, 0, 45],
         )
         first_disk.add("geom",
-                       name=f"{side}_j{joint_num}_G0",
+                       name=f"{side}_j{joint_num}_disk0",
                        dclass='small_joint')
         first_disk.add("inertial",
                        mass=disk_mass,
@@ -814,7 +820,7 @@ class Baloo:
                 # childclass="small_joint",
             )
             body.add("geom",
-                     name=f"{side}_j{joint_num}_G{i}",
+                     name=f"{side}_j{joint_num}_disk{i}",
                      dclass='small_joint')
             body.add("inertial",
                      mass=disk_mass,
@@ -1055,6 +1061,12 @@ class Baloo:
 
         start = [x, y, z]
 
+        #add sensor body for chest
+        tactile_sensor = chest.add(
+            "body",
+            name="chest_tactile_sensor",
+        )
+
         if self.useTactileSensors:
             for i in range(32):  # cols
                 z = start[2]
@@ -1062,16 +1074,16 @@ class Baloo:
                     # logic to deal with slanted sides
                     if j <= (11 / 10) * i + 19 and j <= (-11 / 10) * i + 53:
                         site_name = f"chest_{i}_{j}"
-                        chest.add(
+                        tactile_sensor.add(
                             "geom",
-                            name=site_name + "_geom",
+                            name=site_name + "_taxel",
                             type="sphere",
                             size=[0.015 / 2],
                             pos=[x, y, z],
                             rgba=self.GRAY2,
                             condim=4,  #to simulate soft contact
                         )
-                        chest.add(
+                        tactile_sensor.add(
                             "site",
                             name=site_name,
                             type="sphere",
