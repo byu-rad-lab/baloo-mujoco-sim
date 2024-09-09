@@ -22,7 +22,6 @@ def disable_gravity(model):
 
 
 def set_mocap_pose(model, data, mocap_name, pos, quat):
-
     mocap = model.body(mocap_name).id
 
     data.mocap_pos[:3] = pos
@@ -125,7 +124,7 @@ def get_box_vel(model, data):
     return object_vel[:3]
 
 
-def get_box_quat(model, data):
+def get_box_quat(model, data, scalar_first=True):
     """
     Returns the orientation of the frame attached to the center of mass of the box in the global frame.
 
@@ -140,15 +139,19 @@ def get_box_quat(model, data):
     --------
     numpy.ndarray
         A 4D numpy array (unit quaternion) representing the orientation of the frame attached to the center of mass of the box relative to the global frame.
+        Note that the quaternion is in the order [w, x, y, z].
 
     Note:
     -----
-    This returns the quaternion as specified here https://shorturl.at/puIY3
+    This returns the quaternion as specified here https://mujoco.readthedocs.io/en/latest/programming/simulation.html#coordinate-frames-and-transformations:~:text=To%20represent%203D,quaternions%20in%20MJCF.
     """
     qpos_adr = model.joint(model.body("box").jntadr).qposadr.item()
     free_body_len = 7  # position + quaternion
     object_pose = data.qpos[qpos_adr:qpos_adr + free_body_len]
-    return object_pose[-4:]
+    if scalar_first:
+        return object_pose[-4:]  #[qw, qx, qy, qz]
+    else:
+        np.roll(object_pose[-4:], -1)  # now [qx, qy, qz, qw]
 
 
 def get_elevator_cmd(model, data):
