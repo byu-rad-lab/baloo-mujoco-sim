@@ -487,18 +487,13 @@ class Baloo:
                     sleeve.add(
                         "geom",
                         name=site_name + "_taxel",
-                        type="sphere",
-                        size=[0.01 / 2],
+                        dclass='taxel',
                         pos=[
                             r * np.cos(np.radians(theta)),
                             r * np.sin(np.radians(theta)),
                             h,
                         ],
                         euler=[0, 0, theta],
-                        rgba=self.GRAY2,
-                        contype=0,
-                        conaffinity=2,  #to exclude contact with joint disks
-                        condim=4,  #to simulate soft contacts
                     )
                     sleeve.add(
                         "site",
@@ -572,7 +567,6 @@ class Baloo:
         first_disk = parent_body.add(
             "body",
             name=f"{side}_j{joint_num}_B0",
-            # childclass="large_joint",
             pos=[0, 0, -(185e-3 + self.disk_half_height)],
             euler=[180, 0, -45],
         )
@@ -597,7 +591,6 @@ class Baloo:
                 "body",
                 name=f"{side}_j{joint_num}_B{i}",
                 pos=[0, 0, (2 * self.disk_height)],
-                # childclass="large_joint",
             )
             body.add(
                 "geom",
@@ -690,7 +683,6 @@ class Baloo:
         first_disk = body.add(
             "body",
             name=f"{side}_j{joint_num}_B0",
-            # childclass="medium_joint",
             pos=[0, 0, (self.link0_height / 2 + self.disk_half_height)
                  ],  # from pneubotics
             euler=[0, 0, 45],
@@ -792,7 +784,6 @@ class Baloo:
         first_disk = body.add(
             "body",
             name=f"{side}_j{joint_num}_B0",
-            # childclass="small_joint",
             pos=[0, 0, (.08 + self.disk_half_height)],
             euler=[0, 0, 45],
         )
@@ -817,7 +808,6 @@ class Baloo:
                 "body",
                 name=f"{side}_j{joint_num}_B{i}",
                 pos=[0, 0, (2 * self.disk_height)],
-                # childclass="small_joint",
             )
             body.add("geom",
                      name=f"{side}_j{joint_num}_disk{i}",
@@ -1076,12 +1066,9 @@ class Baloo:
                         site_name = f"chest_{i}_{j}"
                         tactile_sensor.add(
                             "geom",
+                            dclass='taxel',
                             name=site_name + "_taxel",
-                            type="sphere",
-                            size=[0.015 / 2],
                             pos=[x, y, z],
-                            rgba=self.GRAY2,
-                            condim=4,  #to simulate soft contact
                         )
                         tactile_sensor.add(
                             "site",
@@ -1354,6 +1341,16 @@ class Baloo:
         cylinder_class.cylinder.set_attributes(
             ctrllimited="true",
             ctrlrange=[0, self.pmax / 1000],  #kpa
+        )
+
+        taxel_class = self.mjcf_model.default.add("default", dclass="taxel")
+        taxel_class.geom.set_attributes(
+            type="sphere",
+            size=[0.01 / 2],
+            rgba=self.GRAY2,
+            contype=0,
+            conaffinity=2,  #to exclude contact with joint disks
+            condim=4,  #to simulate soft contacts
         )
 
     def to_clean_xml_string(self, asset_dir=str):
