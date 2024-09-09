@@ -151,7 +151,7 @@ def get_box_quat(model, data, scalar_first=True):
     if scalar_first:
         return object_pose[-4:]  #[qw, qx, qy, qz]
     else:
-        np.roll(object_pose[-4:], -1)  # now [qx, qy, qz, qw]
+        return np.roll(object_pose[-4:], -1)  # now [qx, qy, qz, qw]
 
 
 def get_elevator_cmd(model, data):
