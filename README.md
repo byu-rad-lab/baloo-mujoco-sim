@@ -24,6 +24,7 @@ There are a few steps to install and set up the simulation:
 3. Once installed, on the first import of the package, the mujoco model xml files will be generated in the pip-installed mujoco location, and then available for loading in a simulation.
 4. You can run a simulation loop with the command line with ```run-baloo-sim```. This command runs [```controllers/baloo_open_loop.py```](./src/baloo_mujoco_sim/controllers/baloo_open_loop.py).
 
+**NOTE: It is highly recommended to use a virtual environment for this installation.**
 
 Here's an example of how to do this:
 
@@ -31,12 +32,18 @@ Here's an example of how to do this:
 git clone <repo-url>
 cd baloo_mujoco_sim
 
+# create a virtual environment
+python3 -m venv venv
+source venv/bin/activate
+
 # install dependencies, install package, and build plugins
 ./install.sh
 
 # run simulation (which will import the package and generate the mujoco xml files)
 run-baloo-sim
 ```
+
+**NOTE: This installation has only been tested with Ubuntu 20.04 and Python 3.8.** 
 
 ### C++
 If you have a C++ version of mujoco, you can build the plugins with CMake. The CMakeLists.txt file is in the ```plugin``` directory. You can build the plugins with the following commands:
@@ -94,6 +101,12 @@ A secondary effect is that there are contacts allowed between disks[^1], which a
 
 We could instead specify the maximum length for each of the tendons, which might work better. Either way, it's unclear how the actual joint limit changes with respect to the number of disks used.
 
+
+### Expanding OS Compatibility
+
+The installation script has only been tested on Ubuntu 20.04. It would be good to test on newer version of Ubuntu to ensure compatibility. 
+
+It would also be good to add support for other operating systems, such as MacOS and Windows, though that might take more work.
 
 
 
