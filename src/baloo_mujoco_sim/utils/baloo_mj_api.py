@@ -2,6 +2,7 @@ import numpy as np
 from dataclasses import dataclass
 import mujoco
 from typing import Literal
+from numpy.typing import ArrayLike
 
 
 @dataclass
@@ -308,3 +309,37 @@ def set_joint_velocities(model, data, side, jointnum, jvel):
             f"{side}_j{jointnum}_Jy_{i}").dofadr] = y_disk_vel
 
     mujoco.mj_forward(model, data)
+
+
+def get_chest_position(model: mujoco.MjModel,
+                       data: mujoco.MjData) -> ArrayLike[np.float64]:
+    """
+    This function returns the position of the chest in the world frame:
+    [x,y,z] meters. 
+
+    Returns:
+        ArrayLike[float, float, float]: Position of the chest in the world frame [x,y,z] meters.
+    """
+    return data.geom("chest").xpos
+
+
+def get_chest_velocity(model, data):
+    raise NotImplementedError
+
+
+def get_link_position(model, data, side: Literal['left', 'right'],
+                      linknum: Literal[0, 1]) -> ArrayLike[np.float64]:
+    """
+    This function returns the position of the specified link in the world frame:
+    [x,y,z] meters.
+
+    Args:
+        model (_type_): _description_
+        data (_type_): _description_
+        side (Literal[left, right]): left or right arm
+        linknum (Literal[0, 1]): Link 0 or 1. 
+
+    Returns:
+        ArrayLike[float, float, float]: [x,y,z] meters in world frame.
+    """
+    return data.geom(f"{side}_link{linknum}").xpos

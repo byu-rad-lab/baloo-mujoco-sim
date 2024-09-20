@@ -108,5 +108,8 @@ The installation script has only been tested on Ubuntu 20.04. It would be good t
 
 It would also be good to add support for other operating systems, such as MacOS and Windows, though that might take more work.
 
+### Update to Mujoco > 3.2
+From Mujoco 3.2 onwards, they offer an new MjSpec API to generate MJCF which is 100x faster than dm_control, which is currently used. This also allows for more dynamic editing of the model at runtime.
+
 
 
