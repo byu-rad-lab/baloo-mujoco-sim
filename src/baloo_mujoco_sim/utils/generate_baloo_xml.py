@@ -57,23 +57,23 @@ class Baloo:
 
         print(f"{name} model building completed.")
 
-        # # add mocap bodies to end effector disks, can't really do externally...
-        # left_ee_mocap = self.mjcf_model.worldbody.add(
-        #     "body",
-        #     name="left_ee_mocap",
-        #     mocap="true",
-        #     pos=[0, 0, 0],
-        # )
+        # add mocap bodies to end effector disks, can't really do externally...
+        object_force_field = self.mjcf_model.worldbody.add(
+            "body",
+            name="object_force_field",
+            mocap="true",
+            pos=[0, 0.5, 0.375],
+        )
 
-        # left_ee_mocap.add(
-        #     "geom",
-        #     name="left_ee_mocap",
-        #     type="box",
-        #     size=[0.05] * 3,
-        #     rgba=[1, 0, 0, 1],
-        #     contype=0,
-        #     conaffinity=0,
-        # )
+        object_force_field.add(
+            "geom",
+            name="object_force_field",
+            type="sphere",
+            size=[0.5] * 3,
+            rgba=[1, 0, 0, .3],
+            contype=0,  #no contacts
+            conaffinity=0,
+        )
 
         # self.mjcf_model.worldbody.add(
         #     "body",
