@@ -22,11 +22,34 @@ def disable_gravity(model):
     model.opt.disableflags = mujoco.mjtDisableBit.mjDSBL_GRAVITY.value
 
 
-def set_mocap_pose(model, data, mocap_name, pos, quat):
+def set_mocap_pose(model, data, mocap_name, pos=None, quat=None):
     mocap = model.body(mocap_name).id
 
-    data.mocap_pos[:3] = pos
-    data.mocap_quat[:4] = quat
+    if pos is not None:
+        data.mocap_pos[:3] = pos
+
+    if quat is not None:
+        data.mocap_quat[:4] = quat
+
+
+def set_mocap_size(model, data, mocap_name, size):
+    # number of size varies depending on type. check type of geom and assert size is correct
+
+    mocap_geom_type = model.geom(mocap_name).type
+    if mocap_geom_type == mujoco.mjtGeom.mjGEOM_SPHERE.value:
+        assert len(size) == 1, "Sphere size must be length 1"
+    elif mocap_geom_type == mujoco.mjtGeom.mjGEOM_CAPSULE.value:
+        assert len(size) == 1 or len(
+            size) == 2, "Capsule size must be length 1 or 2"
+    elif mocap_geom_type == mujoco.mjtGeom.mjGEOM_ELLIPSOID.value:
+        assert len(size) == 3, "Ellipsoid size must be length 3"
+    elif mocap_geom_type == mujoco.mjtGeom.mjGEOM_CYLINDER.value:
+        assert len(size) == 1 or len(
+            size) == 2, "Cylinder size must be length 1 or 2"
+    elif mocap_geom_type == mujoco.mjtGeom.mjGEOM_BOX.value:
+        assert len(size) == 3, "Box size must be length 3"
+
+    model.geom(mocap_name).size = size
 
 
 def get_contact_forces_on_body(model, data, body_name):
