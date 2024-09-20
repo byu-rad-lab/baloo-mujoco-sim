@@ -312,7 +312,7 @@ def set_joint_velocities(model, data, side, jointnum, jvel):
 
 
 def get_chest_position(model: mujoco.MjModel,
-                       data: mujoco.MjData) -> ArrayLike[np.float64]:
+                       data: mujoco.MjData) -> ArrayLike:
     """
     This function returns the position of the chest in the world frame:
     [x,y,z] meters. 
@@ -328,7 +328,7 @@ def get_chest_velocity(model, data):
 
 
 def get_link_position(model, data, side: Literal['left', 'right'],
-                      linknum: Literal[0, 1]) -> ArrayLike[np.float64]:
+                      linknum: Literal[0, 1]) -> ArrayLike:
     """
     This function returns the position of the specified link in the world frame:
     [x,y,z] meters.
