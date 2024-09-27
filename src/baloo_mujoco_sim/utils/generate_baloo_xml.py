@@ -293,6 +293,23 @@ class Baloo:
             mass=mass,
         )
 
+        desired_pose = self.mjcf_model.worldbody.add(
+            "body",
+            name="desired_pose",
+            mocap="true",
+            pos=[0, 0.5, height / 2 + 1],
+        )
+
+        desired_pose.add(
+            "geom",
+            name="desired_pose",
+            type="box",
+            size=[width / 2, depth / 2, height / 2],
+            rgba=[1, 0, 0, .3],
+            contype=0,  #no contacts
+            conaffinity=0,
+        )
+
         box.add("freejoint")
 
     def _setCustomData(self):

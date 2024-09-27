@@ -23,13 +23,13 @@ def disable_gravity(model):
 
 
 def set_mocap_pose(model, data, mocap_name, pos=None, quat=None):
-    mocap = model.body(mocap_name).id
+    mocapid = model.body(mocap_name).mocapid
 
     if pos is not None:
-        data.mocap_pos[:3] = pos
+        data.mocap_pos[mocapid, :] = pos
 
     if quat is not None:
-        data.mocap_quat[:4] = quat
+        data.mocap_quat[mocapid, :] = quat
 
 
 def set_mocap_size(model, data, mocap_name, size):
