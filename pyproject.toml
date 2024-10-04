@@ -3,34 +3,25 @@ name = "baloo_mujoco_sim"
 version = "1.0.1"
 requires-python = ">=3.8"
 authors = [
-    {name="Curtis C. Johnson", email="curtiscarljohnson@gmail.com"}
+    { name = "Curtis C. Johnson", email = "curtiscarljohnson@gmail.com" },
 ]
-description= "A MuJoCo simulation of the Baloo robot"
+description = "A MuJoCo simulation of the Baloo robot"
 readme = "README.md"
 dynamic = ["dependencies"]
 
 [build-system]
-requires = [
-    "setuptools >= 61.0", 
-    "scikit-build>=0.13",
-    "cmake >= 3.10",
-    "ninja",
-]
+requires = ["setuptools >= 61.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["src"]
 exclude = ["tactile_sensors/*", "single_joint/*", "plugin/*/*"]
 
-#[tool.setuptools]
-#packages = ["baloo_mujoco_sim", "baloo_mujoco_sim.utils", "baloo_mujoco_sim.controllers", "baloo_mujoco_sim.assets"]
-
 [tool.setuptools.package-data]
 "baloo_mujoco_sim" = ["assets/params.yaml", "assets/meshes/*.stl"]
 
 [tool.setuptools.dynamic]
-dependencies = {file = ["requirements.txt"]}
+dependencies = { file = ["requirements.txt"] }
 
 [project.scripts]
 run-baloo-sim = "baloo_mujoco_sim.controllers.baloo_open_loop:main"
-
