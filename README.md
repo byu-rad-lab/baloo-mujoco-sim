@@ -46,7 +46,7 @@ run-baloo-sim
 **NOTE: This installation has only been tested with Ubuntu 20.04 and Python 3.8.** 
 
 ### C++
-If you have a C++ version of mujoco, you can build the plugins with CMake. The CMakeLists.txt file is in the ```plugin``` directory. You can build the plugins with the following commands:
+If you have a C++ version of mujoco with precompiled binaries downloaded from [here](https://github.com/google-deepmind/mujoco/releases), you can build the plugins with CMake. The CMakeLists.txt file is in the ```plugin``` directory. You can build the plugins with the following commands:
 
 ``` bash
 cd plugin
@@ -55,6 +55,8 @@ cd build
 cmake .. -DMUJOCO_ROOT_DIR=<path-to-mujoco> -DCMAKE_BUILD_TYPE=Release
 make install
 ```
+
+**NOTE: The precompiled version of mujoco must match the version of mujoco required by python.** 
 
 This will build the plugins and install them in the mujoco directory. You can then run the simulation without the python interface. 
 

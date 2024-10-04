@@ -51,3 +51,12 @@ target_link_libraries(joint_angle_estimator PRIVATE ${LIB_MUJOCO})
 
 install(TARGETS joint_angle_estimator
     LIBRARY DESTINATION ${MUJOCO_PLUGIN_DIR})
+
+# optional argument to also install plugins to a precompiled MuJoCo directory
+if(DEFINED PRECOMPILED_MUJOCO_DIR)
+    message(STATUS "Also installing to precompiled MuJoCo directory: " ${PRECOMPILED_MUJOCO_DIR})
+    install(
+        TARGETS joint_angle_estimator LIBRARY
+        DESTINATION ${PRECOMPILED_MUJOCO_DIR}/bin/mujoco_plugin
+    )
+endif()

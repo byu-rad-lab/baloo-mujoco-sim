@@ -138,7 +138,8 @@ class Baloo:
             pos=[-1.357, 2.722, 2.447],
             xyaxes=[-0.882, -0.472, 0.000, 0.238, -0.446, 0.863],
         )
-        self._loadPlugins()
+        if self.enable_plugins:
+            self._loadPlugins()
 
     def _loadParams(self, asset_dir):
         with open(os.path.join(asset_dir, "params.yaml"), "r") as file:
@@ -214,6 +215,8 @@ class Baloo:
         assert self.manipuland in ['box', 'None'
                                    ], "manipuland must be 'box' or 'None'"
         self.useTactileSensors = params["general"]["tactile_sensors"]
+
+        self.enable_plugins = params["general"]["enable_plugins"]
 
     def _setContactDetection(self):
         self.mjcf_model.contact.add(
@@ -437,10 +440,11 @@ class Baloo:
                 refname=f"{side}_j{joint_num}_B0",
             )
 
-            self.mjcf_model.sensor.add(
-                "plugin",
-                plugin="mujoco.sensor.joint_angle_estimator",
-                name=f'{side}_j{joint_num}')
+            if self.enable_plugins:
+                self.mjcf_model.sensor.add(
+                    "plugin",
+                    plugin="mujoco.sensor.joint_angle_estimator",
+                    name=f'{side}_j{joint_num}')
 
             #add tendon length sensors to all joints to see what they are at
             for i in range(4):
@@ -1008,48 +1012,51 @@ class Baloo:
             pos=[0, 0, 0],
         )
 
-        chest.add(
-            "joint",
-            name="linear_actuator",
-            type="slide",
-            axis=[0, 0, 1],
-            limited=True,
-            range=[-1.2, 0],
-            damping=500,
-        )
 
-        elevator_plugin = self.mjcf_model.actuator.add(
-            'plugin',
-            name='elevator',
-            plugin="mujoco.actuator.motion_profile_servo",
-            ctrllimited=True,
-            ctrlrange=[-1000, 0],
-            joint="linear_actuator",
-        )
+        if self.enable_plugins:
+            chest.add(
+                "joint",
+                name="linear_actuator",
+                type="slide",
+                axis=[0, 0, 1],
+                limited=True,
+                range=[-1.2, 0],
+                damping=500,
+            )
 
-        elevator_plugin.add(
-            "config",
-            key="kp",
-            value="0.3",  #m/s per meter
-        )
+        if self.enable_plugins:
+            elevator_plugin = self.mjcf_model.actuator.add(
+                'plugin',
+                name='elevator',
+                plugin="mujoco.actuator.motion_profile_servo",
+                ctrllimited=True,
+                ctrlrange=[-1000, 0],
+                joint="linear_actuator",
+            )
 
-        elevator_plugin.add(
-            "config",
-            key="kv",
-            value="1000",
-        )
+            elevator_plugin.add(
+                "config",
+                key="kp",
+                value="0.3",  #m/s per meter
+            )
 
-        elevator_plugin.add(
-            "config",
-            key="zeta",
-            value="1",
-        )
+            elevator_plugin.add(
+                "config",
+                key="kv",
+                value="1000",
+            )
 
-        elevator_plugin.add(
-            "config",
-            key="omega_n",
-            value="0.3",
-        )
+            elevator_plugin.add(
+                "config",
+                key="zeta",
+                value="1",
+            )
+
+            elevator_plugin.add(
+                "config",
+                key="omega_n",
+                value="0.3",
+            )
 
         # add tactile sensors to front of chest 30 rows, 16 columns for one side (32 columns for both)
         y = 0.26 / 2  # front surface of chest
