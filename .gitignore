@@ -56,3 +56,5 @@ build/
 *.egg-info/
 
 _skbuild/
+
+precompiled/
