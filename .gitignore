@@ -58,3 +58,5 @@ build/
 _skbuild/
 
 precompiled/
+
+*.png

@@ -106,12 +106,12 @@ class Baloo:
         self.X = [1, 0, 0]
         self.Y = [0, 1, 0]
 
+        self._loadParams(asset_dir)
         self._setCompiler()
-        self._setOptions()
         self._setSimSize()
         self._setVisual()
         self._addAssets(asset_dir)
-        self._loadParams(asset_dir)
+        self._setOptions()
         self._setCustomData()
         self._setDefaults()
         # create world plane
@@ -217,6 +217,7 @@ class Baloo:
         self.useTactileSensors = params["general"]["tactile_sensors"]
 
         self.enable_plugins = params["general"]["enable_plugins"]
+        self.timestep = params["general"]["timestep"]
 
     def _setContactDetection(self):
         self.mjcf_model.contact.add(
@@ -1012,7 +1013,6 @@ class Baloo:
             pos=[0, 0, 0],
         )
 
-
         if self.enable_plugins:
             chest.add(
                 "joint",
@@ -1182,7 +1182,7 @@ class Baloo:
 
     def _setOptions(self):
         self.mjcf_model.option.set_attributes(
-            timestep=0.005,
+            timestep=self.timestep,
             integrator='implicitfast',  #recommended by mujoco docs as best
             solver="Newton",
             jacobian="sparse",
