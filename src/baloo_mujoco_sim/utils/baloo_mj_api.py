@@ -19,6 +19,7 @@ class Jangles:
 
 
 def disable_gravity(model):
+    #todo: change to set_gravity(model, "off" or "on")
     model.opt.disableflags = mujoco.mjtDisableBit.mjDSBL_GRAVITY.value
 
 
@@ -366,3 +367,69 @@ def get_link_position(model, data, side: Literal['left', 'right'],
         ArrayLike[float, float, float]: [x,y,z] meters in world frame.
     """
     return data.geom(f"{side}_link{linknum}").xpos
+
+
+def get_disk_position(model, data, side: Literal['left', 'right'],
+                      joint_num: Literal[0, 1, 2], disk_num: int):
+    """
+    This function returns the position and orientation of the specified disk in the world frame:
+
+    Args:
+        model (MjModel): mujoco model
+        data (MjData): mujoco data
+        side (Literal[left, right]): left or right arm
+        joint_num (Literal[0, 1, 2]): Joint number [0, 1, 2]
+        disknum (int): Disk number [0, num_disks). Specify -1 to get the last (meaning most distal) disk.
+
+    Returns:
+        Tuple[ArrayLike[float, float, float], ArrayLike[float, float, float, float]]: Position and orientation of the disk in the world frame.
+    """
+
+    num_disks_in_model = int(model.numeric("num_disks").data.item())
+    if disk_num == -1:
+        disk_num = num_disks_in_model - 1
+    try:
+        return data.geom(f"{side}_j{joint_num}_disk{disk_num}").xpos
+    except KeyError as e:
+        error = f"Disk {disk_num} not found for {side} arm, joint {joint_num}. There are {num_disks_in_model} disks in the model and joint_num must be 0, 1, or 2."
+        raise KeyError(error) from None
+
+
+def get_disk_quat(model: mujoco.MjModel,
+                  data: mujoco.MjData,
+                  side: Literal['left', 'right'],
+                  joint_num: Literal[0, 1, 2],
+                  disk_num: int,
+                  scalar_first=True) -> ArrayLike:
+    """This function returns the orientation of the specified disk in the world frame.
+
+    Args:
+        model (MjModel): mujoco model
+        data (MjData): mujoco data
+        side (Literal[left, right]): left or right arm
+        joint_num (Literal[0, 1, 2]): Joint number [0, 1, 2]
+        disk_num (int): Disk number [0, num_disks). Specify -1 to get the last (meaning most distal) disk.
+        scalar_first (bool, optional): If True, returns the quaternion in scalar-first format [qw, qx, qy, qz]. If False, returns the quaternion in vector-first format [qx, qy, qz, qw]. Defaults to True.
+
+    Raises:
+        KeyError: If the disk is not found for the specified side, joint_num, or disk_num.
+
+    Returns:
+        ArrayLike: Orientation of the disk in the world frame.
+    """
+
+    num_disks_in_model = int(model.numeric("num_disks").data.item())
+    if disk_num == -1:
+        disk_num = num_disks_in_model - 1
+    try:
+        xmat = data.geom(f"{side}_j{joint_num}_disk{disk_num}").xmat
+        xquat = np.zeros(4)
+        mujoco.mju_mat2Quat(xquat, xmat)
+
+        if scalar_first:
+            return xquat
+        else:
+            return np.roll(xquat, -1)
+    except KeyError as e:
+        error = f"Disk {disk_num} not found for {side} arm, joint {joint_num}. There are {num_disks_in_model} disks in the model and joint_num must be 0, 1, or 2."
+        raise KeyError(error) from None

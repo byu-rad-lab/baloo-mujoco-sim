@@ -219,6 +219,8 @@ class Baloo:
         self.enable_plugins = params["general"]["enable_plugins"]
         self.timestep = params["general"]["timestep"]
 
+        self.manipuland_mass = params["general"]["manipuland_mass"]
+
     def _setContactDetection(self):
         self.mjcf_model.contact.add(
             "exclude",
@@ -264,7 +266,7 @@ class Baloo:
 
     def _createManipuland(self):
         # pos = (-.5, .5)m, box of .5 m side,
-        mass = 5
+        mass = self.manipuland_mass
         width = 0.5 / 2
         depth = 0.5 / 2
         height = 1.5 / 2
