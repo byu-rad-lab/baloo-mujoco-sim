@@ -1,5 +1,4 @@
 #!/bin/bash
-pip3 install -e . #to symlink, should also install mujoco as dependency
 
 # build plugins and install to mujoco python installation directory
 message="Building and installing plugins to mujoco python installation directory"
@@ -9,8 +8,6 @@ PYTHON_INSTALL_LOCATION=$(pip3 show mujoco | grep Location: | cut -d ' ' -f 2)
 MUJOCO_ROOT_DIR="${PYTHON_INSTALL_LOCATION}/mujoco"
 
 echo ${MUJOCO_ROOT_DIR}
-
-
 
 # optionally download c++ version of mujoco 
 MUJOCO_VERSION=$(python3 -c "import importlib.metadata; print(importlib.metadata.version('mujoco'))")

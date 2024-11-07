@@ -128,6 +128,7 @@ def get_box_position(model, data):
 
 
 def get_box_vel(model, data):
+    #todo: see mj_objectVelocity
     """
     Returns the linear velocity of the box in the world frame.
 
@@ -433,3 +434,16 @@ def get_disk_quat(model: mujoco.MjModel,
     except KeyError as e:
         error = f"Disk {disk_num} not found for {side} arm, joint {joint_num}. There are {num_disks_in_model} disks in the model and joint_num must be 0, 1, or 2."
         raise KeyError(error) from None
+
+
+def apply_wrench_to_body(model, data, body_name, force, torque):
+    #point_on_body needs to be in world frame
+    body_com = data.body(body_name).xipos
+
+    #apply cartesian force and torque to body CoM, and transform to generalized forces qfrc_applied
+    mujoco.mj_applyFT(model, data, force, torque, body_com,
+                      model.body(body_name).id, data.qfrc_applied)
+
+
+def clear_wrenches(model, data):
+    data.qfrc_applied[:] = 0

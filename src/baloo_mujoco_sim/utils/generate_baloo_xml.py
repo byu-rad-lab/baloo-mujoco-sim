@@ -57,31 +57,6 @@ class Baloo:
 
         print(f"{name} model building completed.")
 
-        # add mocap bodies to end effector disks, can't really do externally...
-        object_force_field = self.mjcf_model.worldbody.add(
-            "body",
-            name="object_force_field",
-            mocap="true",
-            pos=[0, 0.5, 0.375],
-        )
-
-        object_force_field.add(
-            "geom",
-            name="object_force_field",
-            type="sphere",
-            size=[0.5] * 3,
-            rgba=[1, 0, 0, .3],
-            contype=0,  #no contacts
-            conaffinity=0,
-        )
-
-        # self.mjcf_model.worldbody.add(
-        #     "body",
-        #     name="left_ee_mocap",
-        #     mocap="true",
-        #     pos=[0, 0, 0],
-        # )
-
     def _loadPlugins(self):
         print(f"Using currently installed mujoco v{mujoco.__version__}...")
         plugin = self.mjcf_model.extension.add(
@@ -297,23 +272,6 @@ class Baloo:
                 mass * (width**2 + height**2) / 12,
             ],
             mass=mass,
-        )
-
-        desired_pose = self.mjcf_model.worldbody.add(
-            "body",
-            name="desired_pose",
-            mocap="true",
-            pos=[0, 0.5, height / 2 + 1],
-        )
-
-        desired_pose.add(
-            "geom",
-            name="desired_pose",
-            type="box",
-            size=[width / 2, depth / 2, height / 2],
-            rgba=[1, 0, 0, .3],
-            contype=0,  #no contacts
-            conaffinity=0,
         )
 
         box.add("freejoint")

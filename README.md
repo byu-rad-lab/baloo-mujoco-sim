@@ -37,6 +37,7 @@ python3 -m venv venv
 source venv/bin/activate
 
 # install dependencies, install package, and build plugins
+poetry install
 ./install.sh
 
 # run simulation (which will import the package and generate the mujoco xml files)

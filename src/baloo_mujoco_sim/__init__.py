@@ -1,3 +1,5 @@
+#TODO: would be nice to run this as part of the install process...
+
 import subprocess
 from pathlib import Path as path
 

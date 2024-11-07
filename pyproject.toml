@@ -1,27 +1,25 @@
-[project]
-name = "baloo_mujoco_sim"
-version = "1.0.1"
-requires-python = ">=3.8"
-authors = [
-    { name = "Curtis C. Johnson", email = "curtiscarljohnson@gmail.com" },
-]
-description = "A MuJoCo simulation of the Baloo robot"
+[tool.poetry]
+name = "baloo-mujoco-sim"
+version = "0.1.0"
+description = "A MuJoCo simulation for Baloo"
+authors = ["Curtis <curtiscarljohnson@gmail.com>"]
 readme = "README.md"
-dynamic = ["dependencies"]
+
+[tool.poetry.dependencies]
+python = "^3.8, <3.12"
+mujoco = "3.1.4"
+numpy = "1.24.3"
+scipy = "1.10.1"
+dm-control = "1.0.18"
+regex = "^2024.9.11"
+toml = "^0.10.2"
+PyYAML = "^6.0.2"
+matplotlib = "3.7.5"
+
+[tool.poetry.scripts]
+run-baloo-sim = "baloo_mujoco_sim.controllers.baloo_open_loop:main"
+build-baloo-plugins = "build_cpp:main"
 
 [build-system]
-requires = ["setuptools >= 61.0"]
-build-backend = "setuptools.build_meta"
-
-[tool.setuptools.packages.find]
-where = ["src"]
-exclude = ["tactile_sensors/*", "single_joint/*", "plugin/*/*"]
-
-[tool.setuptools.package-data]
-"baloo_mujoco_sim" = ["assets/params.yaml", "assets/meshes/*.stl"]
-
-[tool.setuptools.dynamic]
-dependencies = { file = ["requirements.txt"] }
-
-[project.scripts]
-run-baloo-sim = "baloo_mujoco_sim.controllers.baloo_open_loop:main"
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
