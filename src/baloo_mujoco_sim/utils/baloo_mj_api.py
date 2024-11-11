@@ -447,3 +447,45 @@ def apply_wrench_to_body(model, data, body_name, force, torque):
 
 def clear_wrenches(model, data):
     data.qfrc_applied[:] = 0
+
+
+def add_visual_geom(user_scn, geom_type, size, pos, mat, rgba):
+    """
+    Adds a visual geom to the user scene. 
+
+    Args:
+        user_scn (mujoco.mjvScene): User scene object
+        geom_type (mujoco.mjtGeom): Type of geom to add
+        size (ArrayLike): Size of the geom
+        pos (ArrayLike): Position of the geom
+        mat (ArrayLike): Rotation matrix of the geom
+        rgba (ArrayLike): Color of the geom
+
+    Returns:
+        mujoco.mjvGeom: The geom object that was added to the user scene.
+    """
+    custom_geom = user_scn.geoms[user_scn.ngeom]
+    mujoco.mjv_initGeom(
+        custom_geom,
+        type=geom_type,
+        size=size,
+        pos=pos,
+        mat=mat,
+        rgba=rgba,
+    )
+    user_scn.ngeom += 1
+    return custom_geom
+
+
+def set_box_position(model, data, pos):
+    """
+    Sets the position of the box in the world frame.
+
+    Args:
+        model (mujoco.MjModel): MuJoCo model object.
+        data (mujoco.MjData): MuJoCo data object.
+        pos (ArrayLike): Position of the box in the world frame.
+    """
+
+    qpos_adr = model.joint(model.body("box").jntadr).qposadr.item()
+    data.qpos[qpos_adr:qpos_adr + 3] = pos
