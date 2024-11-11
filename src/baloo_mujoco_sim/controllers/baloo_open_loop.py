@@ -8,7 +8,8 @@ from baloo_mujoco_sim.utils.baloo_mj_api import (
     set_mocap_pose, 
     set_mocap_size, 
     get_disk_position, 
-    apply_wrench_to_body
+    apply_wrench_to_body,
+    clear_wrenches,
 )
 
 
@@ -95,8 +96,10 @@ def main():
 
 
             #to render, I need to add a perturbation object. 
-            apply_wrench_to_body(model, data, 'left_link0', np.array([0, 0, 0]), np.array([0, 0, 0]))
+            apply_wrench_to_body(model, data, 'box', np.array([.1, 0, 0]), np.array([0, 0, 0]))
 
+            if data.time > 2:
+                clear_wrenches(model, data)
             # Rudimentary time keeping, will drift relative to wall clock.
             # print(time.time() - step_start)
             time_until_next_step = model.opt.timestep - (time.time() -
