@@ -54,6 +54,7 @@ def set_mocap_size(model, data, mocap_name, size):
 
 
 def get_contact_forces_on_body(model, data, body_name):
+    #TODO: contact force vector points from first to second geom. So this function should return force felt by body_name, whichever geom it is.
     """
     Returns the contact forces acting on the specified body.
 
@@ -65,6 +66,12 @@ def get_contact_forces_on_body(model, data, body_name):
         The MuJoCo data object containing the current simulation state.
     body_name: str
         The name of the body to get the contact forces for.
+
+
+    This function returns the contact forces AS FELT by body_name. See https://github.com/google-deepmind/mujoco/issues/679
+
+    Since mujoco contact normal points from geom1 to geom2, the default force calculated by mujoco is the force FELT by geom2.
+    If it so happens that geom1 is attached to "body_name", then this function returns the vector in the opposite direction.
 
     Returns:
     --------
@@ -82,21 +89,30 @@ def get_contact_forces_on_body(model, data, body_name):
 
     contact_forces = []
     for i in range(data.ncon):
-        contact_geom_ids = [data.contact[i].geom1, data.contact[i].geom2]
+        contact_geom_ids = [data.contact[i].geom[0], data.contact[i].geom[1]]
         # I don't care about contact with the ground
-        if model.geom("world").id not in contact_geom_ids:
-            # if any geoms involved in contact are attached to body we're interested in
-            if contact_geom_ids in geomid_attached_to_body:
-                F_CC_C = np.zeros(
-                    6)  # wrench at contact point C expressed in contact frame
-                f_C_W = np.zeros(
-                    3)  # force at contact point C expressed in world frame
-                mujoco.mj_contactForce(
-                    model, data, i,
-                    F_CC_C)  # doesn't throw error if i is out of range of ncon
-                R_CW = data.contact[i].frame
-                mujoco.mju_rotVecMatT(f_C_W, F_CC_C[:3], R_CW)
-                contact_forces.append(f_C_W)
+        # if model.geom("world").id not in contact_geom_ids:
+        # if any geoms involved in contact are attached to body we're interested in
+        if not set(contact_geom_ids).isdisjoint(set(geomid_attached_to_body)):
+
+            body_geomid_in_contact = set(contact_geom_ids).intersection(
+                set(geomid_attached_to_body)).pop()
+
+            F_CC_C = np.zeros(
+                6)  # wrench at contact point C expressed in contact frame
+            f_C_W = np.zeros(
+                3)  # force at contact point C expressed in world frame
+            mujoco.mj_contactForce(
+                model, data, i,
+                F_CC_C)  # doesn't throw error if i is out of range of ncon
+            R_CW = data.contact[i].frame
+            mujoco.mju_rotVecMatT(f_C_W, F_CC_C[:3], R_CW)
+
+            #if the geom attached to body_name is geom1, then the force is in the opposite direction since mujoco reports normal from geom 1 to geom 2
+            if body_geomid_in_contact == data.contact[i].geom[0]:
+                f_C_W = -f_C_W
+
+            contact_forces.append(f_C_W)
     return np.asarray(contact_forces)
 
 
