@@ -14,6 +14,7 @@ from importlib.resources import path
 
 
 class Baloo:
+
     def __init__(self, name, asset_dir: str) -> None:
         # set default options and visual things.
         self.mjcf_model = mjcf.RootElement(model=name)
@@ -262,7 +263,6 @@ class Baloo:
         )
 
         #contype and affinity are set up so taxels only respond to being touched by the manipuland, not by other bodies.
-
         box.add(
             "inertial",
             pos=[0, 0, 0],
@@ -1145,11 +1145,12 @@ class Baloo:
             timestep=self.timestep,
             integrator='implicitfast',  #recommended by mujoco docs as best
             solver="Newton",
-            jacobian="sparse",
+            jacobian="auto",
             cone="elliptic",
         )
 
-        self.mjcf_model.option.flag.set_attributes(gravity="enable", )
+        self.mjcf_model.option.flag.set_attributes(gravity="enable",
+                                                   multiccd="enable")
 
     def _setSimSize(self):
         self.mjcf_model.size.set_attributes(njmax=5000,
@@ -1162,7 +1163,8 @@ class Baloo:
                                                   fogstart=10,
                                                   fogend=15,
                                                   zfar=40,
-                                                  shadowscale=0.5)
+                                                  shadowscale=0.5,
+                                                  force=.1)
         self.mjcf_model.visual.scale.set_attributes(
             forcewidth=0.1,
             contactwidth=0.3 * 0.25,
