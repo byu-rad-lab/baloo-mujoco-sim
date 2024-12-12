@@ -46,9 +46,8 @@ class Baloo:
         left_link1 = self.addLink1(last_disk, "left")
         left_ee_disk = self._buildSmallJoint(left_link1, "left")
 
-        # # exclude contact between chest and each link on each arm
-        # #exclude contacts between left and right arm links
-        # self._setContactDetection()
+        # exclude contact between manipuland and base.
+        self._setContactDetection()
 
         # comment out if not whole arm is built (i.e. for testing)
         print("Adding sensors to right arm...")
@@ -200,44 +199,9 @@ class Baloo:
     def _setContactDetection(self):
         self.mjcf_model.contact.add(
             "exclude",
-            name="chest_left_link0",
-            body1="chest",
-            body2="left_link0",
-        )
-
-        self.mjcf_model.contact.add(
-            "exclude",
-            name="chest_left_link1",
-            body1="chest",
-            body2="left_link1",
-        )
-
-        self.mjcf_model.contact.add(
-            "exclude",
-            name="chest_right_link0",
-            body1="chest",
-            body2="right_link0",
-        )
-
-        self.mjcf_model.contact.add(
-            "exclude",
-            name="chest_right_link1",
-            body1="chest",
-            body2="right_link1",
-        )
-
-        self.mjcf_model.contact.add(
-            "exclude",
-            name="left_link0_right_link0",
-            body1="left_link0",
-            body2="right_link0",
-        )
-
-        self.mjcf_model.contact.add(
-            "exclude",
-            name="left_link1_right_link1",
-            body1="left_link1",
-            body2="right_link1",
+            name="manipuland-base",
+            body1="base",
+            body2="box",
         )
 
     def _createManipuland(self):
@@ -453,6 +417,13 @@ class Baloo:
             sleeve = link.add(
                 "body",
                 name=f"{side}_link{linknum}_tactile_sleeve",
+            )
+
+            sleeve_mass = 1.04 if linknum == 0 else .604
+            sleeve.add(
+                "inertial",
+                pos=[0, 0, 0],
+                mass=sleeve_mass,
             )
 
             # need to add site to attach sensor and geom to generate collision to the body
@@ -824,6 +795,8 @@ class Baloo:
             type="mesh",
             mesh="LeftBaseMesh",
             material="vention_blue",
+            contype=0,
+            conaffinity=1,
         )
 
         base.add(

@@ -289,11 +289,19 @@ def detect_box_touch(model, data):
     """
     if data.ncon > 0:
         for i in range(data.ncon):
-            if (data.contact[i].geom1 == model.geom("box").id
-                    or data.contact[i].geom2 == model.geom("box").id):
+            if model.geom("box").id in data.contact.geom:
                 # box is being touched. Need to check if it is the ground or not
-                if not (data.contact[i].geom1 == model.geom("world").id
-                        or data.contact[i].geom2 == model.geom("world").id):
+                if not model.geom("world").id in data.contact[i].geom:
+                    return True
+    return False
+
+
+def detect_box_on_ground(model, data):
+    if data.ncon > 0:
+        for i in range(data.ncon):
+            if model.geom("box").id in data.contact.geom:
+                # box is involved with this contact pair. Check if it is the ground
+                if model.geom("world").id in data.contact[i].geom:
                     return True
     return False
 
@@ -505,3 +513,16 @@ def set_box_position(model, data, pos):
 
     qpos_adr = model.joint(model.body("box").jntadr).qposadr.item()
     data.qpos[qpos_adr:qpos_adr + 3] = pos
+
+def set_box_size(model, data, l, w, h):
+    """
+    Sets the size of the box.
+
+    Args:
+        model (mujoco.MjModel): MuJoCo model object.
+        data (mujoco.MjData): MuJoCo data object.
+        l (float): Length of the box.
+        w (float): Width of the box.
+        h (float): Height of the box.
+    """
+    model.geom("box").size = [l/2, w/2, h/2]
