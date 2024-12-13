@@ -117,6 +117,24 @@ namespace mujoco::plugin::actuator {
       mju_warning("actuator not found for plugin instance %d", instance);
       return nullptr;
     }
+    // Validate actnum values for all actuators:
+    for (int actuator_id : actuators) {
+      int actnum = m->actuator_actnum[actuator_id];
+      int expected_actnum = MotionProfileServo::ActDim(m, instance, actuator_id);
+      int dyntype = m->actuator_dyntype[actuator_id];
+      if (dyntype == mjDYN_FILTER || dyntype == mjDYN_FILTEREXACT ||
+        dyntype == mjDYN_INTEGRATOR) {
+        expected_actnum++;
+      }
+      if (actnum != expected_actnum) {
+        mju_warning(
+          "actuator %d has actdim %d, expected %d. Add actdim=\"%d\" to the "
+          "actuator plugin element.",
+          actuator_id, actnum, expected_actnum, expected_actnum);
+        return nullptr;
+      }
+    }
+
     return std::unique_ptr<MotionProfileServo>(new MotionProfileServo(config, std::move(actuators)));
   }
 
@@ -235,8 +253,6 @@ namespace mujoco::plugin::actuator {
     std::vector<const char*> attributes = { kAttrPGain, kAttrVGain, kAttrZeta, kAttrWn };
     plugin.nattribute = attributes.size();
     plugin.attributes = attributes.data();
-
-    plugin.actuator_actdim = MotionProfileServo::ActDim;
     plugin.nstate = MotionProfileServo::StateSize;
 
     plugin.init = +[](const mjModel* m, mjData* d, int instance) {
@@ -281,6 +297,7 @@ namespace mujoco::plugin::actuator {
   }
 
   MotionProfileServo::MotionProfileServo(ServoConfig config, std::vector<int> actuators)
-    : config_(std::move(config)), actuators_(std::move(actuators)) {}
+    : config_(std::move(config)), actuators_(std::move(actuators)) {
+  }
 
 }  // namespace mujoco::plugin::actuator

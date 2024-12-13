@@ -45,9 +45,6 @@ namespace mujoco::plugin::actuator {
     // Returns the number of state variables for the plugin instance
     static int StateSize(const mjModel* m, int instance);
 
-    // Returns the number of activation variables for the plugin instance
-    static int ActDim(const mjModel* m, int instance, int actuator_id);
-
     // Resets the C++ MotionProfileServo instance's state.
     // plugin_state is a C array pointer into mjData->plugin_state, with a size
     // equal to the value returned from StateSize.
@@ -68,6 +65,9 @@ namespace mujoco::plugin::actuator {
 
   private:
     MotionProfileServo(ServoConfig config, std::vector<int> actuators);
+
+    // Returns the number of activation variables for the plugin instance
+    static int ActDim(const mjModel* m, int instance, int actuator_id);
 
     //? this plugin doesn't have a "state" as far as mujoco is concerned, I think this is just internal. Helpers.
     struct State {

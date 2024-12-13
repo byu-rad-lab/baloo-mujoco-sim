@@ -501,28 +501,45 @@ def add_visual_geom(user_scn, geom_type, size, pos, mat, rgba):
     return custom_geom
 
 
-def set_box_position(model, data, pos):
+def set_box_position(model, data, x=None, y=None, z=None):
     """
     Sets the position of the box in the world frame.
 
     Args:
         model (mujoco.MjModel): MuJoCo model object.
         data (mujoco.MjData): MuJoCo data object.
-        pos (ArrayLike): Position of the box in the world frame.
+        x,y,z (ArrayLike): Position of the box in the world frame.
     """
 
-    qpos_adr = model.joint(model.body("box").jntadr).qposadr.item()
-    data.qpos[qpos_adr:qpos_adr + 3] = pos
+    box_pose = data.joint(model.body("box").jntadr).qpos
 
-def set_box_size(model, data, l, w, h):
+    if x is not None:
+        box_pose[0] = x
+    if y is not None:
+        box_pose[1] = y
+    if z is not None:
+        box_pose[2] = z
+
+    mujoco.mj_forward(model, data)
+
+
+def set_box_size(model, data, xsize=None, ysize=None, zsize=None):
     """
     Sets the size of the box.
 
     Args:
         model (mujoco.MjModel): MuJoCo model object.
         data (mujoco.MjData): MuJoCo data object.
-        l (float): Length of the box.
-        w (float): Width of the box.
-        h (float): Height of the box.
+        xsize (float): Length of the box in x.
+        ysize (float): Width of the box in y.
+        zsize (float): Height of the box in z.
     """
-    model.geom("box").size = [l/2, w/2, h/2]
+    raise NotImplementedError
+    # box_size = model.geom("box").size
+
+    # if xsize is not None:
+    #     box_size[0] = xsize / 2
+    # if ysize is not None:
+    #     box_size[1] = ysize / 2
+    # if zsize is not None:
+    #     box_size[2] = zsize / 2

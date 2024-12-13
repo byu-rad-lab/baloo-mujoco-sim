@@ -21,7 +21,7 @@ curl -L -o "mujoco-${MUJOCO_VERSION}.tar.gz" https://github.com/google-deepmind/
 # Extract the tar.gz file
 tar -xzf "mujoco-${MUJOCO_VERSION}.tar.gz"
 
-# Optionally, clean up
+# clean up
 rm "mujoco-${MUJOCO_VERSION}.tar.gz"
 
 

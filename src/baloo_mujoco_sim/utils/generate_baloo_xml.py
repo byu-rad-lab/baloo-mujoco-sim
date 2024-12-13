@@ -207,9 +207,9 @@ class Baloo:
     def _createManipuland(self):
         # pos = (-.5, .5)m, box of .5 m side,
         mass = self.manipuland_mass
-        width = 0.5 / 2
-        depth = 0.5 / 2
-        height = 1.5 / 2
+        width = 0.25
+        depth = 0.25
+        height = 1.5
         box = self.mjcf_model.worldbody.add("body",
                                             name="box",
                                             pos=[0, 0.5, height / 2],
@@ -965,6 +965,7 @@ class Baloo:
                 ctrllimited=True,
                 ctrlrange=[-1000, 0],
                 joint="linear_actuator",
+                actdim=2,
             )
 
             elevator_plugin.add(
@@ -1338,17 +1339,17 @@ def generate_xml():
     #get version of package
     from pathlib import Path as path
 
-    project_root = path(__file__).resolve().parent.parent.parent
-
-    print(project_root)
+    project_root = path(__file__).resolve().parent.parent.parent.parent
+    toml_path = project_root / "pyproject.toml"
+    asset_path = project_root / "src" / "baloo_mujoco_sim" / "assets"
 
     import toml
-    toml_path = project_root / "pyproject.toml"
 
     try:
         with open(toml_path) as f:
             data = toml.load(f)
-        ver = data["project"]["version"]
+
+        ver = data["tool"]["poetry"]["version"]
 
     except FileNotFoundError:
         #means we are in the installed package, not the source code
@@ -1356,16 +1357,17 @@ def generate_xml():
         metadata = importlib.metadata.metadata("baloo_mujoco_sim")
         ver = metadata['Version']
 
-    torso = Baloo(f"baloo_v{ver}",
-                  asset_dir=project_root / "baloo_mujoco_sim" / "assets")
+    except Exception as e:
+        raise e
+
+    torso = Baloo(
+        f"baloo_v{ver}",
+        asset_dir=asset_path,
+    )
 
     # to actually write xml file. There's a weird bug in the stl that you need to fix.
-    with open(
-            project_root / "baloo_mujoco_sim" / "assets" / f"baloo_v{ver}.xml",
-            "w") as f:
-        f.write(
-            torso.to_clean_xml_string(asset_dir=project_root /
-                                      "baloo_mujoco_sim" / "assets"))
+    with open(asset_path / f"baloo_v{ver}.xml", "w") as f:
+        f.write(torso.to_clean_xml_string(asset_dir=asset_path))
     f.close()
 
 

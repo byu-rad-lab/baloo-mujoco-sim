@@ -13,6 +13,8 @@ from baloo_mujoco_sim.utils.baloo_mj_api import (
     clear_wrenches,
     get_contact_forces_on_body,
     detect_box_on_ground,
+    set_box_position,
+    set_box_size,
 )
 
 
@@ -68,6 +70,14 @@ def main():
         # # )
         # print(custom_geom)
 
+        #! for some reason, when zsize gets larger than the xml file, box bounces around. I think
+        #! this might be because of inertial issues. I think upgrading mujoco for procedural generation
+        xsize = 0.25
+        ysize = .25
+        zsize = 1.75
+
+        # set_box_size(model, data, xsize, ysize, zsize)
+        set_box_position(model, data, 0, 1, zsize + 1)
         #!can I change custom_geom later? since this just goes into the list of user_scn.geoms. What if I don't know which geom is at which index? Or I just have to know...
         #user scene is entirely under my control. It's separate from the main mjvScene that the viewer uses.
         # print(viewer.user_scn.geoms[0])
@@ -75,9 +85,9 @@ def main():
         #needed to actually render the updated state
         viewer.sync()
 
-        chest = get_tactile_image(model, data, 'chest', None)
-        plot = plt.imshow(chest, vmin=0, vmax=10, cmap='hot')
-        plt.pause(0.00001)
+        # chest = get_tactile_image(model, data, 'chest', None)
+        # plot = plt.imshow(chest, vmin=0, vmax=10, cmap='hot')
+        # plt.pause(0.00001)
 
         # Close the viewer automatically after 30 wall-seconds.
         start = time.time()
@@ -91,9 +101,9 @@ def main():
             # forces = get_contact_forces_on_body(model, data, 'right_link1')
             # print(f"Forces on right_link1: {forces}")
 
-            chest = get_tactile_image(model, data, 'chest', None)
-            plot.set_data(chest)
-            plt.pause(.0001)
+            # chest = get_tactile_image(model, data, 'chest', None)
+            # plot.set_data(chest)
+            # plt.pause(.0001)
             # print(viewer.user_scn.geoms[-1])
 
             # Example modification of a viewer option: toggle contact points every two seconds.
