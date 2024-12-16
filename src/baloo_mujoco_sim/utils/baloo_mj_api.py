@@ -523,23 +523,65 @@ def set_box_position(model, data, x=None, y=None, z=None):
     mujoco.mj_forward(model, data)
 
 
-def set_box_size(model, data, xsize=None, ysize=None, zsize=None):
+def _calc_cuboid_inertia_diag(mass, xsize, ysize, zsize):
     """
-    Sets the size of the box.
+    Calculates the inertia tensor of a cuboid.
 
     Args:
-        model (mujoco.MjModel): MuJoCo model object.
-        data (mujoco.MjData): MuJoCo data object.
+        mass (float): Mass of the cuboid.
+        xsize (float): Length of the cuboid in x.
+        ysize (float): Width of the cuboid in y.
+        zsize (float): Height of the cuboid in z.
+
+    Returns:
+        ArrayLike: Inertia tensor of the cuboid.
+    """
+    Ixx = (mass / 12) * (ysize**2 + zsize**2)
+    Iyy = (mass / 12) * (xsize**2 + zsize**2)
+    Izz = (mass / 12) * (xsize**2 + ysize**2)
+    return np.array([Ixx, Iyy, Izz])
+
+def set_box_size(mjSpec: mujoco.MjSpec, xsize=None, ysize=None, zsize=None):
+    """
+    Sets the size of the box. This function modifies the size of the box geom in the MuJoCo model, 
+    hence it is necessary to pass the MuJoCo spec.
+
+    Also recalculates the inertia tensor of the box.
+
+    Args:
+        mjSpec (mujoco.MjSpec): MuJoCo spec object
         xsize (float): Length of the box in x.
         ysize (float): Width of the box in y.
         zsize (float): Height of the box in z.
     """
-    raise NotImplementedError
-    # box_size = model.geom("box").size
+    box = mjSpec.find_body("box")
+    box_size = box.first_geom().size
 
-    # if xsize is not None:
-    #     box_size[0] = xsize / 2
-    # if ysize is not None:
-    #     box_size[1] = ysize / 2
-    # if zsize is not None:
-    #     box_size[2] = zsize / 2
+    if xsize is not None:
+        box_size[0] = xsize / 2
+    if ysize is not None:
+        box_size[1] = ysize / 2
+    if zsize is not None:
+        box_size[2] = zsize / 2
+
+
+    #update inertia tensor with new geometry and same mass
+    box.inertia = _calc_cuboid_inertia_diag(box.mass, *box_size)
+
+def set_box_mass(mjSpec: mujoco.MjSpec, mass: float):
+    """
+    Sets the mass of the box. This function modifies the mass of the box body in the MuJoCo model, 
+    hence it is necessary to pass the MuJoCo spec.
+
+    Also recalculates the inertia tensor of the box.
+
+    Args:
+        mjSpec (mujoco.MjSpec): MuJoCo spec object
+        mass (float): Mass of the box.
+    """
+    box = mjSpec.find_body("box")
+    box.mass = mass
+
+    #update inertia tensor with same geometry and new mass
+    box_size = box.first_geom().size
+    box.inertia = _calc_cuboid_inertia_diag(mass, *box_size)

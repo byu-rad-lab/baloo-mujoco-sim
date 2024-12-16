@@ -20,8 +20,22 @@ from baloo_mujoco_sim.utils.baloo_mj_api import (
 
 def main():
     # path to robot description file
-    model = mujoco.MjModel.from_xml_path(baloo_mj.XML_PATH)
+    with open(baloo_mj.XML_PATH, 'r') as file:
+        xml_string = file.read()
+
+    mjspec = mujoco.MjSpec()
+    mjspec.from_string(xml_string)
+
+    xsize = 0.25
+    ysize = 0.25
+    zsize = 0.25
+
+    set_box_size(mjspec, xsize, ysize, zsize)
+
+    model = mjspec.compile()
     data = mujoco.MjData(model)
+
+    set_box_position(model, data, 0, 1, zsize / 2)
 
     with mujoco.viewer.launch_passive(model, data) as viewer:
         # with viewer.lock():
@@ -70,14 +84,6 @@ def main():
         # # )
         # print(custom_geom)
 
-        #! for some reason, when zsize gets larger than the xml file, box bounces around. I think
-        #! this might be because of inertial issues. I think upgrading mujoco for procedural generation
-        xsize = 0.25
-        ysize = .25
-        zsize = 1.75
-
-        # set_box_size(model, data, xsize, ysize, zsize)
-        set_box_position(model, data, 0, 1, zsize + 1)
         #!can I change custom_geom later? since this just goes into the list of user_scn.geoms. What if I don't know which geom is at which index? Or I just have to know...
         #user scene is entirely under my control. It's separate from the main mjvScene that the viewer uses.
         # print(viewer.user_scn.geoms[0])
