@@ -209,7 +209,7 @@ class Baloo:
         mass = self.manipuland_mass
         width = 0.25
         depth = 0.25
-        height = 1.5
+        height = .75
         box = self.mjcf_model.worldbody.add("body",
                                             name="box",
                                             pos=[0, 0.5, height / 2],

@@ -30,12 +30,12 @@ def main():
     ysize = 0.25
     zsize = 0.25
 
-    set_box_size(mjspec, xsize, ysize, zsize)
+    # set_box_size(mjspec, xsize, ysize, zsize)
 
     model = mjspec.compile()
     data = mujoco.MjData(model)
 
-    set_box_position(model, data, 0, 1, zsize / 2)
+    # set_box_position(model, data, 0, 1, zsize / 2)
 
     with mujoco.viewer.launch_passive(model, data) as viewer:
         # with viewer.lock():
