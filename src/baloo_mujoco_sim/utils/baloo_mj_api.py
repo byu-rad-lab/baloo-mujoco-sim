@@ -209,6 +209,7 @@ def set_elevator_cmd(model, data, value):
 
 
 def get_elevator_height(model, data):
+    '''returns joint coordinate of elevator in meters'''
     return data.qpos[model.joint("linear_actuator").qposadr]
 
 
@@ -541,6 +542,7 @@ def _calc_cuboid_inertia_diag(mass, xsize, ysize, zsize):
     Izz = (mass / 12) * (xsize**2 + ysize**2)
     return np.array([Ixx, Iyy, Izz])
 
+
 def set_box_size(mjSpec: mujoco.MjSpec, xsize=None, ysize=None, zsize=None):
     """
     Sets the size of the box. This function modifies the size of the box geom in the MuJoCo model, 
@@ -564,9 +566,9 @@ def set_box_size(mjSpec: mujoco.MjSpec, xsize=None, ysize=None, zsize=None):
     if zsize is not None:
         box_size[2] = zsize / 2
 
-
     #update inertia tensor with new geometry and same mass
     box.inertia = _calc_cuboid_inertia_diag(box.mass, *box_size)
+
 
 def set_box_mass(mjSpec: mujoco.MjSpec, mass: float):
     """
@@ -585,3 +587,32 @@ def set_box_mass(mjSpec: mujoco.MjSpec, mass: float):
     #update inertia tensor with same geometry and new mass
     box_size = box.first_geom().size
     box.inertia = _calc_cuboid_inertia_diag(mass, *box_size)
+
+
+def get_all_contact_wrenches(model, data):
+    wrenches = []
+    for i in range(data.ncon):
+        F = np.zeros(6)
+        mujoco.mj_contactForce(model, data, i, F)
+
+        wrenches.append(F)
+
+    return np.asarray(wrenches)
+
+
+def check_arms_touching_ground(model, data):
+    """
+    Returns True if any part of the arms are touching the ground. 
+
+    The box can touch the ground though, so this function returns false if only the box is touching the ground.
+    """
+
+    touching_ground = False
+    for i in range(data.ncon):
+        if model.geom("world").id in data.contact[i].geom:
+            #something is touching the ground. If its NOT the box, then something else is toching the ground.
+            if model.geom("box").id not in data.contact[i].geom:
+                touching_ground = True
+                break
+
+    return touching_ground
