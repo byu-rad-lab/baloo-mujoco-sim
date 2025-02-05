@@ -165,6 +165,27 @@ def get_box_vel(model, data):
     object_vel = data.qvel[qvel_adr:qvel_adr + free_body_len]
     return object_vel[:3]
 
+def get_box_angvel(model, data):
+    """
+    Returns the angular velocity of the box in the world frame.
+
+    Parameters:
+    -----------
+    model: mujoco_py.MjModel
+        The MuJoCo model object.
+    data: mujoco_py.MjData
+        The MuJoCo data object containing the current simulation state.
+
+    Returns:
+    --------
+    numpy.ndarray
+        A 3D numpy array representing the angular velocity of the box in the world frame.
+    """
+    qvel_adr = model.joint(model.body("box").jntadr).dofadr.item()
+    free_body_len = 6  # linear vel + angular vel
+    object_vel = data.qvel[qvel_adr:qvel_adr + free_body_len]
+    return object_vel[3:]
+
 
 def get_box_quat(model, data, scalar_first=True):
     """
