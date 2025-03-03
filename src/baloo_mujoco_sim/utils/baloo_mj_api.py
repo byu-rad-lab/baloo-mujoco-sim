@@ -165,6 +165,7 @@ def get_box_vel(model, data):
     object_vel = data.qvel[qvel_adr:qvel_adr + free_body_len]
     return object_vel[:3]
 
+
 def get_box_angvel(model, data):
     """
     Returns the angular velocity of the box in the world frame.
@@ -541,6 +542,29 @@ def set_box_position(model, data, x=None, y=None, z=None):
         box_pose[1] = y
     if z is not None:
         box_pose[2] = z
+
+    mujoco.mj_forward(model, data)
+
+
+def set_box_quat(model, data, qw=None, qx=None, qy=None, qz=None):
+    """
+    Sets the orientation of the box in the world frame.
+
+    Args:
+        model (mujoco.MjModel): MuJoCo model object.
+        data (mujoco.MjData): MuJoCo data object.
+        qw,qx,qy,qz (ArrayLike): Orientation of the box in the world frame.
+    """
+    box_pose = data.joint(model.body("box").jntadr).qpos
+
+    if qw is not None:
+        box_pose[3] = qw
+    if qx is not None:
+        box_pose[4] = qx
+    if qy is not None:
+        box_pose[5] = qy
+    if qz is not None:
+        box_pose[6] = qz
 
     mujoco.mj_forward(model, data)
 
