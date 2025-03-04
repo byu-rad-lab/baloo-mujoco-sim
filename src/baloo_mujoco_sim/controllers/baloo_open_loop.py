@@ -17,6 +17,8 @@ from baloo_mujoco_sim.utils.baloo_mj_api import (
     set_box_size,
     get_elevator_height,
     check_arms_touching_ground,
+    get_chest_position,
+    get_box_position,
 )
 
 
@@ -28,8 +30,8 @@ def main():
     mjspec = mujoco.MjSpec()
     mjspec.from_string(xml_string)
 
-    xsize = 0.6
-    ysize = 0.6
+    xsize = 0.3
+    ysize = 0.3
     zsize = 1.25
 
     set_box_size(mjspec, xsize, ysize, zsize)
@@ -123,7 +125,9 @@ def main():
             # with viewer.lock():
             # viewer.opt.flags[mujoco.mjtVisFlag.mjVIS_CONTACTPOINT] = int(data.time % 2)
             # print(viewer.perturb)
-            print(check_arms_touching_ground(model, data))
+            # print(get_disk_position(model, data, 'left', 2, -1))
+            print(data.act)
+            # print(check_arms_touching_ground(model, data))
             # Pick up changes to the physics state, apply perturbations, update options from GUI.
             viewer.sync()
 

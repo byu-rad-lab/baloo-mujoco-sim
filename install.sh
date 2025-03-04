@@ -1,18 +1,42 @@
 #!/bin/bash
 
+#Download correct release of ruckig
+message="Installing ruckig v0.12.2 as plugin dependency..."
+echo -e $message
+
+# download ruckig
+rm -rf ./plugin/ruckig_actuator/dependencies
+mkdir -p ./plugin/ruckig_actuator/dependencies
+cd ./plugin/ruckig_actuator/dependencies
+curl -L -o "ruckig-0.12.2.tar.gz" https://github.com/pantor/ruckig/archive/refs/tags/v0.12.2.tar.gz
+
+#extract ruckig
+tar -xzf "ruckig-0.12.2.tar.gz"
+rm "ruckig-0.12.2.tar.gz"
+
+# build ruckig
+cd ruckig-0.12.2
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release ..
+sudo make install
+
+#move back to plugin directory
+cd ../../../../../
+
 # build plugins and install to mujoco python installation directory
-message="Building and installing plugins to mujoco python installation directory"
-echo $message
 
 PYTHON_INSTALL_LOCATION=$(pip3 show mujoco | grep Location: | cut -d ' ' -f 2)
 MUJOCO_ROOT_DIR="${PYTHON_INSTALL_LOCATION}/mujoco"
 
-echo ${MUJOCO_ROOT_DIR}
+message="\n\n\nBuilding and installing plugins to mujoco python installation directory: ${MUJOCO_ROOT_DIR}\n\n\n"
+echo -e $message
 
 # optionally download c++ version of mujoco 
 MUJOCO_VERSION=$(python3 -c "import importlib.metadata; print(importlib.metadata.version('mujoco'))")
 
 # Download the file
+rm -rf precompiled
 mkdir precompiled
 cd precompiled
 echo "Downloading precompiled mujoco version ${MUJOCO_VERSION}"
@@ -29,9 +53,9 @@ PRECOMPILED_MUJOCO_DIR="${PWD}/mujoco-${MUJOCO_VERSION}"
 echo "Precompiled_MUJOCO_DIR: ${PRECOMPILED_MUJOCO_DIR}"
 
 cd ..
-rm -rf "./plugin/build"
-mkdir "./plugin/build"
-cd "./plugin/build"
+rm -rf ./plugin/build
+mkdir -p ./plugin/build
+cd ./plugin/build
 cmake .. -DMUJOCO_ROOT_DIR=${MUJOCO_ROOT_DIR} -DCMAKE_BUILD_TYPE=Release -DPRECOMPILED_MUJOCO_DIR=${PRECOMPILED_MUJOCO_DIR}
 make install
 

@@ -59,4 +59,6 @@ _skbuild/
 
 precompiled/
 
+dependencies/
+
 *.png

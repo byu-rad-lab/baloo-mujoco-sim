@@ -1,5 +1,5 @@
-#ifndef MUJOCO_PLUGIN_ACTUATOR_MOTIONPROFILESERVO_H_
-#define MUJOCO_PLUGIN_ACTUATOR_MOTIONPROFILESERVO_H_
+#ifndef MUJOCO_PLUGIN_ACTUATOR_RUCKIGACTUATOR_H_
+#define MUJOCO_PLUGIN_ACTUATOR_RUCKIGACTUATOR_H_
 
 #include <memory>
 #include <optional>
@@ -11,27 +11,27 @@
 
 namespace mujoco::plugin::actuator {
 
-  struct ServoConfig {
+  struct RuckigConfig {
     double p_gain = 0.0;
     double v_gain = 0.0;
     double zeta = 0.0;
     double wn = 0.0;
 
     // Reads plugin attributes to construct PID configuration.
-    static ServoConfig FromModel(const mjModel* m, int instance);
+    static RuckigConfig FromModel(const mjModel* m, int instance);
   };
 
   // An actuator plugin which implements configurable PID control.
-  class MotionProfileServo {
+  class RuckigActuator {
   public:
-    // Returns an instance of MotionProfileServo. The result can be null in case of
+    // Returns an instance of RuckigActuator. The result can be null in case of
     // misconfiguration.
-    static std::unique_ptr<MotionProfileServo> Create(const mjModel* m, int instance);
+    static std::unique_ptr<RuckigActuator> Create(const mjModel* m, int instance);
 
     // Returns the number of state variables for the plugin instance
     static int StateSize(const mjModel* m, int instance);
 
-    // Resets the C++ MotionProfileServo instance's state.
+    // Resets the C++ RuckigActuator instance's state.
     // plugin_state is a C array pointer into mjData->plugin_state, with a size
     // equal to the value returned from StateSize.
     void Reset(mjtNum* plugin_state);
@@ -50,7 +50,7 @@ namespace mujoco::plugin::actuator {
     static void RegisterPlugin();
 
   private:
-    MotionProfileServo(ServoConfig config, std::vector<int> actuators);
+    RuckigActuator(RuckigConfig config, std::vector<int> actuators);
 
     // Returns the number of activation variables for the plugin instance
     static int ActDim(const mjModel* m, int instance, int actuator_id);
@@ -78,11 +78,11 @@ namespace mujoco::plugin::actuator {
       const State& state, bool actearly) const;
 
 
-    ServoConfig config_;
+    RuckigConfig config_;
     // set of actuator IDs controlled by this plugin instance.
     std::vector<int> actuators_;
   };
 
 }  // namespace mujoco::plugin::actuator
 
-#endif  // MUJOCO_PLUGIN_ACTUATOR_MOTIONPROFILESERVO_H_
+#endif  // MUJOCO_PLUGIN_ACTUATOR_RUCKIGACTUATOR_H_

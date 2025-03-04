@@ -7,3 +7,4 @@ project(baloo_mujoco_plugins)
 # Add the subdirectories
 add_subdirectory(joint_angle_estimator)
 add_subdirectory(motion_profile_servo)
+add_subdirectory(ruckig_actuator)
