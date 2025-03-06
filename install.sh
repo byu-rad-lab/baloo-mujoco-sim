@@ -60,6 +60,9 @@ cd ./plugin/build
 cmake .. -DMUJOCO_ROOT_DIR=${MUJOCO_ROOT_DIR} -DCMAKE_BUILD_TYPE=Release -DPRECOMPILED_MUJOCO_DIR=${PRECOMPILED_MUJOCO_DIR}
 make install
 
+# force updating of system libraries  to see our manually installed stuff
+sudo ldconfig
+
 # force regeneration of xml model on install
 cd ../../
 echo "Regenerating xml model"
