@@ -61,7 +61,11 @@ To use the Ruckig actuator plugin, include the following configuration in your M
 
 ## Installation
 
-To install the Ruckig actuator plugin, run the following commands:
+To install the Ruckig actuator plugin, run the following commands from the root directory of the project:
+
+```bash
+./install.sh
+```
 
 This will download and build the Ruckig library, and then build and install the Ruckig actuator plugin.
 
