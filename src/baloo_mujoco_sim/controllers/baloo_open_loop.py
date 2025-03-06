@@ -30,19 +30,19 @@ def main():
     mjspec = mujoco.MjSpec()
     mjspec.from_string(xml_string)
 
-    xsize = 0.3
-    ysize = 0.3
-    zsize = 1.25
+    # xsize = 0.3
+    # ysize = 0.3
+    # zsize = 1.25
 
-    set_box_size(mjspec, xsize, ysize, zsize)
+    # set_box_size(mjspec, xsize, ysize, zsize)
 
-    distance_from_chest = 45e-2
-    y_box = ysize / 2 + distance_from_chest
-    z_box = zsize / 2
+    # distance_from_chest = 45e-2
+    # y_box = ysize / 2 + distance_from_chest
+    # z_box = zsize / 2
 
     model = mjspec.compile()
     data = mujoco.MjData(model)
-    set_box_position(model, data, 0, y_box, z_box)
+    # set_box_position(model, data, 0, y_box, z_box)
 
     # set_box_position(model, data, 0, 1, zsize / 2)
 
@@ -126,7 +126,7 @@ def main():
             # viewer.opt.flags[mujoco.mjtVisFlag.mjVIS_CONTACTPOINT] = int(data.time % 2)
             # print(viewer.perturb)
             # print(get_disk_position(model, data, 'left', 2, -1))
-            print(data.act)
+            # print(data.act)
             # print(check_arms_touching_ground(model, data))
             # Pick up changes to the physics state, apply perturbations, update options from GUI.
             viewer.sync()

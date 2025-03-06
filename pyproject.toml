@@ -18,6 +18,7 @@ matplotlib = "3.7.5"
 
 [tool.poetry.scripts]
 run-baloo-sim = "baloo_mujoco_sim.controllers.baloo_open_loop:main"
+generate-baloo-xml = "baloo_mujoco_sim.utils.generate_baloo_xml:generate_xml"
 
 [build-system]
 requires = ["poetry-core"]

@@ -1,24 +1,24 @@
 #!/bin/bash
 
 #Download correct release of ruckig
-message="Installing ruckig v0.12.2 as plugin dependency..."
+message="Installing ruckig v0.14.0 as plugin dependency..."
 echo -e $message
 
 # download ruckig
 rm -rf ./plugin/ruckig_actuator/dependencies
 mkdir -p ./plugin/ruckig_actuator/dependencies
 cd ./plugin/ruckig_actuator/dependencies
-curl -L -o "ruckig-0.12.2.tar.gz" https://github.com/pantor/ruckig/archive/refs/tags/v0.12.2.tar.gz
+curl -L -o "ruckig-0.14.0.tar.gz" https://github.com/pantor/ruckig/archive/refs/tags/v0.14.0.tar.gz
 
 #extract ruckig
-tar -xzf "ruckig-0.12.2.tar.gz"
-rm "ruckig-0.12.2.tar.gz"
+tar -xzf "ruckig-0.14.0.tar.gz"
+rm "ruckig-0.14.0.tar.gz"
 
 # build ruckig
-cd ruckig-0.12.2
+cd ruckig-0.14.0
 mkdir build
 cd build
-cmake -DCMAKE_BUILD_TYPE=Release ..
+cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_CLOUD_CLIENT=OFF -DBUILD_EXAMPLES=OFF ..
 sudo make install
 
 #move back to plugin directory
@@ -34,6 +34,7 @@ echo -e $message
 
 # optionally download c++ version of mujoco 
 MUJOCO_VERSION=$(python3 -c "import importlib.metadata; print(importlib.metadata.version('mujoco'))")
+
 
 # Download the file
 rm -rf precompiled

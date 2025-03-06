@@ -50,7 +50,7 @@ set(MUJOCO_ACTUATOR_INCLUDE
 add_library(RuckigActuator SHARED)
 target_sources(RuckigActuator PRIVATE ${MUJOCO_ACTUATOR_SRCS})
 target_include_directories(RuckigActuator PRIVATE ${MUJOCO_ACTUATOR_INCLUDE})
-target_link_libraries(RuckigActuator PRIVATE ${LIB_MUJOCO})
+target_link_libraries(RuckigActuator PRIVATE ${LIB_MUJOCO} ruckig::ruckig)
 
 install(
   TARGETS RuckigActuator LIBRARY

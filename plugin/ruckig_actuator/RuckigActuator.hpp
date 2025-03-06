@@ -1,21 +1,26 @@
 #ifndef MUJOCO_PLUGIN_ACTUATOR_RUCKIGACTUATOR_H_
 #define MUJOCO_PLUGIN_ACTUATOR_RUCKIGACTUATOR_H_
 
-#include <memory>
-#include <optional>
-#include <vector>
-
 #include <mujoco/mjdata.h>
 #include <mujoco/mjmodel.h>
 #include <mujoco/mjtnum.h>
 
+#include <memory>
+#include <optional>
+#include <vector>
+
+#include <ruckig/ruckig.hpp>
+
 namespace mujoco::plugin::actuator {
 
   struct RuckigConfig {
-    double p_gain = 0.0;
-    double v_gain = 0.0;
-    double zeta = 0.0;
-    double wn = 0.0;
+    double max_velocity = 0.0;
+    double max_acceleration = 0.0;
+    double max_jerk = 0.0;
+    double dt = 0.0;
+    double kp = 0.0;
+    double kv = 0.0;
+    double ka = 0.0;
 
     // Reads plugin attributes to construct PID configuration.
     static RuckigConfig FromModel(const mjModel* m, int instance);
@@ -23,7 +28,7 @@ namespace mujoco::plugin::actuator {
 
   // An actuator plugin which implements configurable PID control.
   class RuckigActuator {
-  public:
+    public:
     // Returns an instance of RuckigActuator. The result can be null in case of
     // misconfiguration.
     static std::unique_ptr<RuckigActuator> Create(const mjModel* m, int instance);
@@ -37,50 +42,43 @@ namespace mujoco::plugin::actuator {
     void Reset(mjtNum* plugin_state);
 
     // Computes the rate of change for activation variables
-    void ActDot(const mjModel* m, mjData* d, int instance) const;
+    void ActDot(const mjModel* m, mjData* d, int instance);
 
     // Idempotent computation which updates d->actuator_force and the internal
     // state of the class. Called after ActDot.
     void Compute(const mjModel* m, mjData* d, int instance);
 
     // Updates plugin state.
-    void Advance(const mjModel* m, mjData* d, int instance) const;
+    void Advance(const mjModel* m, mjData* d, int instance);
 
     // Adds the PID plugin to the global registry of MuJoCo plugins.
     static void RegisterPlugin();
 
-  private:
+    private:
     RuckigActuator(RuckigConfig config, std::vector<int> actuators);
 
     // Returns the number of activation variables for the plugin instance
     static int ActDim(const mjModel* m, int instance, int actuator_id);
 
-    //? this plugin doesn't have a "state" as far as mujoco is concerned, I think this is just internal. Helpers.
-    struct State {
-      mjtNum prefiltered_position_command_dot = 0;
-      mjtNum prefiltered_position_command = 0;
-    };
-
-    struct StateDot {
-      mjtNum prefiltered_position_command_ddot = 0;
-      mjtNum prefiltered_position_command_dot = 0;
-    };
-
-    // Reads data from d->act and returns it as a State struct.
-    State GetPrefilterState(const mjModel* m, mjData* d, int actuator_idx) const;
-
-    StateDot GetPrefilterStateDot(const mjModel* m, const mjData* d, int actuator_idx, mjtNum ctrl,
-      const State& state) const;
-
     // Returns the PID setpoint, which is normally d->ctrl, but can be d->act for
     // actuators with dyntype != none.
-    mjtNum GetCtrl(const mjModel* m, const mjData* d, int actuator_idx,
-      const State& state, bool actearly) const;
-
+    mjtNum GetCtrl(
+      const mjModel* m,
+      const mjData* d,
+      int actuator_idx,
+      bool actearly) const;
 
     RuckigConfig config_;
+
     // set of actuator IDs controlled by this plugin instance.
     std::vector<int> actuators_;
+
+    //ruckig trajectory planner
+    ruckig::Ruckig<1> trajectory_planner_;
+    ruckig::InputParameter<1> input_param_;
+    ruckig::OutputParameter<1> output_param_;
+    void ConfigureRuckig();
+
   };
 
 }  // namespace mujoco::plugin::actuator
