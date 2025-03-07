@@ -25,8 +25,7 @@ sudo make install
 cd ../../../../../
 
 # build plugins and install to mujoco python installation directory
-
-PYTHON_INSTALL_LOCATION=$(pip3 show mujoco | grep Location: | cut -d ' ' -f 2)
+PYTHON_INSTALL_LOCATION=$(uv pip show mujoco | grep Location: | cut -d ' ' -f 2)
 MUJOCO_ROOT_DIR="${PYTHON_INSTALL_LOCATION}/mujoco"
 
 message="\n\n\nBuilding and installing plugins to mujoco python installation directory: ${MUJOCO_ROOT_DIR}\n\n\n"

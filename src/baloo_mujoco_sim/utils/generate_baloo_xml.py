@@ -1364,7 +1364,7 @@ def generate_xml():
         with open(toml_path) as f:
             data = toml.load(f)
 
-        ver = data["tool"]["poetry"]["version"]
+        ver = data["project"]["version"]
 
     except FileNotFoundError:
         #means we are in the installed package, not the source code
