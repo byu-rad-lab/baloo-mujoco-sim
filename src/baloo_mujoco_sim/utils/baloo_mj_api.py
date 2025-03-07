@@ -113,7 +113,7 @@ def get_contact_forces_on_body(model, data, body_name):
                 f_C_W = -f_C_W
 
             contact_forces.append(f_C_W)
-    return np.asarray(contact_forces)
+    return np.asarray(contact_forces).copy()
 
 
 def get_box_position(model, data):
@@ -140,7 +140,7 @@ def get_box_position(model, data):
     qpos_adr = model.joint(model.body("box").jntadr).qposadr.item()
     free_body_len = 7  # position + quaternion
     object_pose = data.qpos[qpos_adr:qpos_adr + free_body_len]
-    return object_pose[:3]
+    return object_pose[:3].copy()
 
 
 def get_box_vel(model, data):
@@ -163,7 +163,7 @@ def get_box_vel(model, data):
     qvel_adr = model.joint(model.body("box").jntadr).dofadr.item()
     free_body_len = 6  # linear vel + angular vel
     object_vel = data.qvel[qvel_adr:qvel_adr + free_body_len]
-    return object_vel[:3]
+    return object_vel[:3].copy()
 
 
 def get_box_angvel(model, data):
@@ -185,7 +185,7 @@ def get_box_angvel(model, data):
     qvel_adr = model.joint(model.body("box").jntadr).dofadr.item()
     free_body_len = 6  # linear vel + angular vel
     object_vel = data.qvel[qvel_adr:qvel_adr + free_body_len]
-    return object_vel[3:]
+    return object_vel[3:].copy()
 
 
 def get_box_quat(model, data, scalar_first=True):
@@ -213,13 +213,27 @@ def get_box_quat(model, data, scalar_first=True):
     free_body_len = 7  # position + quaternion
     object_pose = data.qpos[qpos_adr:qpos_adr + free_body_len]
     if scalar_first:
-        return object_pose[-4:]  #[qw, qx, qy, qz]
+        return object_pose[-4:].copy()  #[qw, qx, qy, qz]
     else:
         return np.roll(object_pose[-4:], -1)  # now [qx, qy, qz, qw]
 
 
 def get_elevator_cmd(model, data):
-    return data.ctrl[model.actuator("elevator").id]
+    return data.ctrl[model.actuator("elevator").id].copy()
+
+
+def get_elevator_activation(model, data):
+    '''
+    returns [filtered vel cmd, filtered pos cmd]
+
+    since the input is an overall position, and ruckig plugin filters it to provide these values. 
+    '''
+    actuator_id = model.actuator("elevator").id
+    start_index = model.actuator(actuator_id).actadr.item()
+    num_elements = model.actuator(actuator_id).actnum.item()
+
+    actuator_values = data.act[start_index:start_index + num_elements]
+    return actuator_values.copy()
 
 
 def set_elevator_cmd(model, data, value):
@@ -232,11 +246,11 @@ def set_elevator_cmd(model, data, value):
 
 def get_elevator_height(model, data):
     '''returns joint coordinate of elevator in meters'''
-    return data.qpos[model.joint("linear_actuator").qposadr]
+    return data.qpos[model.joint("linear_actuator").qposadr].copy()
 
 
 def get_elevator_vel(model, data):
-    return data.qvel[model.joint("linear_actuator").dofadr]
+    return data.qvel[model.joint("linear_actuator").dofadr].copy()
 
 
 def get_joint_pressures(model, data, side, jointnum):
@@ -244,7 +258,7 @@ def get_joint_pressures(model, data, side, jointnum):
     for i in range(4):
         pressures.append(
             data.act[model.actuator(f"{side}_j{jointnum}_p{i}").actadr])
-    return np.asarray(pressures).squeeze()
+    return np.asarray(pressures).squeeze().copy()
 
 
 def set_joint_pressure_commands(model, data, side, jointnum,
@@ -260,7 +274,7 @@ def get_joint_pressure_commands(model, data, side, jointnum):
     cmds = []
     for i in range(4):
         cmds.append(data.ctrl[model.actuator(f"{side}_j{jointnum}_p{i}").id])
-    return np.asarray(cmds)
+    return np.asarray(cmds).copy()
 
 
 def get_tactile_image(model, data, side: Literal['left', 'right', 'chest'],
@@ -298,12 +312,12 @@ def get_tactile_image(model, data, side: Literal['left', 'right', 'chest'],
 
 def get_joint_angles(model, data, side, jointnum):
     joint_angle_sensor = data.sensor(f"{side}_j{jointnum}").data
-    return joint_angle_sensor[:2]
+    return joint_angle_sensor[:2].copy()
 
 
 def get_joint_vel(model, data, side, jointnum):
     joint_vel_sensor = data.sensor(f"{side}_j{jointnum}").data
-    return joint_vel_sensor[2:]
+    return joint_vel_sensor[2:].copy()
 
 
 def detect_box_touch(model, data):
@@ -392,7 +406,7 @@ def get_chest_position(model: mujoco.MjModel,
     Returns:
         ArrayLike[float, float, float]: Position of the chest in the world frame [x,y,z] meters.
     """
-    return data.geom("chest").xpos
+    return data.geom("chest").xpos.copy()
 
 
 def get_chest_velocity(model, data):
@@ -414,7 +428,7 @@ def get_link_position(model, data, side: Literal['left', 'right'],
     Returns:
         ArrayLike[float, float, float]: [x,y,z] meters in world frame.
     """
-    return data.geom(f"{side}_link{linknum}").xpos
+    return data.geom(f"{side}_link{linknum}").xpos.copy()
 
 
 def get_disk_position(model, data, side: Literal['left', 'right'],
@@ -437,7 +451,7 @@ def get_disk_position(model, data, side: Literal['left', 'right'],
     if disk_num == -1:
         disk_num = num_disks_in_model - 1
     try:
-        return data.geom(f"{side}_j{joint_num}_disk{disk_num}").xpos
+        return data.geom(f"{side}_j{joint_num}_disk{disk_num}").xpos.copy()
     except KeyError as e:
         error = f"Disk {disk_num} not found for {side} arm, joint {joint_num}. There are {num_disks_in_model} disks in the model and joint_num must be 0, 1, or 2."
         raise KeyError(error) from None
@@ -642,7 +656,7 @@ def get_all_contact_wrenches(model, data):
 
         wrenches.append(F)
 
-    return np.asarray(wrenches)
+    return np.asarray(wrenches).copy()
 
 
 def check_arms_touching_ground(model, data):

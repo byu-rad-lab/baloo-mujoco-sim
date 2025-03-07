@@ -19,6 +19,7 @@ from baloo_mujoco_sim.utils.baloo_mj_api import (
     check_arms_touching_ground,
     get_chest_position,
     get_box_position,
+    get_elevator_activation,
 )
 
 
@@ -112,6 +113,8 @@ def main():
             # mj_step can be replaced with code that also evaluates
             # a policy and applies a control signal before stepping the physics.
             mujoco.mj_step(model, data)
+
+            print(get_elevator_activation(model, data))
 
             # forces = get_contact_forces_on_body(model, data, 'right_link1')
             # print(f"Forces on right_link1: {forces}")
