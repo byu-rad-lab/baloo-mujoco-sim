@@ -114,12 +114,17 @@ def get_contact_forces_on_body(model, data, body_name):
                 if body_geomid_in_contact == data.contact[i].geom[0]:
                     f_C_W = -f_C_W
 
-                contact_forces.append(f_C_W)
+                # sometimes there are contacts that are active but don't have any force
+                # see https://mujoco.readthedocs.io/en/stable/programming/simulation.html#contacts
+                if np.linalg.norm(f_C_W) > 0:
+                    contact_forces.append(f_C_W)
 
     if len(contact_forces) == 0:
         return np.zeros((0, 3))
 
-    return np.asarray(contact_forces).copy()
+    con = np.asarray(contact_forces).copy()
+
+    return con
 
 
 def get_box_position(model, data):
