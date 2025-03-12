@@ -93,28 +93,28 @@ def get_contact_forces_on_body(model, data, body_name):
     for i in range(data.ncon):
         contact_geom_ids = [data.contact[i].geom[0], data.contact[i].geom[1]]
         # I don't care about contact with the ground
-        # if model.geom("world").id not in contact_geom_ids:
-        # if any geoms involved in contact are attached to body we're interested in
-        if not set(contact_geom_ids).isdisjoint(set(geomid_attached_to_body)):
+        if model.geom("world").id not in contact_geom_ids:
+            # if any geoms involved in contact are attached to body we're interested in
+            if not set(contact_geom_ids).isdisjoint(set(geomid_attached_to_body)):
 
-            body_geomid_in_contact = set(contact_geom_ids).intersection(
-                set(geomid_attached_to_body)).pop()
+                body_geomid_in_contact = set(contact_geom_ids).intersection(
+                    set(geomid_attached_to_body)).pop()
 
-            F_CC_C = np.zeros(
-                6)  # wrench at contact point C expressed in contact frame
-            f_C_W = np.zeros(
-                3)  # force at contact point C expressed in world frame
-            mujoco.mj_contactForce(
-                model, data, i,
-                F_CC_C)  # doesn't throw error if i is out of range of ncon
-            R_CW = data.contact[i].frame
+                F_CC_C = np.zeros(
+                    6)  # wrench at contact point C expressed in contact frame
+                f_C_W = np.zeros(
+                    3)  # force at contact point C expressed in world frame
+                mujoco.mj_contactForce(
+                    model, data, i,
+                    F_CC_C)  # doesn't throw error if i is out of range of ncon
+                R_CW = data.contact[i].frame
 
-            mujoco.mju_mulMatTVec3(f_C_W, R_CW, F_CC_C[:3])
-            #if the geom attached to body_name is geom1, then the force is in the opposite direction since mujoco reports normal from geom 1 to geom 2
-            if body_geomid_in_contact == data.contact[i].geom[0]:
-                f_C_W = -f_C_W
+                mujoco.mju_mulMatTVec3(f_C_W, R_CW, F_CC_C[:3])
+                #if the geom attached to body_name is geom1, then the force is in the opposite direction since mujoco reports normal from geom 1 to geom 2
+                if body_geomid_in_contact == data.contact[i].geom[0]:
+                    f_C_W = -f_C_W
 
-            contact_forces.append(f_C_W)
+                contact_forces.append(f_C_W)
     return np.asarray(contact_forces).copy()
 
 
