@@ -73,6 +73,8 @@ def get_contact_forces_on_body(model, data, body_name):
     Since mujoco contact normal points from geom1 to geom2, the default force calculated by mujoco is the force FELT by geom2.
     If it so happens that geom1 is attached to "body_name", then this function returns the vector in the opposite direction.
 
+    This function EXCLUDES contact with the ground.
+
     Returns:
     --------
     numpy.ndarray
@@ -106,8 +108,8 @@ def get_contact_forces_on_body(model, data, body_name):
                 model, data, i,
                 F_CC_C)  # doesn't throw error if i is out of range of ncon
             R_CW = data.contact[i].frame
-            mujoco.mju_rotVecMatT(f_C_W, F_CC_C[:3], R_CW)
 
+            mujoco.mju_mulMatTVec3(f_C_W, R_CW, F_CC_C[:3])
             #if the geom attached to body_name is geom1, then the force is in the opposite direction since mujoco reports normal from geom 1 to geom 2
             if body_geomid_in_contact == data.contact[i].geom[0]:
                 f_C_W = -f_C_W
