@@ -54,7 +54,6 @@ def set_mocap_size(model, data, mocap_name, size):
 
 
 def get_contact_forces_on_body(model, data, body_name):
-    #TODO: contact force vector points from first to second geom. So this function should return force felt by body_name, whichever geom it is.
     """
     Returns the contact forces acting on the specified body.
 
@@ -95,7 +94,8 @@ def get_contact_forces_on_body(model, data, body_name):
         # I don't care about contact with the ground
         if model.geom("world").id not in contact_geom_ids:
             # if any geoms involved in contact are attached to body we're interested in
-            if not set(contact_geom_ids).isdisjoint(set(geomid_attached_to_body)):
+            if not set(contact_geom_ids).isdisjoint(
+                    set(geomid_attached_to_body)):
 
                 body_geomid_in_contact = set(contact_geom_ids).intersection(
                     set(geomid_attached_to_body)).pop()
@@ -115,6 +115,10 @@ def get_contact_forces_on_body(model, data, body_name):
                     f_C_W = -f_C_W
 
                 contact_forces.append(f_C_W)
+
+    if len(contact_forces) == 0:
+        return np.zeros((0, 3))
+
     return np.asarray(contact_forces).copy()
 
 
