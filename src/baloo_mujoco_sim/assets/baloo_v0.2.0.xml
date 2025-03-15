@@ -19,7 +19,7 @@
         <geom type="cylinder" size="0.10199999999999999 0.012500000000000001" rgba="0.47058823529411764 0.47058823529411764 0.47058823529411764 0.69999999999999996"/>
       </default>
       <default class="small_joint">
-        <joint group="0" type="hinge" pos="0 0 -0.025000000000000001" limited="true" stiffness="120" range="-27.5 27.5" damping="2"/>
+        <joint group="0" type="hinge" pos="0 0 -0.025000000000000001" limited="true" stiffness="120" range="-27.5 27.5" damping="4"/>
         <geom type="cylinder" size="0.088999999999999996 0.012500000000000001" rgba="0.47058823529411764 0.47058823529411764 0.47058823529411764 0.69999999999999996"/>
       </default>
       <default class="bellows_site">
@@ -10695,9 +10695,9 @@
   </tendon>
   <actuator>
     <plugin name="elevator" class="/" plugin="mujoco.actuator.ruckig_actuator" ctrllimited="true" ctrlrange="-1000 0" actdim="2" joint="linear_actuator">
-      <config key="kp" value="50000"/>
-      <config key="kv" value="5000"/>
-      <config key="ka" value="38.443200000000004"/>
+      <config key="kp" value="5000"/>
+      <config key="kv" value="500"/>
+      <config key="ka" value="100"/>
       <config key="max_velocity" value="0.03"/>
       <config key="max_acceleration" value="0.01"/>
       <config key="max_jerk" value="0.05"/>
@@ -10710,10 +10710,10 @@
     <cylinder name="right_j1_p1" class="cylinder" tendon="right_j1_bellows1" timeconst="0.20000000000000001" area="4"/>
     <cylinder name="right_j1_p2" class="cylinder" tendon="right_j1_bellows2" timeconst="0.20000000000000001" area="4"/>
     <cylinder name="right_j1_p3" class="cylinder" tendon="right_j1_bellows3" timeconst="0.20000000000000001" area="4"/>
-    <cylinder name="right_j2_p0" class="cylinder" tendon="right_j2_bellows0" timeconst="0.29999999999999999" area="4"/>
-    <cylinder name="right_j2_p1" class="cylinder" tendon="right_j2_bellows1" timeconst="0.29999999999999999" area="4"/>
-    <cylinder name="right_j2_p2" class="cylinder" tendon="right_j2_bellows2" timeconst="0.29999999999999999" area="4"/>
-    <cylinder name="right_j2_p3" class="cylinder" tendon="right_j2_bellows3" timeconst="0.29999999999999999" area="4"/>
+    <cylinder name="right_j2_p0" class="cylinder" tendon="right_j2_bellows0" timeconst="1" area="4"/>
+    <cylinder name="right_j2_p1" class="cylinder" tendon="right_j2_bellows1" timeconst="1" area="4"/>
+    <cylinder name="right_j2_p2" class="cylinder" tendon="right_j2_bellows2" timeconst="1" area="4"/>
+    <cylinder name="right_j2_p3" class="cylinder" tendon="right_j2_bellows3" timeconst="1" area="4"/>
     <cylinder name="left_j0_p0" class="cylinder" tendon="left_j0_bellows0" timeconst="0.20000000000000001" area="6"/>
     <cylinder name="left_j0_p1" class="cylinder" tendon="left_j0_bellows1" timeconst="0.20000000000000001" area="6"/>
     <cylinder name="left_j0_p2" class="cylinder" tendon="left_j0_bellows2" timeconst="0.20000000000000001" area="6"/>
@@ -10722,10 +10722,10 @@
     <cylinder name="left_j1_p1" class="cylinder" tendon="left_j1_bellows1" timeconst="0.20000000000000001" area="4"/>
     <cylinder name="left_j1_p2" class="cylinder" tendon="left_j1_bellows2" timeconst="0.20000000000000001" area="4"/>
     <cylinder name="left_j1_p3" class="cylinder" tendon="left_j1_bellows3" timeconst="0.20000000000000001" area="4"/>
-    <cylinder name="left_j2_p0" class="cylinder" tendon="left_j2_bellows0" timeconst="0.29999999999999999" area="4"/>
-    <cylinder name="left_j2_p1" class="cylinder" tendon="left_j2_bellows1" timeconst="0.29999999999999999" area="4"/>
-    <cylinder name="left_j2_p2" class="cylinder" tendon="left_j2_bellows2" timeconst="0.29999999999999999" area="4"/>
-    <cylinder name="left_j2_p3" class="cylinder" tendon="left_j2_bellows3" timeconst="0.29999999999999999" area="4"/>
+    <cylinder name="left_j2_p0" class="cylinder" tendon="left_j2_bellows0" timeconst="1" area="4"/>
+    <cylinder name="left_j2_p1" class="cylinder" tendon="left_j2_bellows1" timeconst="1" area="4"/>
+    <cylinder name="left_j2_p2" class="cylinder" tendon="left_j2_bellows2" timeconst="1" area="4"/>
+    <cylinder name="left_j2_p3" class="cylinder" tendon="left_j2_bellows3" timeconst="1" area="4"/>
   </actuator>
   <sensor>
     <touch name="chest_0_0_touch" site="chest_0_0"/>

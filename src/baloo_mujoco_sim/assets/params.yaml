@@ -36,8 +36,8 @@ small_joint:
   bellows_effective_area: .004 # effective area of bellows in meters^2 from P = F/A
   bend_limit: 110 # bend limit in degrees, probably needs to be lengths of tendons
   lumped_stiffness: 30 # lumped stiffness of the joint in Nm/rad, is divided evenly between bellows
-  lumped_damping: 0.5 # lumped damping of the joint in Nm/(rad/s), is divided evenly between universal joint in series
-  pressure_time_constant: 0.3 # time constant of pressure in seconds, mostly function of valve size
+  lumped_damping: 1.0 # lumped damping of the joint in Nm/(rad/s), is divided evenly between universal joint in series
+  pressure_time_constant: 1.0 # time constant of pressure in seconds, mostly function of valve size
 
 link0:
   mass: 4.54

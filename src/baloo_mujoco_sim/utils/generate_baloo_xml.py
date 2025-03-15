@@ -971,21 +971,20 @@ class Baloo:
             elevator_plugin.add(
                 "config",
                 key="kp",
-                value="50000",
+                value="5000",
             )
 
             elevator_plugin.add(
                 "config",
                 key="kv",
-                value="5000",
+                value="500",
             )
 
             #for gravity compensation, hard coded as roughly the mass of the robot. This is bad I know.
-            robot_mass = 5 + 2*(.0136 + 4.63 + 2.03 + 1.65 + 4.54 + 2.214 + 1.04 + .604)
             elevator_plugin.add(
                 "config",
                 key="ka",
-                value=str(robot_mass), 
+                value="100",
             )
 
             elevator_plugin.add(
@@ -1005,7 +1004,6 @@ class Baloo:
                 key="max_jerk",
                 value="0.05",
             )
-
 
         # add tactile sensors to front of chest 30 rows, 16 columns for one side (32 columns for both)
         y = 0.26 / 2  # front surface of chest

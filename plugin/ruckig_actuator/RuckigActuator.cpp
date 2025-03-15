@@ -255,7 +255,27 @@ namespace mujoco::plugin::actuator
             mjtNum position_error = desired_position - d->actuator_length[actuator_idx];
             mjtNum velocity_error = desired_velocity - d->actuator_velocity[actuator_idx];
 
-            mjtNum force = config_.kp * position_error + config_.kv * velocity_error + config_.ka * (9.81 + desired_acceleration);
+            // cancel out as many dynamic terms as possible to simulate stepper holding torque.
+            // Note that this does NOT include mouse perturbations, which are only applied through xfrc_applied.
+            // so this plugin will not cancel those out. 
+            // Future work can map mouse perturbations to generalized forces to cancel here. Should just need to get correct jacobians.
+            // see https://mujoco.readthedocs.io/en/stable/computation/index.html#general-framework
+
+            // get the id of the joint's dof
+            int elevator_joint_id = mj_name2id(m, mjOBJ_JOINT, "linear_actuator");
+            int dof_id = m->jnt_dofadr[elevator_joint_id];
+            mjtNum qfrc_bias = d->qfrc_bias[dof_id];
+            mjtNum qfrc_smooth = d->qfrc_smooth[dof_id];
+            mjtNum qfrc_passive = d->qfrc_passive[dof_id];
+            mjtNum qfrc_inverse = d->qfrc_inverse[dof_id];
+
+            mjtNum qfrc_total = qfrc_bias + qfrc_smooth + qfrc_passive + qfrc_inverse;
+
+
+            mjtNum force = qfrc_total +
+                config_.kp * position_error +
+                config_.kv * velocity_error +
+                config_.ka * desired_acceleration;
 
             d->actuator_force[actuator_idx] = force;
         }
