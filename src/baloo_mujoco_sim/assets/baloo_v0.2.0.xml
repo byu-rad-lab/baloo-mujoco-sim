@@ -3,7 +3,7 @@
   <option timestep="0.0050000000000000001" integrator="implicitfast" cone="elliptic" jacobian="auto" solver="Newton">
     <flag gravity="enable" multiccd="enable"/>
   </option>
-  <size njmax="5000" nconmax="5000" nstack="5000000"/>
+  <size memory="-1"/>
   <visual>
     <map stiffness="100" force="0.10000000000000001" fogstart="10" fogend="15" zfar="40" shadowscale="0.5"/>
     <scale forcewidth="0.10000000000000001" contactwidth="0.074999999999999997" contactheight="0.025000000000000001" framelength="0.59999999999999998" framewidth="0.059999999999999998"/>

@@ -1140,9 +1140,7 @@ class Baloo:
                                                    multiccd="enable")
 
     def _setSimSize(self):
-        self.mjcf_model.size.set_attributes(njmax=5000,
-                                            nconmax=5000,
-                                            nstack=5000000)
+        self.mjcf_model.size.set_attributes(memory="-1")
 
     def _setVisual(self):
         # visual already has all possible children elements created, so just change them here.
