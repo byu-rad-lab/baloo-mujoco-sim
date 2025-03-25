@@ -199,7 +199,7 @@ def get_box_angvel(model, data):
     return object_vel[3:].copy()
 
 
-def get_box_quat(model, data, scalar_first=True):
+def get_box_quat(model, data, scalar_first=True, positive_w=True):
     """
     Returns the orientation of the frame attached to the center of mass of the box in the global frame.
 
@@ -219,14 +219,23 @@ def get_box_quat(model, data, scalar_first=True):
     Note:
     -----
     This returns the quaternion as specified here https://mujoco.readthedocs.io/en/latest/programming/simulation.html#coordinate-frames-and-transformations:~:text=To%20represent%203D,quaternions%20in%20MJCF.
+
+    positive_w is set to True by default, since mujoco does not do anything about the quaternion double coverage issue.
+    
     """
     qpos_adr = model.joint(model.body("box").jntadr).qposadr.item()
     free_body_len = 7  # position + quaternion
     object_pose = data.qpos[qpos_adr:qpos_adr + free_body_len]
+    quat = object_pose[-4:].copy()  #[qw, qx, qy, qz]
+
+    if positive_w:
+        if quat[0] < 0:
+            quat = -quat
+
     if scalar_first:
-        return object_pose[-4:].copy()  #[qw, qx, qy, qz]
+        return quat
     else:
-        return np.roll(object_pose[-4:], -1)  # now [qx, qy, qz, qw]
+        return np.roll(quat, -1)  # [qx, qy, qz, qw]
 
 
 def get_elevator_cmd(model, data):
@@ -571,9 +580,18 @@ def set_box_position(model, data, x=None, y=None, z=None):
     mujoco.mj_forward(model, data)
 
 
-def set_box_quat(model, data, qw=None, qx=None, qy=None, qz=None):
+def set_box_quat(model,
+                 data,
+                 qw=None,
+                 qx=None,
+                 qy=None,
+                 qz=None,
+                 positive_w=True):
     """
     Sets the orientation of the box in the world frame.
+
+    This function ensures that the quaternion w is positive, just for consistency.
+    Mujoco does not do anything about the quaternion double coverage issue.
 
     Args:
         model (mujoco.MjModel): MuJoCo model object.
@@ -582,14 +600,19 @@ def set_box_quat(model, data, qw=None, qx=None, qy=None, qz=None):
     """
     box_pose = data.joint(model.body("box").jntadr).qpos
 
+    quat = np.array([qw, qx, qy, qz])
+    if positive_w:
+        if quat[0] < 0:
+            quat = -quat
+
     if qw is not None:
-        box_pose[3] = qw
+        box_pose[3] = quat[0]
     if qx is not None:
-        box_pose[4] = qx
+        box_pose[4] = quat[1]
     if qy is not None:
-        box_pose[5] = qy
+        box_pose[5] = quat[2]
     if qz is not None:
-        box_pose[6] = qz
+        box_pose[6] = quat[3]
 
     mujoco.mj_forward(model, data)
 
