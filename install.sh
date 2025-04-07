@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Create virtual environment and install python deps.
-uv sync
+uv sync --active
 uv pip install -e .
 
 #Download correct release of ruckig
