@@ -266,18 +266,18 @@ def set_elevator_cmd(model, data, value):
 
 def get_elevator_height(model, data):
     '''returns joint coordinate of elevator in meters'''
-    return data.qpos[model.joint("linear_actuator").qposadr].copy()
+    return data.qpos[model.joint("chest::linear_actuator").qposadr].copy()
 
 
 def get_elevator_vel(model, data):
-    return data.qvel[model.joint("linear_actuator").dofadr].copy()
+    return data.qvel[model.joint("chest::linear_actuator").dofadr].copy()
 
 
 def get_joint_pressures(model, data, side, jointnum):
     pressures = []
     for i in range(4):
         pressures.append(
-            data.act[model.actuator(f"{side}_j{jointnum}_p{i}").actadr])
+            data.act[model.actuator(f"{side}_arm::j{jointnum}::p{i}").actadr])
     return np.asarray(pressures).squeeze().copy()
 
 
@@ -287,13 +287,13 @@ def set_joint_pressure_commands(model, data, side, jointnum,
     pressure_commands = np.clip(pressure_commands, 0, 400)
     for i in range(4):
         data.ctrl[model.actuator(
-            f"{side}_j{jointnum}_p{i}").id] = pressure_commands[i]
+            f"{side}_arm::j{jointnum}::p{i}").id] = pressure_commands[i]
 
 
 def get_joint_pressure_commands(model, data, side, jointnum):
     cmds = []
     for i in range(4):
-        cmds.append(data.ctrl[model.actuator(f"{side}_j{jointnum}_p{i}").id])
+        cmds.append(data.ctrl[model.actuator(f"{side}_arm::j{jointnum}::p{i}").id])
     return np.asarray(cmds).copy()
 
 
@@ -304,7 +304,7 @@ def get_tactile_image(model, data, side: Literal['left', 'right', 'chest'],
         tactile_img = np.zeros((64, 16))
         for i in range(64):
             for j in range(16):
-                sensor_name = f"{side}_link{linknum}_{i}_{j}_touch"
+                sensor_name = f"{side}_arm::link{linknum}::touch_{i}_{j}"
                 taxel_force = data.sensordata[model.sensor(sensor_name).id]
                 # fill column
                 tactile_img[i, j] = taxel_force
@@ -312,7 +312,7 @@ def get_tactile_image(model, data, side: Literal['left', 'right', 'chest'],
         tactile_img = np.zeros((64, 16))
         for i in range(64):
             for j in range(16):
-                sensor_name = f"{side}_link{linknum}_{i}_{j}_touch"
+                sensor_name = f"{side}_arm::link{linknum}::touch_{i}_{j}"
                 taxel_force = data.sensordata[model.sensor(sensor_name).id]
                 # fill column
                 tactile_img[i, j] = taxel_force
@@ -323,7 +323,7 @@ def get_tactile_image(model, data, side: Literal['left', 'right', 'chest'],
             for j in range(30):  # rows
                 # logic to deal with slanted sides
                 if j <= (11 / 10) * i + 19 and j <= (-11 / 10) * i + 53:
-                    sensor_name = f"chest_{i}_{j}_touch"
+                    sensor_name = f"chest::touch_{i}_{j}"
                     taxel_force = data.sensordata[model.sensor(sensor_name).id]
                     tactile_img[i, j] = taxel_force
 
@@ -331,12 +331,12 @@ def get_tactile_image(model, data, side: Literal['left', 'right', 'chest'],
 
 
 def get_joint_angles(model, data, side, jointnum):
-    joint_angle_sensor = data.sensor(f"{side}_j{jointnum}").data
+    joint_angle_sensor = data.sensor(f"{side}_arm::j{jointnum}").data
     return joint_angle_sensor[:2].copy()
 
 
 def get_joint_vel(model, data, side, jointnum):
-    joint_vel_sensor = data.sensor(f"{side}_j{jointnum}").data
+    joint_vel_sensor = data.sensor(f"{side}_arm::j{jointnum}").data
     return joint_vel_sensor[2:].copy()
 
 
@@ -383,8 +383,8 @@ def set_joint_angles(model, data, side, jointnum, jangles):
 
     #find jointid for each disk joint angles in data.qpos that corresponds to the jointnum
     for i in range(num_disks - 1):
-        data.joint(f"{side}_j{jointnum}_Jx_{i}").qpos = x_disk_angle
-        data.joint(f"{side}_j{jointnum}_Jy_{i}").qpos = y_disk_angle
+        data.joint(f"{side}_arm::j{jointnum}::Jx_{i}").qpos = x_disk_angle
+        data.joint(f"{side}_arm::j{jointnum}::Jy_{i}").qpos = y_disk_angle
 
     mujoco.mj_forward(model, data)
 
@@ -410,9 +410,9 @@ def set_joint_velocities(model, data, side, jointnum, jvel):
     #find jointid for each disk joint angles in data.qpos that corresponds to the jointnum
     for i in range(num_disks - 1):
         data.qvel[model.joint(
-            f"{side}_j{jointnum}_Jx_{i}").dofadr] = x_disk_vel
+            f"{side}_arm::j{jointnum}::Jx_{i}").dofadr] = x_disk_vel
         data.qvel[model.joint(
-            f"{side}_j{jointnum}_Jy_{i}").dofadr] = y_disk_vel
+            f"{side}_arm::j{jointnum}::Jy_{i}").dofadr] = y_disk_vel
 
     mujoco.mj_forward(model, data)
 
@@ -448,7 +448,7 @@ def get_link_position(model, data, side: Literal['left', 'right'],
     Returns:
         ArrayLike[float, float, float]: [x,y,z] meters in world frame.
     """
-    return data.geom(f"{side}_link{linknum}").xpos.copy()
+    return data.geom(f"{side}_arm::link{linknum}").xpos.copy()
 
 
 def get_disk_position(model, data, side: Literal['left', 'right'],
@@ -471,7 +471,7 @@ def get_disk_position(model, data, side: Literal['left', 'right'],
     if disk_num == -1:
         disk_num = num_disks_in_model - 1
     try:
-        return data.geom(f"{side}_j{joint_num}_disk{disk_num}").xpos.copy()
+        return data.geom(f"{side}_arm::j{joint_num}::disk{disk_num}").xpos.copy()
     except KeyError as e:
         error = f"Disk {disk_num} not found for {side} arm, joint {joint_num}. There are {num_disks_in_model} disks in the model and joint_num must be 0, 1, or 2."
         raise KeyError(error) from None
@@ -504,7 +504,7 @@ def get_disk_quat(model: mujoco.MjModel,
     if disk_num == -1:
         disk_num = num_disks_in_model - 1
     try:
-        xmat = data.geom(f"{side}_j{joint_num}_disk{disk_num}").xmat
+        xmat = data.geom(f"{side}_arm::j{joint_num}::disk{disk_num}").xmat
         xquat = np.zeros(4)
         mujoco.mju_mat2Quat(xquat, xmat)
 

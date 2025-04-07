@@ -67,8 +67,7 @@ namespace mujoco::plugin::sensor {
     }
 
     JointAngleEstimator::JointAngleEstimator(const mjModel* m, mjData* d, int instance, int nchannel) : nchannel_(nchannel)
-    {
-    }
+    {}
 
     void JointAngleEstimator::Reset(const mjModel* m, int instance) {}
 
@@ -101,19 +100,19 @@ namespace mujoco::plugin::sensor {
         int numDisksId = mj_name2id(m, mjOBJ_NUMERIC, numDisksName.c_str());
         if (numDisksId == -1)
         {
-            mju_error("Joint Angle Estimator Plugin: numDisksId is -1");
+            mju_error("Joint Angle Estimator Plugin: numDisksId is -1. Could not find numeric with name %s", numDisksName.c_str());
             return;
         }
         mjtNum* numDisks = m->numeric_data + numDisksId;
 
         // ?? how to deal with different jointnum (i.e. 1_B0 and 2_B0)?
         // f"{side}_{joint_num}_B{i}" is format of disk bodies generally
-        std::string base_quat_name = sensorName + "_B0_framequat";
+        std::string base_quat_name = sensorName + "::B0_framequat";
         int base_quat_id = mj_name2id(m, mjOBJ_SENSOR, base_quat_name.c_str());
 
         if (base_quat_id == -1)
         {
-            mju_error("Joint Angle Estimator Plugin: base_quat_id is -1");
+            mju_error("Joint Angle Estimator Plugin: base_quat_id is -1. Could not find sensor with name %s", base_quat_name.c_str());
             return;
         }
 
@@ -121,11 +120,11 @@ namespace mujoco::plugin::sensor {
         int base_quat_adr = m->sensor_adr[base_quat_id];
         mjtNum* r_base = d->sensordata + base_quat_adr; //should be 1,0,0,0
 
-        std::string tip_quat_name = sensorName + "_B" + std::to_string(int(*numDisks) - 1) + "_framequat";
+        std::string tip_quat_name = sensorName + "::B" + std::to_string(int(*numDisks) - 1) + "_framequat";
         int tip_quat_id = mj_name2id(m, mjOBJ_SENSOR, tip_quat_name.c_str());
         if (tip_quat_id == -1)
         {
-            mju_error("Joint Angle Estimator Plugin: tip_quat_id is -1");
+            mju_error("Joint Angle Estimator Plugin: tip_quat_id is -1. Could not find sensor with name %s", tip_quat_name.c_str());
             return;
         }
         int tip_quat_adr = m->sensor_adr[tip_quat_id];
@@ -171,11 +170,11 @@ namespace mujoco::plugin::sensor {
 
         //FOR JOINT VELOCITIES
         //get sensor id for frameangvel sensor on last disk of joint. Note that frameangvel is referenced to base disk in xml, not referenced to global coords.
-        std::string tip_angvel_name = sensorName + "_B" + std::to_string(int(*numDisks) - 1) + "_frameangvel";
+        std::string tip_angvel_name = sensorName + "::B" + std::to_string(int(*numDisks) - 1) + "_frameangvel";
         int tip_angvel_id = mj_name2id(m, mjOBJ_SENSOR, tip_angvel_name.c_str());
         if (tip_angvel_id == -1)
         {
-            mju_error("Joint Angle Estimator Plugin: tip_angvel_id is - 1");
+            mju_error("Joint Angle Estimator Plugin: tip_angvel_id is - 1. Could not find sensor with name %s", tip_angvel_name.c_str());
             return;
         }
 

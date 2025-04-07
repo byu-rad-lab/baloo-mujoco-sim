@@ -282,27 +282,27 @@ class Baloo:
                 #large joint so these need to be invisible
                 bellows = self.mjcf_model.tendon.add(
                     "spatial",
-                    name=f"{side}_j{joint_num}_bellows{i}",
+                    name=f"{side}_arm::j{joint_num}::bellows{i}",
                     dclass="tendon",
                     rgba=[0, 0, 0, 0])
             else:
                 #add the bellows to the model
                 bellows = self.mjcf_model.tendon.add(
                     "spatial",
-                    name=f"{side}_j{joint_num}_bellows{i}",
+                    name=f"{side}_arm::j{joint_num}::bellows{i}",
                     dclass="tendon")
 
             #add all sites along the disks for the bellows to attach to
             for j in range(self.num_disks):
                 site = self.mjcf_model.find(
-                    'site', f"{side}_j{joint_num}_b{j}_site{i}")
+                    'site', f"{side}_arm::j{joint_num}::b{j}::site{i}")
                 bellows.add("site", site=site)
 
         #add actuator to each built tendon
         self.mjcf_model.actuator.add(
             "cylinder",
-            name=f"{side}_j{joint_num}_p0",
-            tendon=f"{side}_j{joint_num}_bellows0",
+            name=f"{side}_arm::j{joint_num}::p0",
+            tendon=f"{side}_arm::j{joint_num}::bellows0",
             area=self.bellows_areas[joint_num] *
             1000,  # 1000 since inputs are in kPa
             dclass="cylinder",
@@ -311,8 +311,8 @@ class Baloo:
         #add actuator to side_tendon
         self.mjcf_model.actuator.add(
             "cylinder",
-            name=f"{side}_j{joint_num}_p1",
-            tendon=f"{side}_j{joint_num}_bellows1",
+            name=f"{side}_arm::j{joint_num}::p1",
+            tendon=f"{side}_arm::j{joint_num}::bellows1",
             area=self.bellows_areas[joint_num] *
             1000,  # 1000 since inputs are in kPa
             dclass='cylinder',
@@ -320,8 +320,8 @@ class Baloo:
 
         self.mjcf_model.actuator.add(
             "cylinder",
-            name=f"{side}_j{joint_num}_p2",
-            tendon=f"{side}_j{joint_num}_bellows2",
+            name=f"{side}_arm::j{joint_num}::p2",
+            tendon=f"{side}_arm::j{joint_num}::bellows2",
             area=self.bellows_areas[joint_num] *
             1000,  # 1000 since inputs are in kPa
             dclass='cylinder',
@@ -329,8 +329,8 @@ class Baloo:
 
         self.mjcf_model.actuator.add(
             "cylinder",
-            name=f"{side}_j{joint_num}_p3",
-            tendon=f"{side}_j{joint_num}_bellows3",
+            name=f"{side}_arm::j{joint_num}::p3",
+            tendon=f"{side}_arm::j{joint_num}::bellows3",
             area=self.bellows_areas[joint_num] *
             1000,  # 1000 since inputs are in kPa
             dclass='cylinder',
@@ -342,54 +342,55 @@ class Baloo:
             ##### BASE #####
             self.mjcf_model.sensor.add(
                 "framequat",
-                name=f"{side}_j{joint_num}_B0_framequat",
+                name=f"{side}_arm::j{joint_num}::B0_framequat",
                 objtype="body",
-                objname=f"{side}_j{joint_num}_B0",
+                objname=f"{side}_arm::j{joint_num}::B0",
             )
 
             #### TIP ####
             self.mjcf_model.sensor.add(
                 "framequat",
-                name=f"{side}_j{joint_num}_B{self.num_disks-1}_framequat",
+                name=f"{side}_arm::j{joint_num}::B{self.num_disks-1}_framequat",
                 objtype="body",
-                objname=f"{side}_j{joint_num}_B{self.num_disks-1}",
+                objname=f"{side}_arm::j{joint_num}::B{self.num_disks-1}",
             )
 
             #add frameangvel to tip, ref to base frame
             self.mjcf_model.sensor.add(
                 "frameangvel",
-                name=f"{side}_j{joint_num}_B{self.num_disks-1}_frameangvel",
+                name=
+                f"{side}_arm::j{joint_num}::B{self.num_disks-1}_frameangvel",
                 objtype="body",
-                objname=f"{side}_j{joint_num}_B{self.num_disks-1}",
+                objname=f"{side}_arm::j{joint_num}::B{self.num_disks-1}",
                 reftype="body",
-                refname=f"{side}_j{joint_num}_B0",
+                refname=f"{side}_arm::j{joint_num}::B0",
             )
 
             if self.enable_plugins:
                 self.mjcf_model.sensor.add(
                     "plugin",
                     plugin="mujoco.sensor.joint_angle_estimator",
-                    name=f'{side}_j{joint_num}')
+                    name=f'{side}_arm::j{joint_num}')
 
             #add tendon length sensors to all joints to see what they are at
             for i in range(4):
                 self.mjcf_model.sensor.add(
                     "tendonpos",
-                    name=f"{side}_j{joint_num}_bellows{i}",
-                    tendon=f"{side}_j{joint_num}_bellows{i}",
+                    name=f"{side}_arm::j{joint_num}::bellows{i}",
+                    tendon=f"{side}_arm::j{joint_num}::bellows{i}",
                 )
 
     def addLink0(self, body, side):
         link = body.add(
             "body",
-            name=f"{side}_link0",
+            name=f"{side}_arm::link0",
             pos=[0, 0, (self.disk_half_height + self.link0_height / 2)],
             euler=[0, 0, -45],
         )
 
         link.add(
             "geom",
-            name=f"{side}_link0",
+            name=f"{side}_arm::link0",
             type="cylinder",
             size=[self.link0_radius, self.link0_height / 2],
             rgba=self.BLACK,
@@ -416,7 +417,7 @@ class Baloo:
             #add parent body to attach sensors to
             sleeve = link.add(
                 "body",
-                name=f"{side}_link{linknum}_tactile_sleeve",
+                name=f"{side}_arm::link{linknum}::tactile_sensor",
             )
 
             sleeve_mass = 1.04 if linknum == 0 else .604
@@ -436,11 +437,10 @@ class Baloo:
             for i in range(64):
                 h = height
                 for j in range(16):
-                    site_name = f"{side}_link{linknum}_{i}_{j}"
                     sleeve.add(
                         "geom",
-                        name=site_name + "_taxel",
-                        dclass='taxel',
+                        name=f"{side}_arm::link{linknum}::taxel_{i}_{j}",
+                        dclass='taxel_geom',
                         pos=[
                             r * np.cos(np.radians(theta)),
                             r * np.sin(np.radians(theta)),
@@ -450,23 +450,21 @@ class Baloo:
                     )
                     sleeve.add(
                         "site",
-                        name=site_name,
-                        type="sphere",
-                        size=[0.01 / 2],
+                        name=f"{side}_arm::link{linknum}::site_{i}_{j}",
+                        dclass='taxel_site',
                         pos=[
                             r * np.cos(np.radians(theta)),
                             r * np.sin(np.radians(theta)),
                             h,
                         ],
                         euler=[0, 0, theta],
-                        rgba=self.GRAY2,
                     )
 
                     # add sensor to this site
                     self.mjcf_model.sensor.add(
                         "touch",
-                        name=f"{side}_link{linknum}_{i}_{j}_touch",
-                        site=site_name)
+                        name=f"{side}_arm::link{linknum}::touch_{i}_{j}",
+                        site=f"{side}_arm::link{linknum}::site_{i}_{j}")
 
                     h -= dh
                 theta += dtheta
@@ -474,14 +472,14 @@ class Baloo:
     def addLink1(self, body, side):
         link = body.add(
             "body",
-            name=f"{side}_link1",
+            name=f"{side}_arm::link1",
             pos=[0, 0, (self.disk_half_height + self.link1_height / 2)],
             euler=[0, 0, -45],
         )
 
         link.add(
             "geom",
-            name=f"{side}_link1",
+            name=f"{side}_arm::link1",
             type="cylinder",
             size=[self.link1_radius, self.link1_height / 2],
             rgba=self.BLACK,
@@ -519,13 +517,13 @@ class Baloo:
         # create first body, whose frame is offset
         first_disk = parent_body.add(
             "body",
-            name=f"{side}_j{joint_num}_B0",
+            name=f"{side}_arm::j{joint_num}::B0",
             pos=[0, 0, -(185e-3 + self.disk_half_height)],
             euler=[180, 0, -45],
         )
         first_disk.add(
             "geom",
-            name=f"{side}_j{joint_num}_disk0",
+            name=f"{side}_arm::j{joint_num}::disk0",
             dclass="large_joint",
         )
 
@@ -542,12 +540,12 @@ class Baloo:
         for i in range(1, self.num_disks):
             body = prev_body.add(
                 "body",
-                name=f"{side}_j{joint_num}_B{i}",
+                name=f"{side}_arm::j{joint_num}::B{i}",
                 pos=[0, 0, (2 * self.disk_height)],
             )
             body.add(
                 "geom",
-                name=f"{side}_j{joint_num}_disk{i}",
+                name=f"{side}_arm::j{joint_num}::disk{i}",
                 dclass="large_joint",
             )
             body.add("inertial",
@@ -555,11 +553,11 @@ class Baloo:
                      diaginertia=[Ixy, Ixy, Iz],
                      pos=[0, 0, 0])
             body.add("joint",
-                     name=f"{side}_j{joint_num}_Jx_{i-1}",
+                     name=f"{side}_arm::j{joint_num}::Jx_{i-1}",
                      dclass="large_joint",
                      axis=self.X)
             body.add("joint",
-                     name=f"{side}_j{joint_num}_Jy_{i-1}",
+                     name=f"{side}_arm::j{joint_num}::Jy_{i-1}",
                      dclass="large_joint",
                      axis=self.Y)
 
@@ -578,21 +576,21 @@ class Baloo:
 
         for i in range(4):
             site = self.mjcf_model.find(
-                'site', f"{side}_j{joint_num}_b{disk_num}_site{i}")
+                'site', f"{side}_arm::j{joint_num}::b{disk_num}::site{i}")
             pos = np.array(site.pos)
             pos_plus = Rplus.apply(pos)
             pos_minus = Rminus.apply(pos)
 
             disk.add(
                 "site",
-                name=f"{side}_j{joint_num}_b{disk_num}_site{i}_A",
+                name=f"{side}_arm::j{joint_num}::b{disk_num}::site{i}_A",
                 pos=pos_plus,
                 rgba=[1, 1, 1, 1],
             )
 
             disk.add(
                 "site",
-                name=f"{side}_j{joint_num}_b{disk_num}_site{i}_B",
+                name=f"{side}_arm::j{joint_num}::b{disk_num}::site{i}_B",
                 pos=pos_minus,
                 rgba=[1, 1, 1, 1],
                 group=0,
@@ -603,22 +601,22 @@ class Baloo:
         for i in range(4):
             bellowsA = self.mjcf_model.tendon.add(
                 "spatial",
-                name=f"{side}_j{joint_num}_bellows{i}_A",
+                name=f"{side}_arm::j{joint_num}::bellows{i}_A",
                 dclass="tendon",
             )
             bellowsB = self.mjcf_model.tendon.add(
                 "spatial",
-                name=f"{side}_j{joint_num}_bellows{i}_B",
+                name=f"{side}_arm::j{joint_num}::bellows{i}_B",
                 dclass="tendon",
             )
 
             for j in range(self.num_disks):
                 siteA = self.mjcf_model.find(
-                    'site', f"{side}_j{joint_num}_b{j}_site{i}_A")
+                    'site', f"{side}_arm::j{joint_num}::b{j}::site{i}_A")
                 bellowsA.add("site", site=siteA)
 
                 siteB = self.mjcf_model.find(
-                    'site', f"{side}_j{joint_num}_b{j}_site{i}_B")
+                    'site', f"{side}_arm::j{joint_num}::b{j}::site{i}_B")
                 bellowsB.add("site", site=siteB)
 
     def _buildMediumJoint(self, body, side):
@@ -635,14 +633,14 @@ class Baloo:
         # create first body, whose frame is offset
         first_disk = body.add(
             "body",
-            name=f"{side}_j{joint_num}_B0",
+            name=f"{side}_arm::j{joint_num}::B0",
             pos=[0, 0, (self.link0_height / 2 + self.disk_half_height)
                  ],  # from pneubotics
             euler=[0, 0, 45],
         )
         first_disk.add(
             "geom",
-            name=f"{side}_j{joint_num}_disk0",
+            name=f"{side}_arm::j{joint_num}::disk0",
             dclass='medium_joint',
         )
         first_disk.add("inertial",
@@ -657,12 +655,12 @@ class Baloo:
         for i in range(1, self.num_disks):
             body = prev_body.add(
                 "body",
-                name=f"{side}_j{joint_num}_B{i}",
+                name=f"{side}_arm::j{joint_num}::B{i}",
                 pos=[0, 0, (2 * self.disk_height)],
             )
             body.add(
                 "geom",
-                name=f"{side}_j{joint_num}_disk{i}",
+                name=f"{side}_arm::j{joint_num}::disk{i}",
                 dclass='medium_joint',
             )
             body.add("inertial",
@@ -672,11 +670,11 @@ class Baloo:
 
             #creates motion dof between body and the body's parent (i.e. prev_body)
             body.add("joint",
-                     name=f"{side}_j{joint_num}_Jx_{i-1}",
+                     name=f"{side}_arm::j{joint_num}::Jx_{i-1}",
                      axis=self.X,
                      dclass='medium_joint')
             body.add("joint",
-                     name=f"{side}_j{joint_num}_Jy_{i-1}",
+                     name=f"{side}_arm::j{joint_num}::Jy_{i-1}",
                      axis=self.Y,
                      dclass='medium_joint')
 
@@ -697,20 +695,20 @@ class Baloo:
         # chamber 0 is +y
         disk.add(
             "site",
-            name=f"{side}_j{joint_num}_b{disk_num}_site{0}",
+            name=f"{side}_arm::j{joint_num}::b{disk_num}::site{0}",
             pos=[0, loc, 0],
             dclass="bellows_site",
         )
         disk.add(
             "site",
-            name=f"{side}_j{joint_num}_b{disk_num}_site{1}",
+            name=f"{side}_arm::j{joint_num}::b{disk_num}::site{1}",
             pos=[0, -loc, 0],
             dclass="bellows_site",
         )
         # chamber 2 is -x
         disk.add(
             "site",
-            name=f"{side}_j{joint_num}_b{disk_num}_site{2}",
+            name=f"{side}_arm::j{joint_num}::b{disk_num}::site{2}",
             pos=[-loc, 0, 0],
             dclass="bellows_site",
         )
@@ -718,7 +716,7 @@ class Baloo:
         # chamber 3 is +x
         disk.add(
             "site",
-            name=f"{side}_j{joint_num}_b{disk_num}_site{3}",
+            name=f"{side}_arm::j{joint_num}::b{disk_num}::site{3}",
             pos=[loc, 0, 0],
             dclass="bellows_site",
         )
@@ -736,12 +734,12 @@ class Baloo:
 
         first_disk = body.add(
             "body",
-            name=f"{side}_j{joint_num}_B0",
+            name=f"{side}_arm::j{joint_num}::B0",
             pos=[0, 0, (.08 + self.disk_half_height)],
             euler=[0, 0, 45],
         )
         first_disk.add("geom",
-                       name=f"{side}_j{joint_num}_disk0",
+                       name=f"{side}_arm::j{joint_num}::disk0",
                        dclass='small_joint')
         first_disk.add("inertial",
                        mass=disk_mass,
@@ -759,11 +757,11 @@ class Baloo:
         for i in range(1, self.num_disks):
             body = prev_body.add(
                 "body",
-                name=f"{side}_j{joint_num}_B{i}",
+                name=f"{side}_arm::j{joint_num}::B{i}",
                 pos=[0, 0, (2 * self.disk_height)],
             )
             body.add("geom",
-                     name=f"{side}_j{joint_num}_disk{i}",
+                     name=f"{side}_arm::j{joint_num}::disk{i}",
                      dclass='small_joint')
             body.add("inertial",
                      mass=disk_mass,
@@ -771,11 +769,11 @@ class Baloo:
                      pos=[0, 0, 0])
 
             body.add("joint",
-                     name=f"{side}_j{joint_num}_Jx_{i-1}",
+                     name=f"{side}_arm::j{joint_num}::Jx_{i-1}",
                      dclass='small_joint',
                      axis=self.X)
             body.add("joint",
-                     name=f"{side}_j{joint_num}_Jy_{i-1}",
+                     name=f"{side}_arm::j{joint_num}::Jy_{i-1}",
                      dclass='small_joint',
                      axis=self.Y)
 
@@ -792,6 +790,7 @@ class Baloo:
 
         base.add(
             "geom",
+            name="base::left_leg",
             type="mesh",
             mesh="LeftBaseMesh",
             material="vention_blue",
@@ -801,6 +800,7 @@ class Baloo:
 
         base.add(
             "geom",
+            name="base::right_leg",
             type="mesh",
             mesh="RightBaseMesh",
             material="vention_blue",
@@ -808,6 +808,7 @@ class Baloo:
 
         base.add(
             "geom",
+            name="base",
             type="mesh",
             mesh="BaseFrameMesh",
             material="vention_blue",
@@ -815,6 +816,7 @@ class Baloo:
 
         base.add(
             "geom",
+            name="base::linear_actuator",
             type="mesh",
             mesh="LinearActuatorMesh",
             material="vention_blue",
@@ -822,6 +824,7 @@ class Baloo:
 
         base.add(
             "geom",
+            name="base::pneumatic_inlet",
             type="mesh",
             mesh="PneumaticInletMesh",
             material="silver",
@@ -829,6 +832,7 @@ class Baloo:
 
         base.add(
             "geom",
+            name="base::power_button",
             type="mesh",
             mesh="PowerButtonMesh",
             material="red",
@@ -836,78 +840,91 @@ class Baloo:
 
         base.add(
             "geom",
+            name="base::control_box",
             type="mesh",
             mesh="ControlBoxMesh",
             material="matte_black",
         )
         base.add(
             "geom",
+            name="base::estop_plug",
             type="mesh",
             mesh="EstopPlugMesh",
             material="green",
         )
         base.add(
             "geom",
+            name="base::ethernet_jack",
             type="mesh",
             mesh="EthernetJackMesh",
             material="silver",
         )
         base.add(
             "geom",
+            name="base::lcd_screen",
             type="mesh",
             mesh="LCDScreenMesh",
             material="lcd_blue",
         )
         base.add(
             "geom",
+            name="base::left_back_wheel_foot",
             type="mesh",
             mesh="LeftBackWheelFootMesh",
             material="matte_black",
         )
         base.add(
             "geom",
+            name="base::left_front_wheel_foot",
             type="mesh",
             mesh="LeftFrontWheelFootMesh",
             material="matte_black",
         )
         base.add(
             "geom",
+            name="base::right_back_wheel_foot",
             type="mesh",
             mesh="RightBackWheelFootMesh",
             material="matte_black",
         )
         base.add(
             "geom",
+            name="base::right_front_wheel_foot",
             type="mesh",
             mesh="RightFrontWheelFootMesh",
             material="matte_black",
         )
         base.add(
             "geom",
+            name="base::left_back_wheel",
             type="mesh",
             mesh="LeftBackWheelMesh",
             material="cream",
         )
         base.add(
             "geom",
+            name="base::left_front_wheel",
             type="mesh",
             mesh="LeftFrontWheelMesh",
             material="cream",
         )
         base.add(
             "geom",
+            name="base::right_back_wheel",
             type="mesh",
             mesh="RightBackWheelMesh",
             material="cream",
         )
         base.add(
             "geom",
+            name="base::right_front_wheel",
             type="mesh",
             mesh="RightFrontWheelMesh",
             material="cream",
         )
         base.add(
             "geom",
+            name="base::stepper_motor",
             type="mesh",
             mesh="StepperMesh",
             material="matte_black",
@@ -949,7 +966,7 @@ class Baloo:
         if self.enable_plugins:
             chest.add(
                 "joint",
-                name="linear_actuator",
+                name="chest::linear_actuator",
                 type="slide",
                 axis=[0, 0, 1],
                 limited=True,
@@ -964,7 +981,7 @@ class Baloo:
                 plugin="mujoco.actuator.ruckig_actuator",
                 ctrllimited=True,
                 ctrlrange=[-1000, 0],
-                joint="linear_actuator",
+                joint="chest::linear_actuator",
                 actdim=2,
             )
 
@@ -1025,7 +1042,7 @@ class Baloo:
         #add sensor body for chest
         tactile_sensor = chest.add(
             "body",
-            name="chest_tactile_sensor",
+            name="chest::tactile_sensor",
         )
 
         if self.useTactileSensors:
@@ -1034,26 +1051,26 @@ class Baloo:
                 for j in range(30):  # rows
                     # logic to deal with slanted sides
                     if j <= (11 / 10) * i + 19 and j <= (-11 / 10) * i + 53:
-                        site_name = f"chest_{i}_{j}"
+                        site_name = f"taxel_{i}_{j}"
                         tactile_sensor.add(
                             "geom",
-                            dclass='taxel',
-                            name=site_name + "_taxel",
+                            dclass='taxel_geom',
+                            name=f"chest::taxel_{i}_{j}",
                             pos=[x, y, z],
                         )
+
                         tactile_sensor.add(
                             "site",
-                            name=site_name,
-                            type="sphere",
-                            size=[0.015 / 2],
+                            name=f"chest::site_{i}_{j}",
+                            dclass='taxel_site',
                             pos=[x, y, z],
-                            rgba=self.GRAY2,
                         )
 
                         # add sensor to this site
-                        self.mjcf_model.sensor.add("touch",
-                                                   name=f"chest_{i}_{j}_touch",
-                                                   site=site_name)
+                        self.mjcf_model.sensor.add(
+                            "touch",
+                            name=f"chest::touch_{i}_{j}",
+                            site=f"chest::site_{i}_{j}")
 
                     z -= dz
                 x -= dx
@@ -1063,14 +1080,14 @@ class Baloo:
     def createShoulders(self, chest):
         right_shoulder = chest.add(
             "body",
-            name="right_shoulder",
+            name="chest::right_shoulder",
             pos=[425e-3, 0, 0],
             euler=[self.arm_angle, 0, 0],
         )
 
         right_shoulder.add(
             "geom",
-            name="right_shoulder",
+            name="chest::right_shoulder",
             type="mesh",
             mesh="SimpleShoulderMesh",
             material="silver",
@@ -1093,14 +1110,14 @@ class Baloo:
 
         left_shoulder = chest.add(
             "body",
-            name="left_shoulder",
+            name="chest::left_shoulder",
             pos=[-425e-3, 0, 0],
             euler=[self.arm_angle, 0, 0],
         )
 
         left_shoulder.add(
             "geom",
-            name="left_shoulder",
+            name="chest::left_shoulder",
             type="mesh",
             mesh="SimpleShoulderMesh",
             material="silver",
@@ -1314,14 +1331,25 @@ class Baloo:
             ctrlrange=[0, self.pmax / 1000],  #kpa
         )
 
-        taxel_class = self.mjcf_model.default.add("default", dclass="taxel")
-        taxel_class.geom.set_attributes(
+        taxel_geom_class = self.mjcf_model.default.add("default",
+                                                       dclass="taxel_geom")
+        taxel_geom_class.geom.set_attributes(
             type="sphere",
-            size=[0.01 / 2],
+            size=[0.015 / 2],
             rgba=self.GRAY2,
             contype=0,
             conaffinity=2,  #to exclude contact with joint disks
             condim=4,  #to simulate soft contacts
+            group=1,
+        )
+
+        taxel_site_class = self.mjcf_model.default.add("default",
+                                                       dclass="taxel_site")
+        taxel_site_class.site.set_attributes(
+            type="sphere",
+            size=[0.015 / 2],
+            rgba=self.GRAY2,
+            group=1,
         )
 
     def to_clean_xml_string(self, asset_dir=str):
