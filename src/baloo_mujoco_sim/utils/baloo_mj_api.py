@@ -293,7 +293,8 @@ def set_joint_pressure_commands(model, data, side, jointnum,
 def get_joint_pressure_commands(model, data, side, jointnum):
     cmds = []
     for i in range(4):
-        cmds.append(data.ctrl[model.actuator(f"{side}_arm::j{jointnum}::p{i}").id])
+        cmds.append(
+            data.ctrl[model.actuator(f"{side}_arm::j{jointnum}::p{i}").id])
     return np.asarray(cmds).copy()
 
 
@@ -471,7 +472,8 @@ def get_disk_position(model, data, side: Literal['left', 'right'],
     if disk_num == -1:
         disk_num = num_disks_in_model - 1
     try:
-        return data.geom(f"{side}_arm::j{joint_num}::disk{disk_num}").xpos.copy()
+        return data.geom(
+            f"{side}_arm::j{joint_num}::disk{disk_num}").xpos.copy()
     except KeyError as e:
         error = f"Disk {disk_num} not found for {side} arm, joint {joint_num}. There are {num_disks_in_model} disks in the model and joint_num must be 0, 1, or 2."
         raise KeyError(error) from None
@@ -709,3 +711,51 @@ def check_arms_touching_ground(model, data):
                 break
 
     return touching_ground
+
+
+def check_arm_base_collision(model, data):
+    """
+    Return true if any part of any arm is touching anything on the base. 
+
+    The base body has multiple geoms attached to it, but all have "base::" prefixes in their names. 
+    """
+
+    for i in range(data.ncon):
+        #get both geoms in contact
+        geom1_id = data.contact[i].geom[0]
+        geom2_id = data.contact[i].geom[1]
+        geom1_name = model.geom(geom1_id).name
+        geom2_name = model.geom(geom2_id).name
+
+        # check if either geom is attached to the base body
+        if "base::" in geom1_name or "base::" in geom2_name:
+            # check if either geom is attached to the arms
+            if "left_arm::" in geom1_name or "left_arm::" in geom2_name or \
+                    "right_arm::" in geom1_name or "right_arm::" in geom2_name:
+                return True
+
+    return False
+
+
+def check_arm_arm_collision(model, data):
+    """
+    Returns true if any part of any arm is touching anything on the other arm.
+
+    Each arm has many bodies and geoms attached to it, but all have "left_arm::" or "right_arm::" prefixes in their names. 
+
+    """
+
+    for i in range(data.ncon):
+        #get both geoms in contact
+        geom1_id = data.contact[i].geom[0]
+        geom2_id = data.contact[i].geom[1]
+        geom1_name = model.geom(geom1_id).name
+        geom2_name = model.geom(geom2_id).name
+
+        #see which geom is attached to which arm
+        if "left_arm::" in geom1_name and "right_arm::" in geom2_name:
+            return True
+        elif "right_arm::" in geom1_name and "left_arm::" in geom2_name:
+            return True
+
+    return False

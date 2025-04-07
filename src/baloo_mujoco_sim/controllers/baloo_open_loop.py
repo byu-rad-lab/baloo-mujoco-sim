@@ -20,6 +20,8 @@ from baloo_mujoco_sim.utils.baloo_mj_api import (
     get_chest_position,
     get_box_position,
     get_elevator_activation,
+    check_arm_base_collision,
+    check_arm_arm_collision,
 )
 
 
@@ -134,6 +136,7 @@ def main():
             # Pick up changes to the physics state, apply perturbations, update options from GUI.
             viewer.sync()
 
+            print(check_arm_arm_collision(model, data))
             # #to render, I need to add a perturbation object.
             # apply_wrench_to_body(model, data, 'box', np.array([.1, 0, 0]), np.array([0, 0, 0]))
 
