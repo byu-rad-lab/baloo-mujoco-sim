@@ -27,7 +27,7 @@ The Ruckig actuator plugin uses the Ruckig library to generate smooth trajectori
 The control force ($F$) is computed using the following equation:
 
 $$
-F = k_p \cdot (x_d - x) + k_v \cdot (\dot{x}_d - \dot{x}) + k_a \cdot (g + \ddot{x}_d)
+F = k_p \cdot (x_d - x) + k_v \cdot (\dot{x}_d - \dot{x}) + k_a \cdot (g + \ddot{x}_d) + F_{feedforward}
 $$
 
 where:
@@ -41,6 +41,7 @@ where:
 - $k_p$ is the proportional gain.
 - $k_v$ is the velocity gain.
 - $k_a$ is the acceleration gain.
+- $F_{feedforward}$ is the feedforward force computed from the gravity, inertial, coriolis, damping, and friction forces. Essentially this is a perfect feedforward term to cancel out all dynamics on the elevator (since the stepper motor is 'perfectly' stiff and throws an motor fault otherwise).
 
 
 ## Usage
