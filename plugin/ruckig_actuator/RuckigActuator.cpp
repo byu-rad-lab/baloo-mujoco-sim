@@ -262,7 +262,14 @@ namespace mujoco::plugin::actuator
             // see https://mujoco.readthedocs.io/en/stable/computation/index.html#general-framework
 
             // get the id of the joint's dof
-            int elevator_joint_id = mj_name2id(m, mjOBJ_JOINT, "linear_actuator");
+            int elevator_joint_id = mj_name2id(m, mjOBJ_JOINT, "chest::linear_actuator");
+
+            // make sure this id is valid
+            if (elevator_joint_id < 0)
+            {
+                mju_error("RuckigActuator plugin: elevator joint not found");
+            }
+
             int dof_id = m->jnt_dofadr[elevator_joint_id];
             mjtNum qfrc_bias = d->qfrc_bias[dof_id];
             mjtNum qfrc_smooth = d->qfrc_smooth[dof_id];

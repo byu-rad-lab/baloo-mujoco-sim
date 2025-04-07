@@ -114,7 +114,7 @@ def main():
             # a policy and applies a control signal before stepping the physics.
             mujoco.mj_step(model, data)
 
-            print(get_elevator_activation(model, data))
+            # print()
 
             # forces = get_contact_forces_on_body(model, data, 'right_link1')
             # print(f"Forces on right_link1: {forces}")

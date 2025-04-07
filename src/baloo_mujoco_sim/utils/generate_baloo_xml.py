@@ -988,20 +988,19 @@ class Baloo:
             elevator_plugin.add(
                 "config",
                 key="kp",
-                value="5000",
+                value="1000",
             )
 
             elevator_plugin.add(
                 "config",
                 key="kv",
-                value="500",
+                value="1000",
             )
 
-            #for gravity compensation, hard coded as roughly the mass of the robot. This is bad I know.
             elevator_plugin.add(
                 "config",
                 key="ka",
-                value="100",
+                value="1000",
             )
 
             elevator_plugin.add(
