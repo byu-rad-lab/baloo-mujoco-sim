@@ -7,59 +7,28 @@ This repository contains the code for a simulation of a robot named Baloo.
 
 ## Overview
 
-The main class in the code is `Baloo`, which represents the robot. The `Baloo` class has methods for setting up the simulation, including setting compiler options, visual settings, and contact settings. It also has methods for creating the robot's body parts and actuators.
+The main class in the code is `Baloo`, which represents the robot. The `Baloo` class has methods for setting up the simulation, including setting compiler options, visual settings, and contact settings. It also has methods for creating the robot's body parts and actuators. (see [```generate_baloo_xml.py```](./src/baloo_mujoco_sim/utils/generate_baloo_xml.py) for more details on how the robot is created).
 
 The robot is composed of a number of disks, which can be specified when creating a `Baloo` instance. The robot also has a number of joints, and the height of these joints can be adjusted.
 
 The simulation includes a world plane and a fixed camera view. There is also a box object in the simulation that the robot can interact with.
 
+## Installation
+1. Install [uv](https://docs.astral.sh/uv/) which I use a dependency manager for this project.
+2. Clone the repository to your local machine.
+3. Run included install script (```./install.sh```) ***in the root directory of the repository.*** This will do a few things:
+   - Install the package using `uv` (this will also install the dependencies into venv)
+   - Build the C++ plugins for mujoco (one for joint angle estimation and another for the elevator ruckig motion planning). The compiled files are then placed in the mujoco plugin directory. 
+   - Generate the mujoco xml files for the simulation
+   - Download a precompiled version of mujoco into a ```precompiled``` directory. This just comes with some useful MuJoCo binaries, like testspeed, which is useful for testing the simulation speed.
+  
+**NOTE: This installation has only been tested with Ubuntu 20.04 and Python 3.8. Working on updating deps to include more recent versions.** 
+
 ## Getting Started
+There are two command line scripts that are installed with the package:
 
-### Python 
-
-There are a few steps to install and set up the simulation:
-
-1. Clone the repository
-2. Install the package. This will automatically build and install the C++ plugins to the pip-installed mujoco location. On my system, this is in the ```plugin``` directory of the mujoco pip installation.
-3. Once installed, on the first import of the package, the mujoco model xml files will be generated in the pip-installed mujoco location, and then available for loading in a simulation.
-4. You can run a simulation loop with the command line with ```run-baloo-sim```. This command runs [```controllers/baloo_open_loop.py```](./src/baloo_mujoco_sim/controllers/baloo_open_loop.py).
-
-**NOTE: It is highly recommended to use a virtual environment for this installation.**
-
-Here's an example of how to do this:
-
-``` bash
-git clone <repo-url>
-cd baloo_mujoco_sim
-
-# create a virtual environment
-python3 -m venv venv
-source venv/bin/activate
-
-# install dependencies, install package, and build plugins
-poetry install
-./install.sh
-
-# run simulation (which will import the package and generate the mujoco xml files)
-run-baloo-sim
-```
-
-**NOTE: This installation has only been tested with Ubuntu 20.04 and Python 3.8.** 
-
-### C++
-If you have a C++ version of mujoco with precompiled binaries downloaded from [here](https://github.com/google-deepmind/mujoco/releases), you can build the plugins with CMake. The CMakeLists.txt file is in the ```plugin``` directory. You can build the plugins with the following commands:
-
-``` bash
-cd plugin
-mkdir build
-cd build
-cmake .. -DMUJOCO_ROOT_DIR=<path-to-mujoco> -DCMAKE_BUILD_TYPE=Release
-make install
-```
-
-**NOTE: The precompiled version of mujoco must match the version of mujoco required by python.** 
-
-This will build the plugins and install them in the mujoco directory. You can then run the simulation without the python interface. 
+1. ```run-baloo-sim```: This just pulls up a passive viewer and runs the simulation. It doesn't do anything fancy, but it does allow you to see the robot in action. You can use the arrow keys to move the camera around and the mouse to zoom in and out. This CLI runs baloo_open_loop.py [here](./src/baloo_mujoco_sim/controllers/baloo_open_loop.py).
+2. ```generate-baloo-xml```: Runs the xml generation script [here](./src/baloo_mujoco_sim//utils/generate_baloo_xml.py). The xml file it generates is placed in the [assets](./src/baloo_mujoco_sim/assets/) directory. This is where all of the modeling magic happens. This script reads in some parameters from [here](./src/baloo_mujoco_sim/assets/params.yaml) and included meshes from the [meshes](./src/baloo_mujoco_sim/assets/meshes/) directory.
 
 ## Python Package API
 
@@ -84,7 +53,7 @@ from baloo_mujoco_sim.utils.baloo_mj_api import set_joint_pressure_commands
  set_joint_pressure_commands(model, data, 'left', 0, [0,0,0,0])
  ```
 
-See [```utils/baloo_mj_api.py```](./src/baloo_mujoco_sim/utils/baloo_mj_api.py) for more details on the functions that are available. In general, the functions are for setting joint commands, getting joint angles, and getting tactile sensor readings.
+See [```utils/baloo_mj_api.py```](./src/baloo_mujoco_sim/utils/baloo_mj_api.py) for more details on the functions that are available. In general, the functions are for setting joint commands, getting joint angles, and getting tactile sensor readings, etc.
 
 ## Simulation Assumptions
 
@@ -110,9 +79,6 @@ We could instead specify the maximum length for each of the tendons, which might
 The installation script has only been tested on Ubuntu 20.04. It would be good to test on newer version of Ubuntu to ensure compatibility. 
 
 It would also be good to add support for other operating systems, such as MacOS and Windows, though that might take more work.
-
-### Reimplement generate_baloo_xml.py using mjSpec
-MjSpec is 100 times faster in mujoco >3.2. Currently this API can be used to update model components dynamically, but it would be good to reimplement the xml generation script using this API to avoid dependency on dm_control PyMJCF.
 
 
 

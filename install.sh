@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Create virtual environment and install python deps.
+uv sync
+uv pip install -e .
+
 #Download correct release of ruckig
 message="Installing ruckig v0.14.0 as plugin dependency..."
 echo -e $message
