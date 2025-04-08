@@ -72,4 +72,4 @@ echo "Regenerating xml model"
 rm -f "./src/baloo_mujoco_sim/assets/"*.xml
 
 #generate xml for use now?
-uv run generate-baloo-xml
+uv run --active generate-baloo-xml
