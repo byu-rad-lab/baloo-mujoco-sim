@@ -36,7 +36,7 @@ message="\n\n\nBuilding and installing plugins to mujoco python installation dir
 echo -e $message
 
 # optionally download c++ version of mujoco 
-MUJOCO_VERSION=$(python3 -c "import importlib.metadata; print(importlib.metadata.version('mujoco'))")
+MUJOCO_VERSION=$(uv pip show mujoco | awk '/^Version:/ { print $2 }')
 
 
 # Download the file
@@ -72,4 +72,4 @@ echo "Regenerating xml model"
 rm -f "./src/baloo_mujoco_sim/assets/"*.xml
 
 #generate xml for use now?
-python -c "import baloo_mujoco_sim"
+uv run generate-baloo-xml
