@@ -113,6 +113,14 @@ class Baloo:
             pos=[-1.357, 2.722, 2.447],
             xyaxes=[-0.882, -0.472, 0.000, 0.238, -0.446, 0.863],
         )
+
+        self.mjcf_model.worldbody.add(
+            "camera",
+            name="frontcam",
+            pos=[-0.0, 3.082, 2.118],
+            xyaxes=[-1, -0.009, 0, 0.004, -0.417, 0.909],
+        )
+
         if self.enable_plugins:
             self._loadPlugins()
 
