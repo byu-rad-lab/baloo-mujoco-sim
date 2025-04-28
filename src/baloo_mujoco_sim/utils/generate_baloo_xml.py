@@ -952,7 +952,7 @@ class Baloo:
             name="chest",
             type="mesh",
             mesh="SimpleChestMesh",
-            material="silver",
+            material="chest_material",
         )
 
         # add inertial properties
@@ -1202,10 +1202,24 @@ class Baloo:
             # reflectance=0.1,
         )
 
-        # add assets for all the meshes in the meshes directory
+        #add special chest texture
         mesh_dir = os.path.join(asset_dir, "meshes")
+        self.mjcf_model.asset.add(
+            "texture",
+            type="2d",
+            name="chest_texture",
+            file=mesh_dir + "/SimpleChestColors.png",
+        )
+
+        self.mjcf_model.asset.add(
+            "material",
+            name="chest_material",
+            texture="chest_texture",
+        )
+
+        # add assets for all the meshes in the meshes directory
         for file in os.listdir(mesh_dir):
-            if file.endswith(".stl"):
+            if file.endswith(".stl") or file.endswith(".obj"):
                 self.mjcf_model.asset.add(
                     "mesh",
                     name=file.split(".")[0],
@@ -1368,6 +1382,8 @@ class Baloo:
         # bandaid for weird bug to replace strings inserted after file names:
         # remove random letters and numbers in between dash and .stl from comments above
         xml = re.sub(r"-(.*?).stl", ".stl", xml)
+        xml = re.sub(r"-(.*?).obj", ".obj", xml)
+        xml = re.sub(r"-(.*?).png", ".png", xml)
 
         # prepend absolute path to all stl in xml file
         mesh_dir = os.path.join(asset_dir, "meshes")

@@ -4,7 +4,7 @@ general:
   arm_angle: 67.5 # angle of arm in degrees, pick from 0, 22.5, 45, 67.5, 90
   manipuland: box #what type of manipuland to use, options [box, none]
   manipuland_mass: 5 #kg
-  tactile_sensors: true # whether to include tactile sensors on baloo
+  tactile_sensors: false # whether to include tactile sensors on baloo
   num_disks: 5 # number of disks to approximate each joint
   enable_plugins: true # whether to enable plugins for baloo
   timestep: 0.005 # timestep for simulation in seconds
