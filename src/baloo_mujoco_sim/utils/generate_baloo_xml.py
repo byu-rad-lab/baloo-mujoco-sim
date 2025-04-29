@@ -256,33 +256,6 @@ class Baloo:
             data=[self.num_disks],
         )
 
-    def _setContacts(self):
-        self.mjcf_model.contact.add(
-            "exclude",
-            name="left0",
-            body1="world",
-            body2="left_link0",
-        )
-
-        self.mjcf_model.contact.add(
-            "exclude",
-            name="left1",
-            body1="world",
-            body2="left_link1",
-        )
-        self.mjcf_model.contact.add(
-            "exclude",
-            name="right0",
-            body1="world",
-            body2="right_link0",
-        )
-        self.mjcf_model.contact.add(
-            "exclude",
-            name="right1",
-            body1="world",
-            body2="right_link1",
-        )
-
     def _addActuators(self, side, joint_num):
 
         for i in range(4):
@@ -812,6 +785,8 @@ class Baloo:
             type="mesh",
             mesh="RightBaseMesh",
             material="vention_blue",
+            contype=0,
+            conaffinity=1,
         )
 
         base.add(
@@ -836,6 +811,8 @@ class Baloo:
             type="mesh",
             mesh="PneumaticInletMesh",
             material="silver",
+            contype=0,
+            conaffinity=0,
         )
 
         base.add(
@@ -844,6 +821,8 @@ class Baloo:
             type="mesh",
             mesh="PowerButtonMesh",
             material="red",
+            contype=0,
+            conaffinity=0,
         )
 
         base.add(
@@ -852,6 +831,8 @@ class Baloo:
             type="mesh",
             mesh="ControlBoxMesh",
             material="matte_black",
+            contype=0,
+            conaffinity=0,
         )
         base.add(
             "geom",
@@ -859,6 +840,8 @@ class Baloo:
             type="mesh",
             mesh="EstopPlugMesh",
             material="green",
+            contype=0,
+            conaffinity=0,
         )
         base.add(
             "geom",
@@ -866,6 +849,8 @@ class Baloo:
             type="mesh",
             mesh="EthernetJackMesh",
             material="silver",
+            contype=0,
+            conaffinity=0,
         )
         base.add(
             "geom",
@@ -873,6 +858,8 @@ class Baloo:
             type="mesh",
             mesh="LCDScreenMesh",
             material="lcd_blue",
+            contype=0,
+            conaffinity=0,
         )
         base.add(
             "geom",
@@ -880,6 +867,8 @@ class Baloo:
             type="mesh",
             mesh="LeftBackWheelFootMesh",
             material="matte_black",
+            contype=0,
+            conaffinity=0,
         )
         base.add(
             "geom",
@@ -887,6 +876,8 @@ class Baloo:
             type="mesh",
             mesh="LeftFrontWheelFootMesh",
             material="matte_black",
+            contype=0,
+            conaffinity=0,
         )
         base.add(
             "geom",
@@ -894,6 +885,8 @@ class Baloo:
             type="mesh",
             mesh="RightBackWheelFootMesh",
             material="matte_black",
+            contype=0,
+            conaffinity=0,
         )
         base.add(
             "geom",
@@ -901,6 +894,8 @@ class Baloo:
             type="mesh",
             mesh="RightFrontWheelFootMesh",
             material="matte_black",
+            contype=0,
+            conaffinity=0,
         )
         base.add(
             "geom",
@@ -908,6 +903,8 @@ class Baloo:
             type="mesh",
             mesh="LeftBackWheelMesh",
             material="cream",
+            contype=0,
+            conaffinity=0,
         )
         base.add(
             "geom",
@@ -915,6 +912,8 @@ class Baloo:
             type="mesh",
             mesh="LeftFrontWheelMesh",
             material="cream",
+            contype=0,
+            conaffinity=0,
         )
         base.add(
             "geom",
@@ -922,6 +921,8 @@ class Baloo:
             type="mesh",
             mesh="RightBackWheelMesh",
             material="cream",
+            contype=0,
+            conaffinity=0,
         )
         base.add(
             "geom",
@@ -929,6 +930,8 @@ class Baloo:
             type="mesh",
             mesh="RightFrontWheelMesh",
             material="cream",
+            contype=0,
+            conaffinity=0,
         )
         base.add(
             "geom",
@@ -936,6 +939,8 @@ class Baloo:
             type="mesh",
             mesh="StepperMesh",
             material="matte_black",
+            contype=0,
+            conaffinity=0,
         )
         return base
 
@@ -1098,6 +1103,8 @@ class Baloo:
             type="mesh",
             mesh="SimpleShoulderMesh",
             material="silver",
+            contype=0,  #no collisions with shoulders
+            conaffinity=0,
         )
 
         # add inertial properties
@@ -1129,6 +1136,8 @@ class Baloo:
             mesh="SimpleShoulderMesh",
             material="silver",
             euler=[0, 0, 180],
+            contype=0,  # no collisions with shoulders
+            conaffinity=0,
         )
 
         # add inertial properties
@@ -1149,7 +1158,10 @@ class Baloo:
         return right_shoulder, left_shoulder
 
     def _setCompiler(self):
-        self.mjcf_model.compiler.angle = "degree"
+        self.mjcf_model.compiler.set_attributes(
+            angle="degree",
+            discardvisual="true",
+        )
 
     def _setOptions(self):
         self.mjcf_model.option.set_attributes(
@@ -1158,6 +1170,7 @@ class Baloo:
             solver="Newton",
             jacobian="auto",
             cone="elliptic",
+            iterations=10,
         )
 
         self.mjcf_model.option.flag.set_attributes(gravity="enable",

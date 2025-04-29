@@ -136,7 +136,7 @@ def main():
             # Pick up changes to the physics state, apply perturbations, update options from GUI.
             viewer.sync()
 
-            print(check_arm_arm_collision(model, data))
+            # print(check_arm_arm_collision(model, data))
             # #to render, I need to add a perturbation object.
             # apply_wrench_to_body(model, data, 'box', np.array([.1, 0, 0]), np.array([0, 0, 0]))
 

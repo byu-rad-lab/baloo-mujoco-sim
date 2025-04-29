@@ -274,20 +274,26 @@ def get_elevator_vel(model, data):
 
 
 def get_joint_pressures(model, data, side, jointnum):
-    pressures = []
-    for i in range(4):
-        pressures.append(
-            data.act[model.actuator(f"{side}_arm::j{jointnum}::p{i}").actadr])
-    return np.asarray(pressures).squeeze().copy()
+    act_adr = [
+        model.actuator(f"{side}_arm::j{jointnum}::p{i}").actadr
+        for i in range(4)
+    ]
+
+    pressures = np.asarray([data.act[adr][0] for adr in act_adr])
+
+    return pressures.copy()
 
 
 def set_joint_pressure_commands(model, data, side, jointnum,
                                 pressure_commands):
 
     pressure_commands = np.clip(pressure_commands, 0, 400)
-    for i in range(4):
-        data.ctrl[model.actuator(
-            f"{side}_arm::j{jointnum}::p{i}").id] = pressure_commands[i]
+
+    actuator_ids = [
+        model.actuator(f"{side}_arm::j{jointnum}::p{i}").id for i in range(4)
+    ]
+    for i, actuator_id in enumerate(actuator_ids):
+        data.ctrl[actuator_id] = pressure_commands[i]
 
 
 def get_joint_pressure_commands(model, data, side, jointnum):
@@ -355,12 +361,13 @@ def detect_box_touch(model, data):
 
 
 def detect_box_on_ground(model, data):
-    if data.ncon > 0:
-        for i in range(data.ncon):
-            if model.geom("box").id in data.contact.geom:
-                # box is involved with this contact pair. Check if it is the ground
-                if model.geom("world").id in data.contact[i].geom:
-                    return True
+    box_id = model.geom("box").id
+    world_id = model.geom("world").id
+
+    for i in range(data.ncon):
+        contact_geom = data.contact[i].geom
+        if box_id in contact_geom and world_id in contact_geom:
+            return True
     return False
 
 
