@@ -50,7 +50,9 @@
     <texture name="texplane" type="2d" builtin="checker" mark="cross" width="512" height="512"/>
     <material name="groundplane" class="/" texture="texplane" texuniform="true"/>
     <texture name="chest_texture" type="2d" file="/home/curtis/baloo/baloo-mujoco-sim/src/baloo_mujoco_sim/assets/meshes/SimpleChestColors.png"/>
+    <texture name="hand_prints" type="2d" file="/home/curtis/baloo/baloo-mujoco-sim/src/baloo_mujoco_sim/assets/meshes/link0_colors.png"/>
     <material name="chest_material" class="/" texture="chest_texture"/>
+    <material name="hand_prints_material" class="/" texture="hand_prints" texuniform="true"/>
     <mesh name="RightFrontWheelMesh" class="/" file="/home/curtis/baloo/baloo-mujoco-sim/src/baloo_mujoco_sim/assets/meshes/RightFrontWheelMesh.stl"/>
     <mesh name="EstopPlugMesh" class="/" file="/home/curtis/baloo/baloo-mujoco-sim/src/baloo_mujoco_sim/assets/meshes/EstopPlugMesh.stl"/>
     <mesh name="LeftBackWheelMesh" class="/" file="/home/curtis/baloo/baloo-mujoco-sim/src/baloo_mujoco_sim/assets/meshes/LeftBackWheelMesh.stl"/>
@@ -68,6 +70,7 @@
     <mesh name="SimpleShoulderMesh" class="/" file="/home/curtis/baloo/baloo-mujoco-sim/src/baloo_mujoco_sim/assets/meshes/SimpleShoulderMesh.stl"/>
     <mesh name="LeftFrontWheelMesh" class="/" file="/home/curtis/baloo/baloo-mujoco-sim/src/baloo_mujoco_sim/assets/meshes/LeftFrontWheelMesh.stl"/>
     <mesh name="RightFrontWheelFootMesh" class="/" file="/home/curtis/baloo/baloo-mujoco-sim/src/baloo_mujoco_sim/assets/meshes/RightFrontWheelFootMesh.stl"/>
+    <mesh name="link0" class="/" file="/home/curtis/baloo/baloo-mujoco-sim/src/baloo_mujoco_sim/assets/meshes/link0.obj"/>
     <mesh name="LeftFrontWheelFootMesh" class="/" file="/home/curtis/baloo/baloo-mujoco-sim/src/baloo_mujoco_sim/assets/meshes/LeftFrontWheelFootMesh.stl"/>
     <mesh name="SimpleChestMesh" class="/" file="/home/curtis/baloo/baloo-mujoco-sim/src/baloo_mujoco_sim/assets/meshes/SimpleChestMesh.obj"/>
     <mesh name="LCDScreenMesh" class="/" file="/home/curtis/baloo/baloo-mujoco-sim/src/baloo_mujoco_sim/assets/meshes/LCDScreenMesh.stl"/>

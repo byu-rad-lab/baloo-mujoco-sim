@@ -8,6 +8,7 @@ general:
   num_disks: 5 # number of disks to approximate each joint
   enable_plugins: true # whether to enable plugins for baloo
   timestep: 0.005 # timestep for simulation in seconds
+  discard_visual: true # whether to discard visual elements in the simulation, speeds up sim dramatically
 
 large_joint:
   mass: 4.63 # mass in kg

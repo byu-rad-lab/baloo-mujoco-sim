@@ -128,6 +128,7 @@ class Baloo:
         with open(os.path.join(asset_dir, "params.yaml"), "r") as file:
             params = yaml.safe_load(file)
 
+        self.discard_visual = params["general"]["discard_visual"]
         self.small_joint_radius = params["small_joint"]["radius"]
         self.small_joint_mass = params["small_joint"]["mass"]
         self.small_joint_bellows_radius = params["small_joint"][
@@ -368,6 +369,16 @@ class Baloo:
             pos=[0, 0, (self.disk_half_height + self.link0_height / 2)],
             euler=[0, 0, -45],
         )
+
+        # link.add(
+        #     "geom",
+        #     name=f"{side}_arm::link0::sensor_viz",
+        #     type="mesh",
+        #     mesh="link0",
+        #     # size=[self.link0_radius, self.link0_height / 2],
+        #     # rgba=self.BLACK,
+        #     axisangle=[0, 0, 1, 180],
+        #     material="hand_prints_material")
 
         link.add(
             "geom",
@@ -1160,7 +1171,7 @@ class Baloo:
     def _setCompiler(self):
         self.mjcf_model.compiler.set_attributes(
             angle="degree",
-            discardvisual="true",
+            discardvisual=self.discard_visual,
         )
 
     def _setOptions(self):
@@ -1225,9 +1236,23 @@ class Baloo:
         )
 
         self.mjcf_model.asset.add(
+            "texture",
+            type="2d",
+            name="hand_prints",
+            file=mesh_dir + "/link0_colors.png",
+        )
+
+        self.mjcf_model.asset.add(
             "material",
             name="chest_material",
             texture="chest_texture",
+        )
+
+        self.mjcf_model.asset.add(
+            "material",
+            name="hand_prints_material",
+            texture="hand_prints",
+            texuniform="true",
         )
 
         # add assets for all the meshes in the meshes directory
