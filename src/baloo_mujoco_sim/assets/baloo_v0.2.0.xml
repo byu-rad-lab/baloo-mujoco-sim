@@ -70,7 +70,6 @@
     <mesh name="SimpleShoulderMesh" class="/" file="/home/curtis/baloo/baloo-mujoco-sim/src/baloo_mujoco_sim/assets/meshes/SimpleShoulderMesh.stl"/>
     <mesh name="LeftFrontWheelMesh" class="/" file="/home/curtis/baloo/baloo-mujoco-sim/src/baloo_mujoco_sim/assets/meshes/LeftFrontWheelMesh.stl"/>
     <mesh name="RightFrontWheelFootMesh" class="/" file="/home/curtis/baloo/baloo-mujoco-sim/src/baloo_mujoco_sim/assets/meshes/RightFrontWheelFootMesh.stl"/>
-    <mesh name="link0" class="/" file="/home/curtis/baloo/baloo-mujoco-sim/src/baloo_mujoco_sim/assets/meshes/link0.obj"/>
     <mesh name="LeftFrontWheelFootMesh" class="/" file="/home/curtis/baloo/baloo-mujoco-sim/src/baloo_mujoco_sim/assets/meshes/LeftFrontWheelFootMesh.stl"/>
     <mesh name="SimpleChestMesh" class="/" file="/home/curtis/baloo/baloo-mujoco-sim/src/baloo_mujoco_sim/assets/meshes/SimpleChestMesh.obj"/>
     <mesh name="LCDScreenMesh" class="/" file="/home/curtis/baloo/baloo-mujoco-sim/src/baloo_mujoco_sim/assets/meshes/LCDScreenMesh.stl"/>
