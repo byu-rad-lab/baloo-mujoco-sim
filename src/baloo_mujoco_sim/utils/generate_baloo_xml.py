@@ -1235,12 +1235,12 @@ class Baloo:
             file=mesh_dir + "/SimpleChestColors.png",
         )
 
-        self.mjcf_model.asset.add(
-            "texture",
-            type="2d",
-            name="hand_prints",
-            file=mesh_dir + "/link0_colors.png",
-        )
+        # self.mjcf_model.asset.add(
+        #     "texture",
+        #     type="2d",
+        #     name="hand_prints",
+        #     file=mesh_dir + "/link0_colors.png",
+        # )
 
         self.mjcf_model.asset.add(
             "material",
@@ -1248,12 +1248,12 @@ class Baloo:
             texture="chest_texture",
         )
 
-        self.mjcf_model.asset.add(
-            "material",
-            name="hand_prints_material",
-            texture="hand_prints",
-            texuniform="true",
-        )
+        # self.mjcf_model.asset.add(
+        #     "material",
+        #     name="hand_prints_material",
+        #     texture="hand_prints",
+        #     texuniform="true",
+        # )
 
         # add assets for all the meshes in the meshes directory
         for file in os.listdir(mesh_dir):
