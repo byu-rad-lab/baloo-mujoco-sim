@@ -527,6 +527,7 @@ def get_disk_quat(model: mujoco.MjModel,
 
 
 def apply_wrench_to_body(model, data, body_name, force, torque):
+    ''' NOTE: this function accumulates forces, so the user needs to clear applied forces in qfrc_applied'''
     #point_on_body needs to be in world frame
     body_com = data.body(body_name).xipos
 

@@ -138,7 +138,7 @@ def main():
 
             # print(check_arm_arm_collision(model, data))
             # #to render, I need to add a perturbation object.
-            # apply_wrench_to_body(model, data, 'box', np.array([.1, 0, 0]), np.array([0, 0, 0]))
+            apply_wrench_to_body(model, data, 'box', np.array([.1, 0, 0]), np.array([0, 0, 0]))
 
             # if data.time > 2:
             #     clear_wrenches(model, data)
