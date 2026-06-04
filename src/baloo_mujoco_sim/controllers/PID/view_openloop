@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+import baloo_mujoco_sim  # <--- NEW: This silently loads the custom C++ p
+import mujoco
+try:
+    mujoco.mj_loadPluginLibrary('/home/cameronc/baloo_ws/src/baloo-mujoco-sim/plugin/build/joint_angle_estimator/libjoint_angle_estimator.so')
+except mujoco.FatalError as e:
+    if "already registered" in str(e):
+        pass
+    else:
+        raise
+
+try:
+    mujoco.mj_loadPluginLibrary('/home/cameronc/baloo_ws/src/baloo-mujoco-sim/plugin/build/ruckig_actuator/libRuckigActuator.so')
+except mujoco.FatalError as e:
+    if "already registered" in str(e):
+        pass
+    else:
+        raise
+
+try:
+    mujoco.mj_loadPluginLibrary('/home/cameronc/baloo_ws/src/baloo-mujoco-sim/plugin/build/motion_profile_servo/libMotionProfileServo.so')
+except mujoco.FatalError as e:
+    if "already registered" in str(e):
+        pass
+    else:
+        raise
+
+from baloo_gym.envs.baloo_v9 import BalooV9
+from baloo_gym.policies.open_loop_hugger import OpenLoopHuggerPolicy
+from baloo_gym.wrappers.object_perturbation_wrapper import ObjectPerturbationWrapper  # adjust path if needed
+env = BalooV9(
+    render_mode='human',
+    camera_name='frontcam',
+    ctrl_timestep=0.05,
+    render_width=640,
+    render_height=480,
+    randomize_initial_height=False,
+    randomize_object_size=False,
+    randomize_object_mass=False,
+    object_size=(0.3, 0.3, .6),
+)
+
+env = ObjectPerturbationWrapper(env)  # ← just add this line
+env.perturbation_magnitude = 0 # increase if box doesn't slip
+
+print('env created, resetting...')
+policy = OpenLoopHuggerPolicy(N=50)
+obs, _ = env.reset()
+
+env.render()
+viewer = env.unwrapped.mujoco_renderer._viewers.get('human')
+if viewer:
+    viewer.cam.azimuth   = -102.5
+    viewer.cam.elevation = -43.8
+    viewer.cam.distance  = 3.0
+    viewer.cam.lookat[0] = 0.0
+    viewer.cam.lookat[1] = 0.0
+    viewer.cam.lookat[2] = 0.5
+
+print('stepping...')
+done = False
+step = 0
+while not done:
+    try:
+        action, _ = policy.predict(obs)
+        obs, reward, terminated, truncated, info = env.step(action)
+        env.render()
+        done = terminated or truncated
+        step += 1
+        if step % 20 == 0:
+            print(f'step {step}')
+        if done:
+            print(f'terminated={terminated}, truncated={truncated}')
+            print(f'info={info}')
+            print(f'reward={reward}')
+            print(f'step it died on: {step}')
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        print(f'crashed on step {step}')
+        break
+print('done!')
+env.close()
