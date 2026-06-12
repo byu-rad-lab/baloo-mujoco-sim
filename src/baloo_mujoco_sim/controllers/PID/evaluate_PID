@@ -1,0 +1,182 @@
+#!/usr/bin/env python3
+
+#Added these lines to BalooBase so that I could randomize the rotation i
+''' Random yaw rotation
+yaw = np.random.uniform(0, 2 * np.pi)
+quat = np.array([np.cos(yaw/2), 0, 0, np.sin(yaw/2)])  # [w, x, y, z]
+data.qpos[qpos_adr + 3] = quat[0]  # w
+data.qpos[qpos_adr + 4] = quat[1]  # x
+data.qpos[qpos_adr + 5] = quat[2]  # y
+data.qpos[qpos_adr + 6] = quat[3]  # z
+'''
+
+
+import mujoco
+import numpy as np
+import pandas as pd
+import os
+import sys
+from concurrent.futures import ProcessPoolExecutor, as_completed
+from tqdm import tqdm
+
+# Add the path to the baloo-gym source
+sys.path.append('/home/cameronc/baloo_ws/src/baloo-gym/src')
+
+# Patch the policy class to suppress excessive printing
+import baloo_gym.policies.PIDHugger as pid_hugger
+pid_hugger.OpenLoopHuggerPolicy.print_pressures = lambda self, *args, **kwargs: None
+pid_hugger.OpenLoopHuggerPolicy.save_logs = lambda self, *args, **kwargs: None
+
+def setup_plugins():
+    plugins = [
+        '/home/cameronc/baloo_ws/src/baloo-mujoco-sim/plugin/build/joint_angle_estimator/libjoint_angle_estimator.so',
+        '/home/cameronc/baloo_ws/src/baloo-mujoco-sim/plugin/build/ruckig_actuator/libRuckigActuator.so',
+        '/home/cameronc/baloo_ws/src/baloo-mujoco-sim/plugin/build/motion_profile_servo/libMotionProfileServo.so'
+    ]
+    for plugin_path in plugins:
+        try:
+            mujoco.mj_loadPluginLibrary(plugin_path)
+        except mujoco.FatalError as e:
+            if "already registered" in str(e):
+                pass
+            else:
+                raise e
+
+def run_single_simulation(run_id, render_mode=None):
+    setup_plugins()
+    
+    from baloo_gym.envs.baloo_v9 import BalooV9
+    # Explicitly using the policy from PIDHugger.py as requested
+    from baloo_gym.policies.PIDHugger import OpenLoopHuggerPolicy
+    from baloo_gym.wrappers.object_perturbation_wrapper import ObjectPerturbationWrapper 
+
+    env = BalooV9(
+        render_mode=render_mode, 
+        ctrl_timestep=0.05,
+        randomize_object_size=True,
+        randomize_object_quat=True,
+        camera_name="frontcam",
+    )
+
+    env = ObjectPerturbationWrapper(env)
+    env.perturbation_magnitude = 0 
+    
+    pid_config = {'kp': 80.0, 'ki': 2.0, 'kd': 1.5, 'threshold': 0.01, 'correction_max': 70}
+    active_policy = OpenLoopHuggerPolicy(N=50, slip_pid_params=pid_config)
+
+    model = env.unwrapped.model
+    data = env.unwrapped.data
+    box_body_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, "box")
+    box_geom_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_GEOM, "box")
+
+    TIP_ANGLE_COS = np.cos(np.radians(80.0)) 
+    
+
+    mass   = np.random.uniform(0.5, 10.0)
+    #print(f"Run {run_id}: Setting box mass to {mass:.2f} kg") Check if the mass is running properly
+ 
+    jnt_adr = model.body_jntadr[box_body_id]
+    qpos_adr = model.jnt_qposadr[jnt_adr]
+
+    mujoco.mj_setConst(model, data) 
+    mujoco.mj_forward(model, data)
+
+    # 1. Reset
+    obs, _ = env.reset()
+    active_policy.restart()
+
+    done = False
+    success = False
+    tipped = False
+    initial_z = None
+    step_count = 0
+    max_steps = 480
+    pid_activation_count = 0
+    pid_activated = False
+    
+    while not done and step_count < max_steps:
+        current_z = data.xipos[box_body_id][2] 
+        if initial_z is None:
+            initial_z = current_z
+        
+        action, _ = active_policy.predict(obs, exact_box_z=current_z)
+        obs, reward, terminated, truncated, info = env.step(action)
+
+        if active_policy.pid_was_active:
+            pid_activated = True
+        
+        rot_mat = data.xmat[box_body_id].reshape(3, 3)
+        if rot_mat[2, 2] < TIP_ANGLE_COS:
+            tipped = True
+            done = True
+        elif current_z >= (initial_z + 0.5):
+            success = True
+            done = True
+        if terminated:
+            done = True
+        step_count += 1
+        
+        if render_mode == 'human':
+            env.render()
+
+    slipped = not success and not tipped
+    env.close()
+    
+    return {
+        "run_id": run_id,
+        "mass_kg": mass,
+        "pid_activated": pid_activated,
+        "slipped": slipped,
+        "tipped": tipped,
+        "success": success
+    }
+
+def run_chunk_of_simulations(chunk_ids):
+    results = []
+    for run_id in chunk_ids:
+        results.append(run_single_simulation(run_id, render_mode=None))
+    return results
+
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--num_trials", type=int, default=1000)
+    parser.add_argument("--num_visual", type=int, default=10)
+    args = parser.parse_args()
+
+    NUM_TRIALS = args.num_trials
+    NUM_VISUAL = args.num_visual
+    
+    print(f"Running first {NUM_VISUAL} trials with rendering...")
+    visual_results = []
+    for i in range(NUM_VISUAL):
+        print(f"Trial {i+1}/{NUM_VISUAL}")
+        res = run_single_simulation(i, render_mode='human')
+        visual_results.append(res)
+        status = "SUCCESS" if res['success'] else ("TIPPED" if res['tipped'] else "SLIPPED")
+        print(f"  Result: {status}")
+
+    print(f"\nRunning remaining {NUM_TRIALS - NUM_VISUAL} trials in parallel...")
+    remaining_ids = list(range(NUM_VISUAL, NUM_TRIALS))
+    num_cores = os.cpu_count() or 4
+    
+    parallel_results = []
+    if len(remaining_ids) > 0:
+        chunk_size = max(1, len(remaining_ids) // num_cores)
+        job_chunks = [remaining_ids[i:i + chunk_size] for i in range(0, len(remaining_ids), chunk_size)]
+
+        with ProcessPoolExecutor(max_workers=num_cores) as executor:
+            futures = [executor.submit(run_chunk_of_simulations, chunk) for chunk in job_chunks]
+            for future in tqdm(as_completed(futures), total=len(job_chunks), desc="Processing Chunks"):
+                parallel_results.extend(future.result())
+
+    all_results = visual_results + parallel_results
+    df = pd.DataFrame(all_results)
+    df.to_csv("pid_hugger_evaluation_1000.csv", index=False)
+
+    print("\n=== EVALUATION COMPLETE ===")
+    print(f"Total Trials: {len(df)}")
+    print(f"Success Rate: {df['success'].mean() * 100:.2f}%")
+    print(f"Tip Rate: {df['tipped'].mean() * 100:.2f}%")
+    print(f"Slip Rate: {df['slipped'].mean() * 100:.2f}%")
+    print(f"\nDetailed data saved to 'pid_hugger_evaluation_1000.csv'")
