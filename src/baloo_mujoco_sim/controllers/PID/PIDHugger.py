@@ -1,4 +1,6 @@
 import numpy as np # Creates a claass object of numpy called np
+import csv
+import os
 from baloo_gym.utils.observation_spaces import StateObservationObjectOnly # Imports specifically the StateObservationObjectOnly class wich contains the varriables for anything to do with Baloo
 from stable_baselines3.common.policies import BasePolicy # Inherets the BasePolicy from stable baselines.
 
@@ -6,36 +8,32 @@ from stable_baselines3.common.policies import BasePolicy # Inherets the BasePoli
 # =============================================================================
 # Slip Correction PID
 # =============================================================================
-# Monitors box z-position during LIFT. If the box drops (slipping), it outputs
-# a positive squeeze_correction value which is added to the j1 antagonist
-# pressures on both arms to tighten the grip.
+# Monitors relative velocity between elevator and box during LIFT. If the 
+# box drops (v_box < v_elevator), it outputs a positive squeeze_correction 
+# value which is added to the j1 antagonist pressures on both arms to 
+# tighten the grip.
 #
 # Tuning guide:
-#   kp  — how aggressively to respond to a drop. Start low (50-100).
-#          Too high → arms slam shut and vibrate.
-#   ki  — slowly builds squeeze for sustained slip. Keep very small (1-5).
-#          Too high → integral windup clamps arms permanently.
-#   kd  — damps oscillation. Usually 1-3.
-#   threshold — deadband in meters. Corrections only fire outside this range,
-#               which prevents over-squeezing on small sensor noise.
-#   correction_max — hard cap on how much extra delta-pressure the PID
-#               can add. 50 PSI is a conservative starting point given the
-#               hardware range of ±150 PSI delta.
+#   kp  — how aggressively to respond to slip velocity (damping).
+#   ki  — responds to accumulated slip distance.
+#   kd  — responds to relative acceleration.
+#   threshold — deadband in m/s. Corrections only fire outside this range.
+#   correction_max — hard cap on extra delta-pressure (kPa).
 # =============================================================================
 
 class SlipCorrectionPID:
 
-    def __init__( #This function sets up data so taht it is accessable to other functions
+    def __init__( 
         self,
-        kp=80.0, #Setting up the weights for the proportional derivative and integral terms.
+        kp=80.0, 
         ki=2.0,
         kd=1.5,
         dt=0.01,
-        threshold=0.01, # This is the threshold of movement the system tolerates before the pid activates I think measured in meters so it triggers at 1 cm of movement
-        correction_min=0.0,   # Applies 0 additional KPA as the floor it can't take away pressure.
-        correction_max=50.0,  # Maximum of 50 kpa applied with PID
+        threshold=0.01, # Velocity threshold in m/s
+        correction_min=0.0,   
+        correction_max=50.0,  
     ):
-        self.kp = kp # These lines copy data into self so that the rest of the class can access it.
+        self.kp = kp 
         self.ki = ki
         self.kd = kd
         self.dt = dt
@@ -43,35 +41,34 @@ class SlipCorrectionPID:
         self.correction_min = correction_min
         self.correction_max = correction_max
 
-        self._integral = 0.0 # This is a varrible that we need to accumulate the erorr for the integral term so that it can adjust. It keeps tract of the total error.
-        self._prev_error = 0.0 # This keeps track of the previous error so that we can find the rate of change of error to help the derivative term do it's damping
-        self.active = False # This is the initial state of the PID controller becaues we don't want it running until it grasps and experiences perturbations
+        self._integral = 0.0 
+        self._prev_error = 0.0 
+        self.active = False 
 
-    def arm(self, current_box_z): # This arms the PID controller
-        self.desired_z = current_box_z
-        self._integral = 0.0 # Just in case the arm function is run twice the error is reset to reset the derivative and integral terms
+    def arm(self): # Arms the PID controller
+        self._integral = 0.0 
         self._prev_error = 0.0
-        self.active = True # This is the line that activates it
+        self.active = True 
 
-    def update(self, box_z):
-        if not self.active: # Does nothing if self.active == false
+    def update(self, v_slip):
+        if not self.active: 
             return 0.0
 
-        error = self.desired_z - box_z  # positive when box drops
+        error = v_slip  # positive when box drops relative to elevator
 
-        if abs(error) < self.threshold: #if the error is less than the threshold don't run PID because its just to small of a movement to matter
+        if abs(error) < self.threshold: 
             return 0.0
-        self._integral += error * self.dt # An approximation of a rhiemansum (computational integration)
-        derivative = (error - self._prev_error) / self.dt # Finds the slope which is the derivative
-        self._prev_error = error #Sets the current error to the previous error for the next iteration
+        self._integral += error * self.dt 
+        derivative = (error - self._prev_error) / self.dt 
+        self._prev_error = error 
 
         u = (self.kp * error
              + self.ki * self._integral
-             + self.kd * derivative)  #This is the actual pid equation. The sum of the 3 parts
+             + self.kd * derivative)  
 
-        return float(np.clip(u, self.correction_min, self.correction_max)) # numpy.clip (np.clip same thing) makes sure that if the value is above the max it will return the max or below the min that it will return the min
+        return float(np.clip(u, self.correction_min, self.correction_max)) 
     
-    def disarm(self): # Does the opposite of arm.
+    def disarm(self): 
         self.active = False
         self._integral = 0.0
         self._prev_error = 0.0
@@ -114,7 +111,7 @@ class SlipCorrectionPID:
 
 # Direction vectors: multiply correction by these to tighten each arm
 SQUEEZE_DIR_LEFT  = np.array([-1.0, +1.0])   
-SQUEEZE_DIR_RIGHT = np.array([-1.0, +1.0])    
+SQUEEZE_DIR_RIGHT = np.array([1.0, -1.0])    
 SQUEEZE_DIR_LEFT_J2  = np.array([-1.0, +1.0])   # actions[5], actions[6]
 SQUEEZE_DIR_RIGHT_J2 = np.array([1.0, -1.0])   # This helps j2 on the right arm to curl inward(cc arround the z axis if z is the direction baloo's elevator goes)actions[11], actions[12]
 CHAMBER_MAP = {  #This is to map out the pressures to see what is going on inside baloo at real time
@@ -175,8 +172,25 @@ class OpenLoopHuggerPolicy(BasePolicy):
 
         # ── Slip correction PID ─────────────────────────────────────────────
         pid_params = slip_pid_params or {}
-        self.slip_pid = SlipCorrectionPID(**pid_params) #Creates a class object with the PID dictionary being unpacked into the Slip Correction PID function
+        self.slip_pid = SlipCorrectionPID(dt=0.05, **pid_params) #Creates a class object with the PID dictionary being unpacked into the Slip Correction PID function
         self.slip_pid_j2 = SlipCorrectionPID(kp=100.0, ki=0, kd=0) #1,1
+        self.top_time = 0.0 # Initializes the time spent at the top of the elevator
+        self.logs = [] # Buffer to store data for graphing
+        self.current_time = 0.0 # Tracker for log timestamps
+    def print_pressures(self, current_actions, base_pressure=150.0):
+        """Prints the current calculated pressures for each chamber in kPa."""
+        print("\n--- Current Arm Pressures (kPa) ---")
+        
+        for chamber_name, index in CHAMBER_MAP.items():
+            # Actions are delta pressures from an average pressure of 150 kPa
+            delta_pressure = current_actions[index]
+            total_pressure = base_pressure + delta_pressure
+            
+            print(f"{chamber_name:22}: {total_pressure:6.2f} kPa (Delta: {delta_pressure:+.2f})")
+        print
+        print("-----------------------------------\n")
+    
+
 
     # _predict method is required when you inheret from BasePolicy This function does nothing but makes sure that python functions
     def _predict(self, observation, deterministic=False):
@@ -187,13 +201,16 @@ class OpenLoopHuggerPolicy(BasePolicy):
     # This is where the meat of the PID lives 
     def predict(self, obs, deterministic=True,exact_box_z=None):
         actions = self.prev_actions.copy() #Takes a copy of the previous actions
+        self.pid_was_active = False
 
         if len(obs) > 1: # Checks if obs is a single value or if it is a vector. If it's a vector
             mujoco_observation = StateObservationObjectOnly.from_standardized_array(obs) # Saves the values of the array into an object. Now its more clear what data
             #is in each value in the obs array it allows the next line to exist and clearly state what is going on
             elevator_height = mujoco_observation.elevator_pos #Copies the Observed elevator position into a varriable
+            v_slip = mujoco_observation.elevator_vel - mujoco_observation.box_twist[2]
         else: # If its a single value
             elevator_height = obs # The only value in the observation is a position for the elevator to go to
+            v_slip = 0.0
 
         # ── Parse observation ─────────────────────────────────────────────
         if exact_box_z is not None: #Self explanitory if the box height doesn't == nothing copy it to box_z 
@@ -259,22 +276,23 @@ class OpenLoopHuggerPolicy(BasePolicy):
                 self.step_along_trajectory = 0
                 # Arm the PID at the box height when we start lifting
                 if box_z is not None:
-                    self.slip_pid.arm(box_z) #Activates the PID
-                    self.slip_pid_j2.arm(box_z)
+                    self.slip_pid.arm() #Activates the PID
+                    self.slip_pid_j2.arm()
 
         # ── LIFT ──────────────────────────────────────────────────────────
         elif self.state == "LIFT":
             # Tell the elevator to move towards the top.
             actions[0] = 0
-
+            
+            
             # Increment the time spent lifting (dt matches your PID configuration)
             self.lift_time += self.slip_pid.dt
-            acceleration_window = 0.35 # The time we give the box to suddenly jolt before pid checks the relative velocty.
+            acceleration_window = .35 # The time we give the box to suddenly jolt before pid checks the relative velocty.
             # ── Slip correction ───────────────────────────────────────────
             if box_z is not None and self.lift_time >= acceleration_window:
-                squeeze = self.slip_pid.update(box_z) #Saves an update on the box_z position to see if the 
+                squeeze = self.slip_pid.update(v_slip) #Saves an update on the box_z position to see if the 
                 #position has changed or if the box is snugly in Baloo's loving arms
-                squeeze_j2 = self.slip_pid_j2.update(box_z)
+                squeeze_j2 = self.slip_pid_j2.update(v_slip)
             else:
                 squeeze = 0.0
                 squeeze_j2 =0.0
@@ -289,7 +307,7 @@ class OpenLoopHuggerPolicy(BasePolicy):
                     actions[9]  + squeeze * SQUEEZE_DIR_RIGHT[0], -150, 150)
                 actions[10] = np.clip(
                     actions[10] + squeeze * SQUEEZE_DIR_RIGHT[1], -150, 150)
-            squeeze_j2 = self.slip_pid_j2.update(box_z) if box_z is not None else 0.0
+                
 
             if squeeze_j2 > 0:
                 actions[5]  = np.clip(
@@ -300,20 +318,58 @@ class OpenLoopHuggerPolicy(BasePolicy):
                     actions[11] + squeeze_j2 * SQUEEZE_DIR_RIGHT_J2[0], -150, 150)
                 actions[12] = np.clip(
                     actions[12] + squeeze_j2 * SQUEEZE_DIR_RIGHT_J2[1], -150, 150)
+                
+            self.prev_actions = actions.copy()
+            if squeeze > 0 or squeeze_j2 > 0:
+                self.pid_was_active = True  # ← add this line
+
+           #Uncomment this line if you want to see the pressure values at real time
+        self.print_pressures(self.prev_actions)
+                
                             
                 
             #Uncomment these lines if you want to debug and see the pressure values
             #for name, idx in CHAMBER_MAP.items(): #Using the chamber map dictionary to evaluate the pressure values at all joints
             #   absolute_kpa = (self.avg_pressure + actions[idx])
             #    print(f"{name}: {float(absolute_kpa):.2f} kPa")
+        
+        # ── Log Data for Graphing ─────────────────────────────────────────
+        self.current_time += self.slip_pid.dt
+        log_entry = {
+            'time': self.current_time,
+            'v_slip': v_slip
+        }
+        # Log all 12 chambers from CHAMBER_MAP
+        for chamber_name, index in CHAMBER_MAP.items():
+            log_entry[chamber_name] = actions[index]
+            
+        self.logs.append(log_entry)
+
         norm_actions = self.normalize_actions(actions)
         return norm_actions, None
 
     # -------------------------------------------------------------------------
+
+    def save_logs(self, filename="baloo_log.csv"):
+        """Saves the logged data to a CSV file for graphing."""
+        if not self.logs:
+            return
+        
+        keys = self.logs[0].keys()
+        with open(filename, 'w', newline='') as f:
+            dict_writer = csv.DictWriter(f, fieldnames=keys)
+            dict_writer.writeheader()
+            dict_writer.writerows(self.logs)
+        print(f"Log saved to {filename}")
+
     def restart(self):
+        self.save_logs() # Save data from the previous run
         self.step_along_trajectory = 0
         self.state = "APPROACH"
         self.prev_actions = np.zeros(13)
         self.slip_pid.disarm()
         self.slip_pid_j2.disarm()
         self.lift_time = 0.0  # Reset lift clock on overall restart
+        self.top_time = 0.0  # Reset top clock on overall restart
+        self.current_time = 0.0 # Reset time for new log
+        self.logs = [] # Clear logs for new run
