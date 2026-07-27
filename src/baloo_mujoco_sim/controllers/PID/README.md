@@ -24,3 +24,30 @@ This is my first committ to github so appologies if the way to run this script a
 ```bash
 python view_openloop.py
 
+For EvaluatePID_1000WithHistogramsAnd6PIDControllers
+
+This script gets the maximum pressures of running a certain number of trials in simulation to run the amount of trials that you want I use the following bash command 
+
+cameronc@salmon-vr:~$ /usr/bin/python /home/cameronc/baloo_ws/src/EvaluatePID_1000WithHistogramsAnd6PIDControllers.py --num_trials 1000 --num_detail 0
+
+--num_trials specifies the number of headless trials you want to run while --num_detail specifies the number of trials you want to visualize. The num_detail trials usually crash on me quite frequently and it will say core dumped. If this happens just run it again. But if you want to reliably get data just run the script with headless trials. The script is also equipt to have an individual PID controller on each joint . Left J0,J1,J2 Right J0,J1,J2. Each of the gains have been calculated from running optuna with a fixed correction max based on the correction max chosen by the reinforcement learning policy. This script was used to run 1000 trials in simulation and verifies that the pressures applied in simulation do not go over the pressure threshold. The maximum pressures applied are exported to histograms. 
+
+These are all the packages needed to run the script:
+
+
+import os
+import sys
+import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
+import pandas as pd
+from tqdm import tqdm
+
+sys.path.append('/home/cameronc/baloo_ws/src/baloo-gym/src')
+
+import baloo_gym.policies.PIDHugger as pid_hugger
+pid_hugger.OpenLoopHuggerPolicy.print_pressures = lambda self, *args, **kwargs: None
+pid_hugger.OpenLoopHuggerPolicy.save_logs = lambda self, *args, **kwargs: None
+
+import mujoco
+
