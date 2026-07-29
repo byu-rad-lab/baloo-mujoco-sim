@@ -1,39 +1,65 @@
-# MPPI controller guided by openloop
 import numpy as np
 import mujoco
 import time
 from multiprocessing import Pool
+from multiprocessing.pool import ThreadPool
 from baloo_gym.envs.baloo_v9 import BalooV9
-# it uses ThreePartRewardWrapper for visual purposes only (green box when lifting)
-from baloo_gym.wrappers.three_part_reward_wrapper import ThreePartRewardWrapper
 from baloo_gym.policies.open_loop_hugger import OpenLoopHuggerPolicy
 from baloo_mujoco_sim.utils.baloo_mj_api import (
-    get_box_position, get_box_quat,
     get_link_position,
-    set_elevator_cmd, set_joint_pressure_commands
+    get_box_position, get_box_quat,
+    set_elevator_cmd, set_joint_pressure_commands,
 )
 from scipy.spatial.transform import Rotation as R
+import sys
 import baloo_mujoco_sim
+sys.path.insert(0, '/home/randonsandall/baloo-gym/paper_data/perturbations')
+from policy_eval_under_perturbations import load_or_generate_lhs_samples
 
-N_SAMPLES     = 32
-HORIZON       = 8
-SIGMA         = 0.15
+N_SAMPLES     = 31
+HORIZON       = 16
+SIGMA         = 0.275
 N_OPEN_LOOP   = 50
-W_GUIDE       = 0.01
-W_ARM_DIST    = 3.0
+W_GUIDE       = 0.185
 R_LIFT        = 10.0
 R_TIP         = -2.0
-OBJECT_SIZE   = (0.3, 0.3, 0.6)
-OBJECT_MASS   = 10      # 0.5 to 10.0 range
+W_HEIGHT      = 157.45
 CTRL_TIMESTEP = 0.05
 N_WORKERS     = 16
-LAMBDA_TEMP   = 1.0
+LAMBDA_TEMP   = 3.727
+
+lhs_samples = load_or_generate_lhs_samples(1000, seed=42)
+if len(sys.argv) > 1:
+    _idx = int(sys.argv[1])
+    _x, _y, _z, _m, _xp, _r = lhs_samples[_idx]
+    OBJECT_SIZE = (_x, _y, _z)
+    OBJECT_MASS = _m
+    OBJECT_XPOS = _xp
+    OBJECT_ZROT = np.degrees(_r)
+    print(f"Using LHS box {_idx}: size=({_x:.3f},{_y:.3f},{_z:.3f}) mass={_m:.1f}kg xpos={_xp:.3f} zrot={OBJECT_ZROT:.1f}°")
+else:
+    OBJECT_SIZE = (0.3, 0.3, 0.8)
+    OBJECT_MASS = None
+    OBJECT_XPOS = 0.0
+    OBJECT_ZROT = 0.0
+    print("Using default box")
 
 _worker_model = None
 
-def worker_init(xml_path):
+def worker_init(xml_path, object_size, object_mass):
     global _worker_model
-    _worker_model = mujoco.MjModel.from_xml_path(xml_path)
+    import mujoco
+    from baloo_mujoco_sim.utils.baloo_mj_api import set_box_size, set_box_mass
+    try:
+        spec = mujoco.MjSpec.from_file(xml_path)
+    except TypeError:
+        spec = mujoco.MjSpec()
+        spec.from_file(xml_path)
+    if object_size is not None:
+        set_box_size(spec, *object_size)
+    if object_mass is not None:
+        set_box_mass(spec, object_mass)
+    _worker_model = spec.compile()
 
 def box_tipped(model, data):
     quat  = get_box_quat(model, data)
@@ -48,16 +74,12 @@ def guide_cost(action, nominal_action):
     diff = action - nominal_action
     return -W_GUIDE * np.exp(-0.5 * np.dot(diff, diff))
 
-def arm_dist_cost(model, data):
-    box_pos   = get_box_position(model, data)
-    left_tip  = get_link_position(model, data, 'left',  1)
-    right_tip = get_link_position(model, data, 'right', 1)
-    return W_ARM_DIST * (np.linalg.norm(left_tip - box_pos) + np.linalg.norm(right_tip - box_pos))
-
-def task_reward(model, data):
-    if box_tipped(model, data): return R_TIP
-    if box_lifted(model, data): return R_LIFT
-    return 0.0
+def task_reward(model, data, init_z=0.0):
+    box_z = get_box_position(model, data)[2]
+    r = W_HEIGHT * (box_z - init_z)
+    if box_tipped(model, data): r += R_TIP
+    if box_lifted(model, data): r += R_LIFT
+    return r
 
 def apply_normalized_action(model, data, a):
     a = np.clip(a, -1, 1)
@@ -73,24 +95,35 @@ def apply_normalized_action(model, data, a):
                 150 - pressure_deltas[idx + 1],
             ]))
 
-# cost per sample:
-#   guide_cost    : soft penalty for deviating from nominal trajectory (all steps)
-#   arm_dist_cost : penalize arms far from box (approach phase only, steps 49-99)
-#   task_reward   : subtracted because lower cost = better (-10 lift, +2 tip)
 def rollout_worker(args):
     global _worker_model
     data_state, action_seq, nominal_seq, step_idx = args
     data = mujoco.MjData(_worker_model)
     mujoco.mj_setState(_worker_model, data, data_state, mujoco.mjtState.mjSTATE_FULLPHYSICS)
+    init_z = get_box_position(_worker_model, data)[2]
     total_cost = 0.0
     for t in range(len(action_seq)):
         apply_normalized_action(_worker_model, data, action_seq[t])
         mujoco.mj_step(_worker_model, data)
         total_cost += guide_cost(np.clip(action_seq[t], -1, 1), nominal_seq[t])
-    total_cost -= task_reward(_worker_model, data)
-    if 49 <= step_idx < 99:
-        total_cost += arm_dist_cost(_worker_model, data)
+    total_cost -= task_reward(_worker_model, data, init_z)
     return total_cost
+
+def _compute_nominal_actions(object_size, object_mass, object_xpos, object_zrot, max_steps):
+    """Run the open-loop policy headlessly to build the nominal action sequence."""
+    nom_env = BalooV9(render_mode=None, camera_name='frontcam', ctrl_timestep=CTRL_TIMESTEP,
+        randomize_initial_height=False, randomize_object_size=False,
+        randomize_object_mass=False, object_size=object_size,
+        object_mass=object_mass, object_xpos=object_xpos, object_zrotation=object_zrot)
+    nom_obs, _ = nom_env.reset()
+    policy = OpenLoopHuggerPolicy(N=N_OPEN_LOOP)
+    actions = []
+    for _ in range(max_steps):
+        a, _ = policy.predict(nom_obs)
+        actions.append(a.copy())
+        nom_obs, _, t, tr, _ = nom_env.step(a)
+    nom_env.close()
+    return np.array(actions)
 
 def run_mpc():
     xml_path = str(baloo_mujoco_sim.XML_PATH)
@@ -106,11 +139,9 @@ def run_mpc():
         randomize_object_mass=False,
         object_size=OBJECT_SIZE,
         object_mass=OBJECT_MASS,
+        object_xpos=OBJECT_XPOS,
+        object_zrotation=OBJECT_ZROT,
     )
-
-    # box changes color based on weight and if lifting thanks to ThreePartRewardWrapper
-    env = ThreePartRewardWrapper(env, reward_selection=['dont_drop'])   
-
 
     obs, _ = env.reset()
     env.render()
@@ -125,27 +156,43 @@ def run_mpc():
 
     nom_policy = OpenLoopHuggerPolicy(N=N_OPEN_LOOP)
     max_steps  = 2000
-    nom_env = BalooV9(render_mode=None, camera_name='frontcam', ctrl_timestep=CTRL_TIMESTEP,
-        randomize_initial_height=False, randomize_object_size=False,
-        randomize_object_mass=False, object_size=OBJECT_SIZE, object_mass=OBJECT_MASS)
-    nom_obs, _ = nom_env.reset()
-    nominal_actions = []
-    for _ in range(max_steps):
-        a, _ = nom_policy.predict(nom_obs)
-        nominal_actions.append(a.copy())
-        nom_obs, _, t, tr, _ = nom_env.step(a)
-    nom_env.close()
-    nominal_actions = np.array(nominal_actions)
-    print(f"OBJECT_SIZE={OBJECT_SIZE} OBJECT_MASS={OBJECT_MASS}kg")
+
+    # Start the MPPI worker pool early so it's warm before the handoff.
+    pool = Pool(N_WORKERS, initializer=worker_init, initargs=(xml_path, OBJECT_SIZE, OBJECT_MASS))
+
+    # Precompute the nominal trajectory in a background thread while the
+    # open-loop phase runs (and renders) in real time, so there's no
+    # stall between open-loop and MPPI handoff.
+    nominal_thread_pool = ThreadPool(1)
+    nominal_future = nominal_thread_pool.apply_async(
+        _compute_nominal_actions,
+        (OBJECT_SIZE, OBJECT_MASS, OBJECT_XPOS, OBJECT_ZROT, max_steps)
+    )
+
+    # Run open-loop until the policy naturally enters LIFT state (arms fully grasped)
+    print("Running open-loop until LIFT state... (precomputing nominal trajectory in background)")
+    SKIP_TO_STEP = 0
+    while nom_policy.state != "LIFT" and SKIP_TO_STEP < max_steps:
+        _a, _ = nom_policy.predict(obs)
+        obs, _, _t, _tr, _ = env.step(_a)
+        env.render()
+        SKIP_TO_STEP += 1
+    print(f"LIFT state reached at step {SKIP_TO_STEP}, handing off to MPPI.")
+
+    # Should already be done by now if open-loop took a while; .get() blocks
+    # only if it somehow hasn't finished yet.
+    nominal_actions = nominal_future.get()
+    nominal_thread_pool.close()
+
     print(f"N_SAMPLES={N_SAMPLES} HORIZON={HORIZON} WORKERS={N_WORKERS}")
     print("Starting MPC loop...")
 
-    done = False
-    step = 0
-    rng  = np.random.default_rng(42)
-    t0   = time.time()
+    done  = False
+    step  = SKIP_TO_STEP
+    rng   = np.random.default_rng(42)
+    t0    = time.time()
 
-    with Pool(N_WORKERS, initializer=worker_init, initargs=(xml_path,)) as pool:
+    with pool:
         while not done and step < max_steps:
             model = env.unwrapped.model
             data  = env.unwrapped.data
@@ -160,23 +207,23 @@ def run_mpc():
             perturbations = rng.normal(0, SIGMA, size=(N_SAMPLES, len(nom_window), 13))
             candidates    = nom_window[None] + perturbations
 
-            args  = [(data_state, candidates[i], nom_window, step) for i in range(N_SAMPLES)]
-            costs = np.array(pool.map(rollout_worker, args))
+            args    = [(data_state, candidates[i], nom_window, step) for i in range(N_SAMPLES)]
+            costs   = np.array(pool.map(rollout_worker, args))
 
             weights = np.exp(-(costs - costs.min()) / LAMBDA_TEMP)
             weights /= weights.sum()
             best_action = np.sum(weights[:, None] * candidates[:, 0, :], axis=0)
+
             obs, reward, terminated, truncated, info = env.step(best_action)
             env.render()
             done = terminated or truncated
             step += 1
 
-            if step % 5 == 0:
+            if step % 10 == 0:
                 elapsed = time.time() - t0
                 print(f"step {step:3d} | cost={costs.min():.3f} | "
                       f"box_z={get_box_position(model,data)[2]:.3f} | {step/elapsed:.1f} steps/sec")
 
-    print(f"Done at step {step}.")
     env.close()
 
 if __name__ == '__main__':
